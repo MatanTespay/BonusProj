@@ -24,9 +24,9 @@ public class Station extends MyInternalFrame {
      * Creates new form Station2
      */
     public Station(String title, String type) {
-        super(title, type);
-        fillCBZone();
+        super(title, type);        
         initComponents();
+        fillCBZone();
     }
 
     /**
