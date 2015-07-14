@@ -54,6 +54,9 @@ import core.Employee;
 import core.Flight;
 import core.FlightAttendant;
 import core.Pilot;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 /**
  * The Main Class -The program runner
@@ -66,6 +69,13 @@ public class MainClass {
     private static ObjectOutputStream outputStream;
     private static ObjectInputStream inputStream;
     public Login log;
+    
+    // DB fields
+    public static Connection con = null;
+    private static final String DB_DRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
+    private static final String DB_CONNECTION = "jdbc:sqlserver://localhost:1433;databaseName=LondonU2;user=TOM;password=1234;";
+
+    
     /**
      * The main object for the program
      */
@@ -118,14 +128,10 @@ public class MainClass {
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
 			public void run() {
-
-//                try {
-//                    get();
-//                } catch (Exception ex) {
-//                    Logger.getLogger(MainClass.class.getName()).log(Level.SEVERE, null, ex);
-//                }
+        
                 IFly = init.IFly.getInstance();                    //SerializeIfly();
                 deserializeIfly();
+                con = getDBConnection();
                 new Login().setVisible(true);
 
             }
@@ -218,6 +224,26 @@ public class MainClass {
             }
         }
     }
+    
+    private static Connection getDBConnection() {
+ 
+		Connection dbConnection = null;
+ 
+		try {
+			Class.forName(DB_DRIVER);
+		} catch (ClassNotFoundException e) {
+			System.out.println(e.getMessage());
+		}
+ 
+		try {
+			dbConnection = DriverManager.getConnection(
+                             DB_CONNECTION);
+			return dbConnection;
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		return dbConnection;
+	}
     
 
 }// ~ END OF Class MainClass
