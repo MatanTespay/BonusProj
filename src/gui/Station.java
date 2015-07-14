@@ -7,19 +7,28 @@ package gui;
 
 import init.ComboItem;
 import static init.MainClass.con;
+import init.MyTableModel;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 /**
  *
  * @author asus
  */
 public class Station extends MyInternalFrame {
-
+    
+    String[] LineColumns = {
+        "Name",
+        "FoundedYear",
+        "LineType",
+        "LineLength"};
+    
     /**
      * Creates new form Station2
      */
@@ -27,6 +36,7 @@ public class Station extends MyInternalFrame {
         super(title, type);        
         initComponents();
         fillCBZone();
+        fillLines();
     }
 
     /**
@@ -38,11 +48,8 @@ public class Station extends MyInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        tfPlatforms = new javax.swing.JTextField();
         btnViewLine = new javax.swing.JButton();
         cbKiosk = new javax.swing.JCheckBox();
-        lblZoneNum = new javax.swing.JLabel();
-        cmbZoneNum = new javax.swing.JComboBox();
         tfStationID = new javax.swing.JTextField();
         lblStationID = new javax.swing.JLabel();
         lblStationName = new javax.swing.JLabel();
@@ -51,8 +58,13 @@ public class Station extends MyInternalFrame {
         jLabel1 = new javax.swing.JLabel();
         tfName = new javax.swing.JTextField();
         btnSubmit = new javax.swing.JButton();
-        lblPlatforms = new javax.swing.JLabel();
         btnCancel = new javax.swing.JButton();
+        btnViewLine1 = new javax.swing.JButton();
+        btnViewLine2 = new javax.swing.JButton();
+        lblPlatforms = new javax.swing.JLabel();
+        lblZoneNum = new javax.swing.JLabel();
+        cmbZoneNum = new javax.swing.JComboBox();
+        tfPlatforms = new javax.swing.JTextField();
 
         btnViewLine.setText("View Line");
 
@@ -63,9 +75,7 @@ public class Station extends MyInternalFrame {
             }
         });
 
-        lblZoneNum.setText("Zone Number");
-
-        cmbZoneNum.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        tfStationID.setEnabled(false);
 
         lblStationID.setText("Station ID");
 
@@ -85,76 +95,99 @@ public class Station extends MyInternalFrame {
 
         btnSubmit.setText("Submit");
 
+        btnCancel.setText("Cancel");
+
+        btnViewLine1.setText("Add Line");
+
+        btnViewLine2.setText("Remove");
+
         lblPlatforms.setText("No. of platforms");
 
-        btnCancel.setText("Cancel");
+        lblZoneNum.setText("Zone Number");
+
+        cmbZoneNum.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(btnSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(lblStationID)
-                                    .addComponent(lblStationName)
-                                    .addComponent(lblZoneNum))
-                                .addGap(20, 20, 20))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(lblPlatforms)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(tfPlatforms)
-                            .addComponent(tfName)
-                            .addComponent(cmbZoneNum, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(tfStationID))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(cbKiosk))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(btnViewLine)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 132, Short.MAX_VALUE)
-                        .addComponent(btnSubmit)
+                                    .addComponent(lblStationName))
+                                .addGap(41, 41, 41)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(tfName, javax.swing.GroupLayout.DEFAULT_SIZE, 64, Short.MAX_VALUE)
+                                    .addComponent(tfStationID))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(lblZoneNum)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(cmbZoneNum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(lblPlatforms)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(tfPlatforms)))
+                                .addGap(0, 38, Short.MAX_VALUE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnCancel)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cbKiosk)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(btnViewLine1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnViewLine, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnViewLine2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnCancel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(tfStationID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblStationID))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(tfName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblStationName))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblZoneNum)
-                    .addComponent(cmbZoneNum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(tfPlatforms, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblPlatforms)
-                    .addComponent(cbKiosk))
-                .addGap(13, 13, 13)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(tfStationID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblStationID)
+                            .addComponent(lblZoneNum)
+                            .addComponent(cmbZoneNum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(tfName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblStationName)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(28, 28, 28)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(tfPlatforms, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblPlatforms)
+                            .addComponent(cbKiosk))))
+                .addGap(18, 18, 18)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnViewLine)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnViewLine1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnViewLine2)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnSubmit)
                     .addComponent(btnCancel)
-                    .addComponent(btnViewLine))
+                    .addComponent(btnSubmit))
                 .addContainerGap())
         );
 
@@ -174,6 +207,8 @@ public class Station extends MyInternalFrame {
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnSubmit;
     private javax.swing.JButton btnViewLine;
+    private javax.swing.JButton btnViewLine1;
+    private javax.swing.JButton btnViewLine2;
     private javax.swing.JCheckBox cbKiosk;
     private javax.swing.JComboBox cmbZoneNum;
     private javax.swing.JLabel jLabel1;
@@ -200,6 +235,25 @@ public class Station extends MyInternalFrame {
             }
             cmbZoneNum.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
         } catch (SQLException ex) {
+            Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+    
+    private void fillLines() {
+        Statement s;
+        ResultSet rs;
+        try {
+            s = con.createStatement();
+            rs = s.executeQuery("Select * From tblStationInLine As SIL join tblLine As L on SIL.lineName = L.name WHERE SIL.stationID = 9 ");
+            ArrayList<Object[]> rows = new ArrayList();
+            while (rs.next()){
+                Object[] row = {rs.getString("name"),rs.getString("foundedYear"),rs.getString("lineType"),rs.getString("lineLength")};
+                rows.add(row);
+            }
+            MyTableModel tableModel = new MyTableModel(LineColumns, rows, null);
+            tblLines.setModel(tableModel);
+            } catch (SQLException ex) {
             Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
         }
 
