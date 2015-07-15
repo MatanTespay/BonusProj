@@ -5,17 +5,48 @@
  */
 package gui;
 
+import static init.MainClass.con;
+import init.MyTableModel;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JInternalFrame;
+
 /**
  *
  * @author asus
  */
-public class Line extends javax.swing.JInternalFrame {
-
+public class Line extends MyInternalFrame {
+    
+    String lineName = "Bakerloo"; //should be read from the constructor
+    String[] LineColumns = {
+        "ID",
+        "Name",
+        "Platforms",
+        "Kiosk",
+        "Zone"};
+    
     /**
      * Creates new form Line
+     * @param title
+     * @param type
      */
-    public Line() {
+    public Line(String title, String type) {
+        super(title, type);
         initComponents();
+        fillStations();
+        fillFields();
+
+        tblStations.setRowSelectionAllowed(true);
+        tblStations.setColumnSelectionAllowed(false);
+    }
+    
+    public Line(String title, String type, JInternalFrame parent) {
+        this(title, type);
+        this.parent = parent;
     }
 
     /**
@@ -27,32 +58,35 @@ public class Line extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        tfPlatforms = new javax.swing.JTextField();
-        btnViewLine = new javax.swing.JButton();
+        tfLength = new javax.swing.JTextField();
         lblZoneNum = new javax.swing.JLabel();
-        cmbZoneNum = new javax.swing.JComboBox();
-        tfStationID = new javax.swing.JTextField();
+        cmbType = new javax.swing.JComboBox();
+        tfName = new javax.swing.JTextField();
         lblStationID = new javax.swing.JLabel();
         lblStationName = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jLabel1 = new javax.swing.JLabel();
-        tfName = new javax.swing.JTextField();
-        btnSubmit = new javax.swing.JButton();
+        tblStations = new javax.swing.JTable();
+        lblStations = new javax.swing.JLabel();
+        tfFounded = new javax.swing.JTextField();
         lblPlatforms = new javax.swing.JLabel();
-        btnCancel = new javax.swing.JButton();
-
-        btnViewLine.setText("View Line");
+        lblKm = new javax.swing.JLabel();
+        lblColor = new javax.swing.JLabel();
+        tfColor = new javax.swing.JTextField();
+        btnViewStation = new javax.swing.JButton();
+        btnAddStation = new javax.swing.JButton();
+        btnRemoveStation = new javax.swing.JButton();
+        btnSubmit1 = new javax.swing.JButton();
+        btnCancel1 = new javax.swing.JButton();
 
         lblZoneNum.setText("Type");
 
-        cmbZoneNum.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmbType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Underground", "Overground" }));
 
         lblStationID.setText("Line Name");
 
         lblStationName.setText("Founded Year");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblStations.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null},
                 {null, null, null, null, null},
@@ -71,24 +105,44 @@ public class Line extends javax.swing.JInternalFrame {
                 return types [columnIndex];
             }
         });
-        jTable1.setColumnSelectionAllowed(true);
-        jTable1.getTableHeader().setReorderingAllowed(false);
-        jScrollPane1.setViewportView(jTable1);
-        jTable1.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        tblStations.setColumnSelectionAllowed(true);
+        tblStations.getTableHeader().setReorderingAllowed(false);
+        jScrollPane1.setViewportView(tblStations);
+        tblStations.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 
-        jLabel1.setText("Stations:");
+        lblStations.setText("Stations:");
 
-        tfName.addActionListener(new java.awt.event.ActionListener() {
+        tfFounded.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tfNameActionPerformed(evt);
+                tfFoundedActionPerformed(evt);
             }
         });
 
-        btnSubmit.setText("Submit");
-
         lblPlatforms.setText("Length");
 
-        btnCancel.setText("Cancel");
+        lblKm.setText("km");
+
+        lblColor.setText("Color");
+
+        btnViewStation.setText("View Station");
+        btnViewStation.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnViewStationActionPerformed(evt);
+            }
+        });
+
+        btnAddStation.setText("Add Station");
+
+        btnRemoveStation.setText("Remove Station");
+        btnRemoveStation.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoveStationActionPerformed(evt);
+            }
+        });
+
+        btnSubmit1.setText("Submit");
+
+        btnCancel1.setText("Cancel");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -97,88 +151,184 @@ public class Line extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(btnViewLine)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 132, Short.MAX_VALUE)
-                        .addComponent(btnSubmit)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnCancel))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
+                        .addComponent(lblStations)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnSubmit1, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnCancel1, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lblStationID)
+                                    .addComponent(lblStationName)
+                                    .addComponent(lblColor))
+                                .addGap(20, 20, 20)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(tfName, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
+                                    .addComponent(tfColor)
+                                    .addComponent(tfFounded))
+                                .addGap(30, 30, 30)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(lblStationID)
-                                            .addComponent(lblStationName)
-                                            .addComponent(lblZoneNum))
+                                        .addComponent(lblZoneNum)
                                         .addGap(20, 20, 20))
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(lblPlatforms)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(tfPlatforms)
-                                    .addComponent(tfName)
-                                    .addComponent(cmbZoneNum, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(tfStationID))))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(tfLength, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(lblKm))
+                                    .addComponent(cmbType, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(34, 34, 34))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 406, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btnAddStation, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnViewStation, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnRemoveStation, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(tfStationID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblStationID))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(tfName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblStationName))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblZoneNum)
-                    .addComponent(cmbZoneNum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(tfPlatforms, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblPlatforms))
-                .addGap(15, 15, 15)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(tfName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblStationID))
+                        .addGap(29, 29, 29))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(tfColor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lblColor))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblZoneNum)
+                            .addComponent(cmbType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(tfLength, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblPlatforms)
+                            .addComponent(lblKm))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnSubmit)
-                    .addComponent(btnCancel)
-                    .addComponent(btnViewLine))
+                    .addComponent(tfFounded, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblStationName))
+                .addGap(27, 27, 27)
+                .addComponent(lblStations)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnCancel1)
+                            .addComponent(btnSubmit1)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnViewStation)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnAddStation)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnRemoveStation)))
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void tfNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfNameActionPerformed
+    private void tfFoundedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfFoundedActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_tfNameActionPerformed
+    }//GEN-LAST:event_tfFoundedActionPerformed
+
+    private void btnViewStationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewStationActionPerformed
+        String lineName = (String)(tblStations.getModel().getValueAt(tblStations.getSelectedRow(), 0));
+        new Line(evt.getActionCommand(), selectedUserType);
+
+    }//GEN-LAST:event_btnViewStationActionPerformed
+
+    private void btnRemoveStationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveStationActionPerformed
+        PreparedStatement st;
+        int stationId = Integer.valueOf((String)(tblStations.getModel().getValueAt(tblStations.getSelectedRow(), 0)));
+        
+        try {
+            st = con.prepareStatement("DELETE FROM tblStationInLine WHERE "
+                    + "stationID = ? AND  lineName = ?");
+            st.setInt(1,stationId);
+            st.setString(2,lineName);
+            st.executeUpdate();  
+
+            fillStations();
+        } catch (SQLException ex) {
+            Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnRemoveStationActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnCancel;
-    private javax.swing.JButton btnSubmit;
-    private javax.swing.JButton btnViewLine;
-    private javax.swing.JComboBox cmbZoneNum;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JButton btnAddStation;
+    private javax.swing.JButton btnCancel1;
+    private javax.swing.JButton btnRemoveStation;
+    private javax.swing.JButton btnSubmit1;
+    private javax.swing.JButton btnViewStation;
+    private javax.swing.JComboBox cmbType;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JLabel lblColor;
+    private javax.swing.JLabel lblKm;
     private javax.swing.JLabel lblPlatforms;
     private javax.swing.JLabel lblStationID;
     private javax.swing.JLabel lblStationName;
+    private javax.swing.JLabel lblStations;
     private javax.swing.JLabel lblZoneNum;
+    private javax.swing.JTable tblStations;
+    private javax.swing.JTextField tfColor;
+    private javax.swing.JTextField tfFounded;
+    private javax.swing.JTextField tfLength;
     private javax.swing.JTextField tfName;
-    private javax.swing.JTextField tfPlatforms;
-    private javax.swing.JTextField tfStationID;
     // End of variables declaration//GEN-END:variables
+
+    private void fillStations() {
+        PreparedStatement st;
+       ResultSet rs;
+        try {
+             st = con.prepareStatement("Select * From tblStationInLine As SIL join tblStation"
+                    + " As S on SIL.stationID = S.ID WHERE SIL.lineName = ? ");
+             st.setString(1,lineName);
+             rs = st.executeQuery();
+ 
+            ArrayList<Object[]> rows = new ArrayList();
+            while (rs.next()) {
+                Object[] row = {rs.getString("ID"), rs.getString("name"), 
+                    rs.getString("platformNum"),rs.getString("kiosk"), rs.getString("zoneNumber")};
+                rows.add(row);
+            }
+            MyTableModel tableModel = new MyTableModel(LineColumns, rows, null);
+            tblStations.setModel(tableModel);
+        } catch (SQLException ex) {
+            Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void fillFields() {
+        PreparedStatement st;
+        ResultSet rs;
+        try {
+            st = con.prepareStatement("Select * From tblLine As L join tblLineColor "
+                    + "As LC on L.name = LC.lineName WHERE L.name = ?");
+            st.setString(1,lineName);
+            rs = st.executeQuery();
+            
+            rs.next();
+            tfColor.setText(rs.getString(5)/*color name*/);
+            tfFounded.setText(rs.getString("foundedYear"));
+            tfLength.setText(rs.getString("lineLength"));
+            tfName.setText(rs.getString("name"));
+            cmbType.setSelectedItem((rs.getString("lineType").equals("O"))?"Overground":"Underground");
+        } catch (SQLException ex) {
+            Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }

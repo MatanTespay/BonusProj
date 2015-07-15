@@ -8,35 +8,45 @@ package gui;
 import init.ComboItem;
 import static init.MainClass.con;
 import init.MyTableModel;
+import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
+import javax.swing.JDesktopPane;
+import javax.swing.JInternalFrame;
 
 /**
  *
  * @author asus
  */
 public class Station extends MyInternalFrame {
-    
+
+    int stationId = 9; //should be read from constructor
     String[] LineColumns = {
         "Name",
+        "Color",
         "FoundedYear",
-        "LineType",
-        "LineLength"};
-    
+        "Type",
+        "Length"};
+
     /**
      * Creates new form Station2
+     *
+     * @param title
+     * @param type
      */
     public Station(String title, String type) {
-        super(title, type);        
+        super(title, type);
         initComponents();
         fillCBZone();
         fillLines();
+        fillFields();
+
+        tblLines.setRowSelectionAllowed(true);
+        tblLines.setColumnSelectionAllowed(false);
     }
 
     /**
@@ -55,18 +65,23 @@ public class Station extends MyInternalFrame {
         lblStationName = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblLines = new javax.swing.JTable();
-        jLabel1 = new javax.swing.JLabel();
+        lblLines = new javax.swing.JLabel();
         tfName = new javax.swing.JTextField();
         btnSubmit = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
-        btnViewLine1 = new javax.swing.JButton();
-        btnViewLine2 = new javax.swing.JButton();
+        btnAddLine = new javax.swing.JButton();
+        btnRemoveLine = new javax.swing.JButton();
         lblPlatforms = new javax.swing.JLabel();
         lblZoneNum = new javax.swing.JLabel();
         cmbZoneNum = new javax.swing.JComboBox();
         tfPlatforms = new javax.swing.JTextField();
 
         btnViewLine.setText("View Line");
+        btnViewLine.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnViewLineActionPerformed(evt);
+            }
+        });
 
         cbKiosk.setText("Kiosk");
         cbKiosk.addActionListener(new java.awt.event.ActionListener() {
@@ -81,11 +96,20 @@ public class Station extends MyInternalFrame {
 
         lblStationName.setText("Name");
 
+        tblLines.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
         tblLines.setColumnSelectionAllowed(true);
         tblLines.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(tblLines);
+        tblLines.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 
-        jLabel1.setText("Lines:");
+        lblLines.setText("Lines:");
 
         tfName.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -97,9 +121,14 @@ public class Station extends MyInternalFrame {
 
         btnCancel.setText("Cancel");
 
-        btnViewLine1.setText("Add Line");
+        btnAddLine.setText("Add Line");
 
-        btnViewLine2.setText("Remove");
+        btnRemoveLine.setText("Remove Line");
+        btnRemoveLine.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoveLineActionPerformed(evt);
+            }
+        });
 
         lblPlatforms.setText("No. of platforms");
 
@@ -115,7 +144,7 @@ public class Station extends MyInternalFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addComponent(jLabel1)
+                        .addComponent(lblLines)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -141,14 +170,14 @@ public class Station extends MyInternalFrame {
                                         .addComponent(lblPlatforms)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(tfPlatforms)))
-                                .addGap(0, 38, Short.MAX_VALUE)))
+                                .addGap(0, 20, Short.MAX_VALUE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(cbKiosk)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(btnViewLine1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnAddLine, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(btnViewLine, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnViewLine2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnRemoveLine, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(btnCancel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
                 .addContainerGap())
         );
@@ -174,16 +203,16 @@ public class Station extends MyInternalFrame {
                             .addComponent(lblPlatforms)
                             .addComponent(cbKiosk))))
                 .addGap(18, 18, 18)
-                .addComponent(jLabel1)
+                .addComponent(lblLines)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnViewLine)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnViewLine1)
+                        .addComponent(btnAddLine)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnViewLine2)))
+                        .addComponent(btnRemoveLine)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCancel)
@@ -202,17 +231,61 @@ public class Station extends MyInternalFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_tfNameActionPerformed
 
+    private void btnViewLineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewLineActionPerformed
+        String lineName = (String) (tblLines.getModel().getValueAt(tblLines.getSelectedRow(), 0));
+        JDesktopPane desk = this.getDesktopPane();
+
+//        if (desk != null) {
+//            JInternalFrame[] frames = desk.getAllFrames();
+//            for (JInternalFrame frame : frames) {
+//                if (frame.getTitle().equals(title)) {
+//                    MyInternalFrame theFrame = (MyInternalFrame) frame;
+//                    theFrame.changeWindowButtons(false);
+//
+//                    theFrame.setGlassPane(theFrame.getDisabledGlassPane());
+//                    theFrame.getDisabledGlassPane().activate("Please wait");
+//                }
+//            }
+            Line newFrame = new Line(evt.getActionCommand(), selectedUserType);
+            newFrame.setVisible(true);
+            child = newFrame;
+            try {
+                desk.add(child);
+                child.setSelected(true);
+
+            } catch (java.beans.PropertyVetoException e) {
+            }
+//        }
+    }//GEN-LAST:event_btnViewLineActionPerformed
+
+    private void btnRemoveLineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveLineActionPerformed
+        PreparedStatement st;
+        String lineName = (String) (tblLines.getModel().getValueAt(tblLines.getSelectedRow(), 0));
+
+        try {
+            st = con.prepareStatement("DELETE FROM tblStationInLine WHERE "
+                    + "stationID = ? AND  lineName = ?");
+            st.setInt(1, stationId);
+            st.setString(2, lineName);
+            st.executeUpdate();
+
+            fillLines();
+        } catch (SQLException ex) {
+            Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnRemoveLineActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAddLine;
     private javax.swing.JButton btnCancel;
+    private javax.swing.JButton btnRemoveLine;
     private javax.swing.JButton btnSubmit;
     private javax.swing.JButton btnViewLine;
-    private javax.swing.JButton btnViewLine1;
-    private javax.swing.JButton btnViewLine2;
     private javax.swing.JCheckBox cbKiosk;
     private javax.swing.JComboBox cmbZoneNum;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblLines;
     private javax.swing.JLabel lblPlatforms;
     private javax.swing.JLabel lblStationID;
     private javax.swing.JLabel lblStationName;
@@ -237,25 +310,46 @@ public class Station extends MyInternalFrame {
         } catch (SQLException ex) {
             Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
-    
+
     private void fillLines() {
-        Statement s;
+        PreparedStatement st;
         ResultSet rs;
         try {
-            s = con.createStatement();
-            rs = s.executeQuery("Select * From tblStationInLine As SIL join tblLine As L on SIL.lineName = L.name WHERE SIL.stationID = 9 ");
+            st = con.prepareStatement("Select * From tblStationInLine As SIL join tblLine"
+                    + " As L on SIL.lineName = L.name join tblLineColor As LC on L.name"
+                    + " = LC.lineName WHERE SIL.stationID = ? ");
+            st.setInt(1, stationId);
+            rs = st.executeQuery();
             ArrayList<Object[]> rows = new ArrayList();
-            while (rs.next()){
-                Object[] row = {rs.getString("name"),rs.getString("foundedYear"),rs.getString("lineType"),rs.getString("lineLength")};
+            while (rs.next()) {
+                Object[] row = {rs.getString(3)/*line name*/, rs.getString(7)/*line color*/,
+                    rs.getString("foundedYear"), rs.getString("lineType"), rs.getString("lineLength")};
                 rows.add(row);
             }
             MyTableModel tableModel = new MyTableModel(LineColumns, rows, null);
             tblLines.setModel(tableModel);
-            } catch (SQLException ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
 
+    private void fillFields() {
+        PreparedStatement st;
+        ResultSet rs;
+        try {
+            st = con.prepareStatement("Select * From tblStation As S WHERE S.ID = ?");
+            st.setInt(1, stationId);
+            rs = st.executeQuery();
+
+            rs.next();
+            tfName.setText(rs.getString("name"));
+            tfPlatforms.setText(rs.getString("platformNum"));
+            tfStationID.setText(rs.getString("ID"));
+            cbKiosk.setSelected(!(rs.getString("Kiosk").equals("0")));
+            cmbZoneNum.setSelectedItem(rs.getString("zoneNumber"));
+        } catch (SQLException ex) {
+            Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }
