@@ -168,4 +168,29 @@ public class MyInternalFrame extends JInternalFrame {
         MainClass.setIsIflySaved(state);
     }
 
+    public void openChildFrame(MyInternalFrame child){
+        JDesktopPane desk = this.getDesktopPane();
+
+        if (desk != null) {
+            JInternalFrame[] frames = desk.getAllFrames();
+            for (JInternalFrame frame : frames) {
+                if (frame.getTitle().equals(title)) {
+                    MyInternalFrame theFrame = (MyInternalFrame) frame;
+                    theFrame.changeWindowButtons(false);
+
+                    theFrame.setGlassPane(theFrame.getDisabledGlassPane());
+                    theFrame.getDisabledGlassPane().activate("Please wait");
+                }
+            }
+
+            child.setVisible(true);
+            this.child = child;
+            try {
+                desk.add(child);
+                child.setSelected(true);
+
+            } catch (java.beans.PropertyVetoException ex) {
+            }
+        }
+    }
 }

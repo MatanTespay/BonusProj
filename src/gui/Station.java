@@ -18,6 +18,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JDesktopPane;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JInternalFrame;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.TableModel;
+
 /**
  *
  * @author asus
@@ -60,6 +67,25 @@ public class Station extends MyInternalFrame {
             tblLines.setRowSelectionAllowed(true);
             tblLines.setColumnSelectionAllowed(false);
         }
+
+        //<editor-fold defaultstate="collapsed" desc="listen to row selection">
+        ListSelectionModel selectionModel = tblLines.getSelectionModel();
+        selectionModel.addListSelectionListener(new ListSelectionListener() {
+            
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) {
+                    btnViewLine.setEnabled(true);
+                    btnRemoveLine.setEnabled(true);
+                }
+            }
+        });
+    //</editor-fold>
+    }
+
+    public Station(String title, String type, int stationID, JInternalFrame parent) {
+        this(title, type, stationID);
+        this.parent = parent;
     }
 
     /**
@@ -258,30 +284,9 @@ public class Station extends MyInternalFrame {
 
     private void btnViewLineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewLineActionPerformed
         String lineName = (String) (tblLines.getModel().getValueAt(tblLines.getSelectedRow(), 0));
-        JDesktopPane desk = this.getDesktopPane();
+        Line newFrame = new Line(evt.getActionCommand(), selectedUserType, lineName, this);
+        this.openChildFrame(newFrame);
 
-//        if (desk != null) {
-//            JInternalFrame[] frames = desk.getAllFrames();
-//            for (JInternalFrame frame : frames) {
-//                if (frame.getTitle().equals(title)) {
-//                    MyInternalFrame theFrame = (MyInternalFrame) frame;
-//                    theFrame.changeWindowButtons(false);
-//
-//                    theFrame.setGlassPane(theFrame.getDisabledGlassPane());
-//                    theFrame.getDisabledGlassPane().activate("Please wait");
-//                }
-//            }
-        Line newFrame = new Line(evt.getActionCommand(), selectedUserType, lineName);
-
-        newFrame.setVisible(true);
-        child = newFrame;
-        try {
-            desk.add(child);
-            child.setSelected(true);
-
-        } catch (java.beans.PropertyVetoException ex) {
-        }
-//        }
     }//GEN-LAST:event_btnViewLineActionPerformed
 
     private void btnRemoveLineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveLineActionPerformed
@@ -297,7 +302,7 @@ public class Station extends MyInternalFrame {
 
             fillLines();
             ComboItem itemToAdd = new ComboItem(lineName, lineName);
-            ((DefaultComboBoxModel)cmbLines.getModel()).addElement(itemToAdd);
+            ((DefaultComboBoxModel) cmbLines.getModel()).addElement(itemToAdd);
             /*needs to be sorted*/
         } catch (SQLException ex) {
             Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
@@ -316,7 +321,7 @@ public class Station extends MyInternalFrame {
             fillLines();
 
             int chosenRow = cmbLines.getSelectedIndex();
-            ((DefaultComboBoxModel)cmbLines.getModel()).removeElementAt(chosenRow);
+            ((DefaultComboBoxModel) cmbLines.getModel()).removeElementAt(chosenRow);
         } catch (SQLException | NullPointerException ex) {
 //            Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -431,4 +436,6 @@ public class Station extends MyInternalFrame {
                     .getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+
 }

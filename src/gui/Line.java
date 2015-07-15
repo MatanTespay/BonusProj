@@ -274,16 +274,18 @@ public class Line extends MyInternalFrame {
 
     private void btnViewStationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewStationActionPerformed
         int stationID = Integer.valueOf((String) (tblStations.getModel().getValueAt(tblStations.getSelectedRow(), 0)));
-        JDesktopPane desk = this.getDesktopPane();
-        Station newFrame = new Station(evt.getActionCommand(), selectedUserType, stationID);
-        newFrame.setVisible(true);
-        child = newFrame;
-        try {
-            desk.add(child);
-            child.setSelected(true);
-
-        } catch (java.beans.PropertyVetoException ex) {
-        }
+        Station newFrame = new Station(evt.getActionCommand(), selectedUserType, stationID,this);
+        openChildFrame(newFrame);
+        //JDesktopPane desk = this.getDesktopPane();
+//        Station newFrame = new Station(evt.getActionCommand(), selectedUserType, stationID);
+//        newFrame.setVisible(true);
+//        child = newFrame;
+//        try {
+//            desk.add(child);
+//            child.setSelected(true);
+//
+//        } catch (java.beans.PropertyVetoException ex) {
+//        }
     }//GEN-LAST:event_btnViewStationActionPerformed
 
     private void btnRemoveStationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveStationActionPerformed
