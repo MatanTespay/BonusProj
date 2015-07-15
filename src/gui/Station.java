@@ -4,7 +4,6 @@
  * and open the template in the editor.
  */
 package gui;
-
 import init.ComboItem;
 import static init.MainClass.con;
 import init.MyTableModel;
@@ -23,7 +22,7 @@ import javax.swing.JDesktopPane;
  */
 public class Station extends MyInternalFrame {
 
-    int stationId = 9; //should be read from constructor
+    int stationID;
     String[] LineColumns = {
         "Name",
         "Color",
@@ -37,8 +36,9 @@ public class Station extends MyInternalFrame {
      * @param title
      * @param type
      */
-    public Station(String title, String type) {
-        super(title, type, null);
+    public Station(String title, String type, Integer stationID) {
+        super(title, type);
+        this.stationID = stationID.intValue();
         initComponents();
         fillCBZone();
         fillLines();
@@ -245,15 +245,17 @@ public class Station extends MyInternalFrame {
 //                    theFrame.getDisabledGlassPane().activate("Please wait");
 //                }
 //            }
-            Line newFrame = new Line(evt.getActionCommand(), selectedUserType);
+       
+            Line newFrame = new Line(evt.getActionCommand(), selectedUserType, lineName);
+
             newFrame.setVisible(true);
             child = newFrame;
-            try {
-                desk.add(child);
-                child.setSelected(true);
+         try {
+            desk.add(child);
+            child.setSelected(true);
 
-            } catch (java.beans.PropertyVetoException e) {
-            }
+        } catch (java.beans.PropertyVetoException ex) {
+        }
 //        }
     }//GEN-LAST:event_btnViewLineActionPerformed
 
@@ -264,7 +266,7 @@ public class Station extends MyInternalFrame {
         try {
             st = con.prepareStatement("DELETE FROM tblStationInLine WHERE "
                     + "stationID = ? AND  lineName = ?");
-            st.setInt(1, stationId);
+            st.setInt(1, stationID);
             st.setString(2, lineName);
             st.executeUpdate();
 
@@ -318,7 +320,7 @@ public class Station extends MyInternalFrame {
             st = con.prepareStatement("Select * From tblStationInLine As SIL join tblLine"
                     + " As L on SIL.lineName = L.name join tblLineColor As LC on L.name"
                     + " = LC.lineName WHERE SIL.stationID = ? ");
-            st.setInt(1, stationId);
+            st.setInt(1, stationID);
             rs = st.executeQuery();
             ArrayList<Object[]> rows = new ArrayList();
             while (rs.next()) {
@@ -338,7 +340,7 @@ public class Station extends MyInternalFrame {
         ResultSet rs;
         try {
             st = con.prepareStatement("Select * From tblStation As S WHERE S.ID = ?");
-            st.setInt(1, stationId);
+            st.setInt(1, stationID);
             rs = st.executeQuery();
 
             rs.next();
