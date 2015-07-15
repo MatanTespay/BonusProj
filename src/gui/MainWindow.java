@@ -103,7 +103,8 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
                 //Agents
                 submenu = addMenuToMenuBar("Employees   ", KeyEvent.VK_F);
                 addMenuItem(submenu, "Add Station", KeyEvent.VK_A);
-                addMenuItem(submenu, "Add Flight Attendant", KeyEvent.VK_F);
+                //addMenuItem(submenu, "Add Flight Attendant", KeyEvent.VK_F);
+                addMenuItem(submenu, "Add User", KeyEvent.VK_F);
                 addMenuItem(submenu, "Add Pilot", KeyEvent.VK_P);
                 aMenu.add(submenu);
                 aMenu.addSeparator();
@@ -236,7 +237,11 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
             case "Add Station":
                 ifram = new Station(e.getActionCommand(), selectedUserType);
                 break;
-            case "Add Flight Attendant":
+            //case "Add Flight Attendant":
+            case "Add User":
+                ifram = new Users(e.getActionCommand(), selectedUserType);
+                break;
+                //Add User
             case "Add Pilot":
                 ifram = new AddEmployee(e.getActionCommand(), selectedUserType);
 
