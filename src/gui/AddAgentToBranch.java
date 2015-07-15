@@ -31,7 +31,7 @@ public class AddAgentToBranch extends MyInternalFrame {
      * @param type
      */
     public AddAgentToBranch(String title, String type) {
-        super(title, type);
+        super(title, type, null);
         initComponents();
         fillCbAgents();
         btnOk.setToolTipText(utils.Constants.saveButtonToolTip);

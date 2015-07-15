@@ -35,7 +35,7 @@ public class Line extends MyInternalFrame {
      * @param type
      */
     public Line(String title, String type) {
-        super(title, type);
+        super(title, type, null);
         initComponents();
         fillStations();
         fillFields();

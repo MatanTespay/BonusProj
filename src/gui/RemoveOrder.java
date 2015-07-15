@@ -32,7 +32,7 @@ public class RemoveOrder extends MyInternalFrame {
      * @param type
      */
     public RemoveOrder(String title, String type) {
-        super(title, type);
+        super(title, type, null);
         initComponents();
         fillOrders();
         btnOk.setToolTipText(utils.Constants.saveButtonToolTip);

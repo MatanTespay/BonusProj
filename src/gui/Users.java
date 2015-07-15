@@ -42,7 +42,7 @@ public class Users extends MyInternalFrame {
      * @param type
      */
     public Users(String title, String type) {
-        super(title, type);
+        super(title, type, null);
         initComponents();
         fillCbUserType();
         FillUsersTable();

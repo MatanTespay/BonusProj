@@ -58,7 +58,7 @@ public class AddFlightOrder extends MyInternalFrame {
      * @param type
      */
     public AddFlightOrder(String title, String type) {
-        super(title, type);
+        super(title, type, null);
         initComponents();
         fillCbAirports();
         btnOk.setToolTipText(utils.Constants.saveButtonToolTip);

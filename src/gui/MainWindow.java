@@ -40,7 +40,9 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     /**
      * Creates new form MainWindow
      *
+     * @param Title
      * @param userType
+     * @param log
      */
     public MainWindow(String Title, String userType, Login log) {
         super(Title);

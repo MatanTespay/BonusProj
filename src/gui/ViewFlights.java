@@ -43,7 +43,7 @@ public class ViewFlights extends MyInternalFrame {
      * Creates new form FlightView
      */
     public ViewFlights(String title, String type) {
-        super(title, type);
+        super(title, type, null);
         initComponents();
         fillCbAirports();
         lblNOFlights.setVisible(false);

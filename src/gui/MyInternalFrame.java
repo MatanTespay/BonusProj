@@ -30,7 +30,13 @@ public class MyInternalFrame extends JInternalFrame {
     JInternalFrame parent;
     JInternalFrame child;
 
-    public MyInternalFrame(String title, String userType) {
+    /**
+     *
+     * @param title the value of title
+     * @param userType the value of userType
+     * @param key the value of key
+     */
+    public MyInternalFrame(String title, String userType, Object key) {
 
         super(title,
                 true, //resizable

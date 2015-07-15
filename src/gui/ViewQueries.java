@@ -88,7 +88,7 @@ public class ViewQueries extends MyInternalFrame {
 	 */
 	public ViewQueries(String title, String type) {
 
-		super(title, type);
+		super(title, type, null);
 
 		// initComponents();
 		model = new MyTableModel(new String[] {});
@@ -106,7 +106,7 @@ public class ViewQueries extends MyInternalFrame {
 	public ViewQueries(String title, String type, JInternalFrame parent,
 			int number) {
 
-		super(title, type);
+		super(title, type, null);
 		this.parent = parent;
 		// initComponents();
 		model = new MyTableModel(new String[] {});

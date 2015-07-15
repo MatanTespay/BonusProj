@@ -30,7 +30,7 @@ public class addPilotOrFlightAttendantToFlight extends MyInternalFrame {
      * @param type
      */
     public addPilotOrFlightAttendantToFlight(String title, String type) {
-        super(title, type);
+        super(title, type, null);
         initComponents();
         if (title.equals("Add FlightAttendant To Flight")) {
             cbPilots.setVisible(false);

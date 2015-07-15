@@ -40,7 +40,7 @@ public class ViewTickets extends MyInternalFrame {
      * @param type
      */
     public ViewTickets(String title, String type) {
-        super(title, type);
+        super(title, type, null);
         //initComponents();        
         initCustComponents();
         if (selectedUserType.equals("Customer")) {

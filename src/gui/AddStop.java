@@ -32,7 +32,7 @@ public class AddStop extends MyInternalFrame {
      * @param type
      */
     public AddStop(String title, String type) {
-        super(title, type);
+        super(title, type, null);
         initComponents();
         fillFlightsCombo();
         btnOk.setToolTipText(utils.Constants.saveButtonToolTip);

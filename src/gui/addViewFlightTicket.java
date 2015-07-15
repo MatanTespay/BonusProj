@@ -49,7 +49,7 @@ public class addViewFlightTicket extends MyInternalFrame {
      * @param type
      */
     public addViewFlightTicket(String title, String type) {
-        super(title, type);
+        super(title, type, null);
         initComponents();
         initData();
 
@@ -67,7 +67,7 @@ public class addViewFlightTicket extends MyInternalFrame {
      */
     public addViewFlightTicket(String title, String type,
             JInternalFrame parent, int fligthNumber, int orderNumber, String customerNumber) {
-        super(title, type);
+        super(title, type, null);
         initComponents();
         this.parent = parent;
         this.fligthNumber = fligthNumber;

@@ -39,7 +39,7 @@ public class AddFlight extends MyInternalFrame {
 	 * @param type
 	 */
 	public AddFlight(String title, String type) {
-		super(title, type);
+		super(title, type, null);
 		initComponents();
 		fillCbAirports();
 		fillAirplaines(null);

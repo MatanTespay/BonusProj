@@ -36,7 +36,7 @@ public class UpdateCustomerDetails extends MyInternalFrame implements MethodInte
      * Creates new form UpdateCustomerDetails
      */
     public UpdateCustomerDetails(String title, String type) {
-        super(title, type);
+        super(title, type, null);
         initComponents();
         
         fillData();
