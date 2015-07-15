@@ -44,7 +44,7 @@ public class AddCustomer extends MyInternalFrame {
      * @param type
      */
     public AddCustomer(String title, String type) {
-        super(title, type, null);
+        super(title, type);
         initComponents();
         setLables();
         jdBirthDate.setMaxSelectableDate(new Date());

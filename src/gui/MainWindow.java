@@ -4,7 +4,6 @@
  * and open the template in the editor.
  */
 package gui;
-
 import init.CloseAction;
 import init.MainClass;
 
@@ -222,7 +221,6 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         //JOptionPane.showInternalConfirmDialog(null, e.getSource().getClass().toString());
-
         MyInternalFrame ifram = new MyInternalFrame();
         switch (e.getActionCommand()) {
 
@@ -238,7 +236,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 
                 break;
             case "Add Station":
-                ifram = new Station(e.getActionCommand(), selectedUserType);
+                ifram = new Station(e.getActionCommand(), selectedUserType, 9);
                 break;
             //case "Add Flight Attendant":
             case "Add User":
@@ -246,7 +244,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
                 break;
                 //Add User
             case "Add Line":
-                ifram = new Line(e.getActionCommand(), selectedUserType);
+                ifram = new Line(e.getActionCommand(), selectedUserType, null);
                 break;
             case "Add Pilot":
                 ifram = new AddEmployee(e.getActionCommand(), selectedUserType);
@@ -310,8 +308,8 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
                 break;
 
         }
-
         createFrame(ifram);
+        
 
     }
 

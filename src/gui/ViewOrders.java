@@ -46,7 +46,7 @@ public class ViewOrders extends MyInternalFrame {
      * @param type
      */
     public ViewOrders(String title, String type) {
-        super(title, type, null);
+        super(title, type);
         if (selectedUserType.equals("Admin")) {
             initComponents();
             fillAgentCombo();

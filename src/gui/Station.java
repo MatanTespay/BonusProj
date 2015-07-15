@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package gui;
+
 import init.ComboItem;
 import static init.MainClass.con;
 import init.MyTableModel;
@@ -12,10 +13,11 @@ import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JDesktopPane;
-
+import javax.swing.DefaultComboBoxModel;
 /**
  *
  * @author asus
@@ -36,16 +38,28 @@ public class Station extends MyInternalFrame {
      * @param title
      * @param type
      */
-    public Station(String title, String type, Integer stationID) {
+    public Station(String title, String type, int stationID) {
         super(title, type);
-        this.stationID = stationID.intValue();
+        this.stationID = stationID;
         initComponents();
-        fillCBZone();
-        fillLines();
-        fillFields();
+        fillCmbZone();
 
-        tblLines.setRowSelectionAllowed(true);
-        tblLines.setColumnSelectionAllowed(false);
+        boolean isViewable = (stationID != 0);
+        lblLines.setVisible(isViewable);
+        tblLines.setVisible(isViewable);
+        btnViewLine.setVisible(isViewable);
+        lblAddLine.setVisible(isViewable);
+        cmbLines.setVisible(isViewable);
+        btnRemoveLine.setVisible(isViewable);
+
+        if (stationID != 0) {
+            fillLines();
+            fillFields();
+            fillCmbLines();
+            cmbLines.setSelectedIndex(0);
+            tblLines.setRowSelectionAllowed(true);
+            tblLines.setColumnSelectionAllowed(false);
+        }
     }
 
     /**
@@ -68,12 +82,13 @@ public class Station extends MyInternalFrame {
         tfName = new javax.swing.JTextField();
         btnSubmit = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
-        btnAddLine = new javax.swing.JButton();
         btnRemoveLine = new javax.swing.JButton();
         lblPlatforms = new javax.swing.JLabel();
         lblZoneNum = new javax.swing.JLabel();
         cmbZoneNum = new javax.swing.JComboBox();
         tfPlatforms = new javax.swing.JTextField();
+        cmbLines = new javax.swing.JComboBox();
+        lblAddLine = new javax.swing.JLabel();
 
         btnViewLine.setText("View Line");
         btnViewLine.addActionListener(new java.awt.event.ActionListener() {
@@ -120,8 +135,6 @@ public class Station extends MyInternalFrame {
 
         btnCancel.setText("Cancel");
 
-        btnAddLine.setText("Add Line");
-
         btnRemoveLine.setText("Remove Line");
         btnRemoveLine.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -134,6 +147,15 @@ public class Station extends MyInternalFrame {
         lblZoneNum.setText("Zone Number");
 
         cmbZoneNum.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        cmbLines.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmbLines.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbLinesActionPerformed(evt);
+            }
+        });
+
+        lblAddLine.setText("Add");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -171,13 +193,15 @@ public class Station extends MyInternalFrame {
                                         .addComponent(tfPlatforms)))
                                 .addGap(0, 20, Short.MAX_VALUE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(cbKiosk)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(btnAddLine, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnViewLine, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnRemoveLine, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnCancel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                            .addComponent(btnViewLine, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnRemoveLine, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnCancel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lblAddLine)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(cmbLines, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -208,11 +232,13 @@ public class Station extends MyInternalFrame {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnViewLine)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnAddLine)
+                        .addGap(10, 10, 10)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(cmbLines, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblAddLine))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnRemoveLine)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCancel)
                     .addComponent(btnSubmit))
@@ -245,12 +271,11 @@ public class Station extends MyInternalFrame {
 //                    theFrame.getDisabledGlassPane().activate("Please wait");
 //                }
 //            }
-       
-            Line newFrame = new Line(evt.getActionCommand(), selectedUserType, lineName);
+        Line newFrame = new Line(evt.getActionCommand(), selectedUserType, lineName);
 
-            newFrame.setVisible(true);
-            child = newFrame;
-         try {
+        newFrame.setVisible(true);
+        child = newFrame;
+        try {
             desk.add(child);
             child.setSelected(true);
 
@@ -271,21 +296,43 @@ public class Station extends MyInternalFrame {
             st.executeUpdate();
 
             fillLines();
+            ComboItem itemToAdd = new ComboItem(lineName, lineName);
+            ((DefaultComboBoxModel)cmbLines.getModel()).addElement(itemToAdd);
+            /*needs to be sorted*/
         } catch (SQLException ex) {
             Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnRemoveLineActionPerformed
 
+    private void cmbLinesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbLinesActionPerformed
+        try {
+            PreparedStatement st;
+            String lineName = (String) ((ComboItem) cmbLines.getModel().getSelectedItem()).getLabel();
+
+            st = con.prepareStatement("INSERT INTO tblStationInLine VALUES (?,?)");
+            st.setInt(1, stationID);
+            st.setString(2, lineName);
+            st.executeUpdate();
+            fillLines();
+
+            int chosenRow = cmbLines.getSelectedIndex();
+            ((DefaultComboBoxModel)cmbLines.getModel()).removeElementAt(chosenRow);
+        } catch (SQLException | NullPointerException ex) {
+//            Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_cmbLinesActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAddLine;
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnRemoveLine;
     private javax.swing.JButton btnSubmit;
     private javax.swing.JButton btnViewLine;
     private javax.swing.JCheckBox cbKiosk;
+    private javax.swing.JComboBox cmbLines;
     private javax.swing.JComboBox cmbZoneNum;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblAddLine;
     private javax.swing.JLabel lblLines;
     private javax.swing.JLabel lblPlatforms;
     private javax.swing.JLabel lblStationID;
@@ -297,7 +344,7 @@ public class Station extends MyInternalFrame {
     private javax.swing.JTextField tfStationID;
     // End of variables declaration//GEN-END:variables
 
-    private void fillCBZone() {
+    private void fillCmbZone() {
         Statement s;
         ResultSet rs;
         try {
@@ -308,6 +355,33 @@ public class Station extends MyInternalFrame {
                 items.add(new ComboItem(rs.getString("number"), rs.getString("number")));
             }
             cmbZoneNum.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
+        } catch (SQLException ex) {
+            Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void fillCmbLines() {
+        Statement s;
+        ResultSet rs;
+
+        ArrayList<String> tableItems = new ArrayList<>();
+        for (int row = 0; row < tblLines.getModel().getRowCount(); row++) {
+            tableItems.add((String) tblLines.getModel().getValueAt(row, 0));
+        }
+
+        try {
+            s = con.createStatement();
+            rs = s.executeQuery("Select * From tblLine");
+            ArrayList<ComboItem> items = new ArrayList<>();
+            while (rs.next()) {
+                if (!tableItems.contains(rs.getString("name"))) {
+                    items.add(new ComboItem(rs.getString("name"), rs.getString("name")));
+                }
+            }
+            Collections.sort(items, (ComboItem i1, ComboItem i2)
+                    -> ((ComboItem) i1).getLabel().compareTo(((ComboItem) i2).getLabel()));
+            items.add(0, null);
+            cmbLines.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
         } catch (SQLException ex) {
             Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -330,8 +404,10 @@ public class Station extends MyInternalFrame {
             }
             MyTableModel tableModel = new MyTableModel(LineColumns, rows, null);
             tblLines.setModel(tableModel);
+
         } catch (SQLException ex) {
-            Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Station.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -349,8 +425,10 @@ public class Station extends MyInternalFrame {
             tfStationID.setText(rs.getString("ID"));
             cbKiosk.setSelected(!(rs.getString("Kiosk").equals("0")));
             cmbZoneNum.setSelectedItem(rs.getString("zoneNumber"));
+
         } catch (SQLException ex) {
-            Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Station.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

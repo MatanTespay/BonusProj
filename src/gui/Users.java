@@ -16,7 +16,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JLabel;
@@ -42,7 +41,7 @@ public class Users extends MyInternalFrame {
      * @param type
      */
     public Users(String title, String type) {
-        super(title, type, null);
+        super(title, type);
         initComponents();
         fillCbUserType();
         FillUsersTable();

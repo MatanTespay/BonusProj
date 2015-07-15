@@ -8,7 +8,6 @@ package gui;
 import init.MainClass;
 
 import java.util.AbstractMap;
-
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
@@ -29,14 +28,12 @@ public class MyInternalFrame extends JInternalFrame {
     DisabledGlassPane glassPane;
     JInternalFrame parent;
     JInternalFrame child;
-
     /**
      *
      * @param title the value of title
      * @param userType the value of userType
-     * @param key the value of key
      */
-    public MyInternalFrame(String title, String userType, Object key) {
+    public MyInternalFrame(String title, String userType) {
 
         super(title,
                 true, //resizable

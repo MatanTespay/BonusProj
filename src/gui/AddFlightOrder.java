@@ -58,7 +58,7 @@ public class AddFlightOrder extends MyInternalFrame {
      * @param type
      */
     public AddFlightOrder(String title, String type) {
-        super(title, type, null);
+        super(title, type);
         initComponents();
         fillCbAirports();
         btnOk.setToolTipText(utils.Constants.saveButtonToolTip);
@@ -174,8 +174,7 @@ public class AddFlightOrder extends MyInternalFrame {
         jLabel2.setText("Select Destination:");
 
         cbSource.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbSourceActionPerformed(evt);
             }
         });
@@ -184,8 +183,7 @@ public class AddFlightOrder extends MyInternalFrame {
 
         btnSearch.setText("Search");
         btnSearch.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSearchActionPerformed(evt);
             }
         });
@@ -196,8 +194,7 @@ public class AddFlightOrder extends MyInternalFrame {
 
         jdateFrom.setDateFormatString("dd/MM/yyyy");
         jdateFrom.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            @Override
-			public void propertyChange(java.beans.PropertyChangeEvent evt) {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 jdateFromPropertyChange(evt);
             }
         });
@@ -209,8 +206,7 @@ public class AddFlightOrder extends MyInternalFrame {
 
         ckbFilterDates.setText("Filter Dates");
         ckbFilterDates.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 ckbFilterDatesActionPerformed(evt);
             }
         });
@@ -295,15 +291,14 @@ public class AddFlightOrder extends MyInternalFrame {
                     .addComponent(btnSearch))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(16, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jLabel5.setText("Order number:");
 
         btnOk.setText("Submit");
         btnOk.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnOkActionPerformed(evt);
             }
         });
@@ -313,16 +308,14 @@ public class AddFlightOrder extends MyInternalFrame {
         lblCustomer.setText("Select cutomer:");
 
         cbCustomers.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbCustomersActionPerformed(evt);
             }
         });
 
         btnAddTicket.setText("Add ticket");
         btnAddTicket.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAddTicketActionPerformed(evt);
             }
         });
@@ -330,8 +323,7 @@ public class AddFlightOrder extends MyInternalFrame {
         jLabel3.setText("Selet order:");
 
         cbOrders.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbOrdersActionPerformed(evt);
             }
         });
@@ -339,8 +331,7 @@ public class AddFlightOrder extends MyInternalFrame {
         buttonGroup1.add(rbSelectOrder);
         rbSelectOrder.setText("Existing order");
         rbSelectOrder.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 rbSelectOrderActionPerformed(evt);
             }
         });
@@ -348,8 +339,7 @@ public class AddFlightOrder extends MyInternalFrame {
         buttonGroup1.add(rbNewOrder);
         rbNewOrder.setText("New");
         rbNewOrder.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 rbNewOrderActionPerformed(evt);
             }
         });
@@ -357,8 +347,7 @@ public class AddFlightOrder extends MyInternalFrame {
         btnFlightBack.setText("Best flight back");
         btnFlightBack.setEnabled(false);
         btnFlightBack.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnFlightBackActionPerformed(evt);
             }
         });
@@ -425,13 +414,14 @@ public class AddFlightOrder extends MyInternalFrame {
                             .addComponent(jLabel5)
                             .addComponent(txtOrderNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
-                        .addGroup(actionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel3)
-                            .addComponent(cbOrders, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(actionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(actionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(btnOk)
                                 .addComponent(btnAddTicket)
-                                .addComponent(btnFlightBack)))))
+                                .addComponent(btnFlightBack))
+                            .addGroup(actionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel3)
+                                .addComponent(cbOrders, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap(52, Short.MAX_VALUE))
         );
 
@@ -443,8 +433,8 @@ public class AddFlightOrder extends MyInternalFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(actionPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 531, Short.MAX_VALUE))
-                .addContainerGap(21, Short.MAX_VALUE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 561, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

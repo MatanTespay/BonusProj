@@ -50,7 +50,7 @@ public class UpdatePayingCustomer extends MyInternalFrame implements MethodInter
      * Creates new form UpdatePayingCustomer
      */
     public UpdatePayingCustomer(String title, String type) {
-        super(title, type, null);
+        super(title, type);
         initComponents();
         cbOrders.setVisible(false);
         txtselectOrder.setVisible(false);

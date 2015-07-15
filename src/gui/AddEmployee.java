@@ -41,7 +41,7 @@ public class AddEmployee extends MyInternalFrame {
      * @param type
      */
     public AddEmployee(String title, String type) {
-        super(title, type, null);
+        super(title, type);
         initComponents();
         setEmpChoice(title);
         setLables();

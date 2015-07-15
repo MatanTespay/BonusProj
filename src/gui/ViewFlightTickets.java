@@ -70,7 +70,7 @@ public class ViewFlightTickets extends MyInternalFrame {
      * @param c
      */
     public ViewFlightTickets(String title, String type, JInternalFrame parent, Flight flight, int order, String c) {
-        super(title, type, null);
+        super(title, type);
 
         this.flight = flight;
         this.parent = parent;
