@@ -9,15 +9,20 @@ package gui;
  *
  * @author asus
  */
-public class Site extends javax.swing.JInternalFrame {
-
+public class Site extends MyInternalFrame {
+    
+    int siteID;
     /**
      * Creates new form Site
+     * @param title
+     * @param type
+     * @param siteID
      */
-    public Site() {
+    public Site (String title, String type, int siteID) {
+        super(title, type);
+        this.siteID = siteID;
         initComponents();
     }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
