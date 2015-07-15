@@ -38,15 +38,16 @@ import core.Order;
 import core.Pilot;
 
 /**
- *The class provide helper functions used in the the system
-
-* @author Matan
-
+ * The class provide helper functions used in the the system
+ *
+ * @author Matan
+ *
  */
 public class HelperClass {
 
     /**
      * validates if the value is only number
+     *
      * @param s the value to validate
      * @return true if value is number ; false otherwise
      */
@@ -60,7 +61,9 @@ public class HelperClass {
     }
 
     /**
-     * validates if the value is only 7 digit number, used in {@link gui.PhonePanel}}
+     * validates if the value is only 7 digit number, used in
+     * {@link gui.PhonePanel}}
+     *
      * @param s the value to validate
      * @return true if value is ok ; false otherwise
      */
@@ -77,6 +80,7 @@ public class HelperClass {
 
     /**
      * validates if the value is only letters , used in {@link gui.PhonePanel}}
+     *
      * @param s the value to validate
      * @return true if value is ok ; false otherwise
      */
@@ -94,7 +98,7 @@ public class HelperClass {
 
     /**
      * validates if the value is date
- 
+     *
      * @param dateToValidate value to validate
      * @param dateFromat date
      * @return true if value is date, otherwise false
@@ -120,7 +124,7 @@ public class HelperClass {
 
     /**
      * validates if the value is email
-
+     *
      * @return true if value is ok ; false otherwise
      * @param text value to validate
      * @return true if it's email otherwise false
@@ -138,10 +142,12 @@ public class HelperClass {
     }
 
     /**
-     *get the error messgae , if any, after validation complete.
+     * get the error messgae , if any, after validation complete.
+     *
      * @param text the value to validate
      * @param type the validation type performed
-     * @return a message error if any error occurred, null if value passed validtion 
+     * @return a message error if any error occurred, null if value passed
+     * validtion
      */
     public static String getErrMsg(String text, String type) {
         String s = null;
@@ -178,6 +184,13 @@ public class HelperClass {
                             s = "Invlid Email address";
                         }
                         break;
+                    case "Password":
+                        if (text.length() < 4) {
+                            return null;
+                        } else {
+                            s = "Minimum 4 characters";
+                        }
+                        break;
                 }
 
                 return s;
@@ -189,9 +202,9 @@ public class HelperClass {
     }
 
     /**
-     *get the table rows data.
+     * get the table rows data.
      *
-     * @param table the table 
+     * @param table the table
      * @return returns the table data
      */
     public static Object[][] getTableData(JTable table) {
@@ -215,7 +228,8 @@ public class HelperClass {
 
     /**
      * fill branches combobox
-    * @param frame the parent frame of the comBoBox
+     *
+     * @param frame the parent frame of the comBoBox
      * @param combo the comBoBox to fill
      * @param branchToRemove ,if given , exclude this branch
      */
@@ -253,9 +267,11 @@ public class HelperClass {
 
     /**
      * fill orders combobox
+     *
      * @param frame the parent frame of the comBoBox
      * @param combo the combcomBoBoxobox to fill
-     * @param owner ,if given , fill comBoBox with the owner's orders, otherwise fill all orders
+     * @param owner ,if given , fill comBoBox with the owner's orders, otherwise
+     * fill all orders
      */
     public static void fillOrdersCombo(JInternalFrame frame, JComboBox combo, Object owner) {
 
@@ -301,6 +317,7 @@ public class HelperClass {
 
     /**
      * fill airport combobox
+     *
      * @param frame the parent frame of the comBoBox
      * @param combo the comBoBox to fill
      * @param airPortToRemove ,if given , exclude this airport
@@ -330,7 +347,8 @@ public class HelperClass {
 
     /**
      * fill flights combobox
-    * @param frame the parent frame of the comBoBox
+     *
+     * @param frame the parent frame of the comBoBox
      * @param combo the comBoBox to fill
      * @param fillterFlights ,if given , exclude flights having 2 pilots
      */
@@ -350,8 +368,8 @@ public class HelperClass {
                 }
 
                 Integer integer = entry.getKey();
-               
-                ComboItem item = new ComboItem("" + integer + "","" + integer + "");
+
+                ComboItem item = new ComboItem("" + integer + "", "" + integer + "");
                 tempData.add(item);
             }
             ComboItem[] items = tempData.toArray(new ComboItem[tempData.size()]);
@@ -366,6 +384,7 @@ public class HelperClass {
 
     /**
      * fill pilots combobox
+     *
      * @param frame the parent frame of the comBoBox
      * @param pilotsCombo the comBoBox to fill
      * @param flight
@@ -400,9 +419,10 @@ public class HelperClass {
 
     /**
      * fill FlightAttendant combobox
-    * @param frame the parent frame of the comBoBox
+     *
+     * @param frame the parent frame of the comBoBox
      * @param fACombo the comBoBox to fill
-     * @param flight  exclude FlightAttendant that assigned to this flight
+     * @param flight exclude FlightAttendant that assigned to this flight
      */
     public static void fillFlightAttendantCombo(JInternalFrame frame, JComboBox fACombo, Flight flight) {
 
@@ -440,9 +460,11 @@ public class HelperClass {
 
     /**
      * fill customers combobox
-    * @param frame the parent frame of the comBoBox
+     *
+     * @param frame the parent frame of the comBoBox
      * @param combo the comBoBox to fill
-     * @param isWithoutOrders  if true exclude customer without orders, otherwise fill all
+     * @param isWithoutOrders if true exclude customer without orders, otherwise
+     * fill all
      */
     public static void fillCustomersCombo(JInternalFrame frame, JComboBox combo, boolean isWithoutOrders) {
 
@@ -476,9 +498,10 @@ public class HelperClass {
 
     /**
      * fill flight orders combobox
+     *
      * @param frame the parent frame of the comBoBox
      * @param combo the comBoBox to fill
-     * @param orderNumber  the order number of the flight orders to fill
+     * @param orderNumber the order number of the flight orders to fill
      */
     public static void getFlightsForSelectedOrder(JInternalFrame frame, JComboBox combo, int orderNumber) {
 
@@ -498,13 +521,13 @@ public class HelperClass {
         combo.setModel(new DefaultComboBoxModel(items));
     }
 
-
     /**
      * fill agents combobox
+     *
      * @param frame the parent frame of the comBoBox
      * @param combo the comBoBox to fill
      * @return the id of the first item
-     
+     *
      */
     public static Long fillAgentCombo(JInternalFrame frame, JComboBox combo) {
         Map<Integer, Employee> emps = MainClass.getIfly().getEmployees();
@@ -535,9 +558,11 @@ public class HelperClass {
 
     /**
      * fill passangers combobox
+     *
      * @param frame the parent frame of the comBoBox
      * @param combo the comBoBox to fill
-     * @param filter , if true , fill all customers which aren't  on the flight, otherswise fill all customers
+     * @param filter , if true , fill all customers which aren't on the flight,
+     * otherswise fill all customers
      */
     public static void fillPassangers(JInternalFrame frame, JComboBox combo, int flight, boolean filter) {
 
@@ -567,6 +592,7 @@ public class HelperClass {
 
     /**
      * set an id of customer to fit the Key format of {@link init.IFly}} class
+     *
      * @param id the id to fix
      * @return the id
      */
@@ -596,11 +622,11 @@ public class HelperClass {
 
     }
 
-    
     /**
-     * check if a string represent  a number
+     * check if a string represent a number
+     *
      * @param s the value to validate
-     * @return a string of the error , if occurred 
+     * @return a string of the error , if occurred
      */
     public static String checkInteger(String s) {
         String err = null;
@@ -616,9 +642,11 @@ public class HelperClass {
 
     /**
      * fill airplanes combobox
+     *
      * @param frame the parent frame of the comBoBox
      * @param combo the comBoBox to fill
-     * @param number , if given , exclude this airplane, otherwise fill all airplaines
+     * @param number , if given , exclude this airplane, otherwise fill all
+     * airplaines
      */
     public static void fillAirplaines(JInternalFrame frame, JComboBox combo, Integer number) {
 
@@ -641,6 +669,7 @@ public class HelperClass {
 
     /**
      * set a name of a given entity , to be presented in a table
+     *
      * @param values
      * @return the name of the entity
      */
@@ -658,6 +687,7 @@ public class HelperClass {
 
     /**
      * set a cell width of a table
+     *
      * @param table
      */
     public static void setCellWidth(JTable table) {
@@ -672,7 +702,9 @@ public class HelperClass {
         }
     }
 
-       /**check if a given value exist in a comBoBox
+    /**
+     * check if a given value exist in a comBoBox
+     *
      * @param combo the combo to check
      * @param value the value to search
      * @return {@link init.ComboItem } represent the given value
