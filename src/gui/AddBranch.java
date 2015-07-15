@@ -36,7 +36,7 @@ public class AddBranch extends MyInternalFrame implements MethodInterface {
      * @param type
      */
     public AddBranch(String title, String type) {
-        super(title, type);
+        super(title, type, null);
         initComponents();
         fillCbCity();
         //txtHouseNumber ,txtStreet,txtbranchName,txtbranchNumber
