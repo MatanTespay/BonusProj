@@ -37,7 +37,7 @@ public class Site extends MyInternalFrame {
         "Foundation Year",
         "Type",
         "Distance"};
-        
+
     /**
      * Creates new form Site
      *
@@ -268,9 +268,9 @@ public class Site extends MyInternalFrame {
             tfID.setText(rs.getString("ID"));
             taDescription.setText(rs.getString("siteDescription"));
             ycFoundation.setYear(rs.getInt("foundedYear"));
-            for (int i = 0 ; i < cmbType.getModel().getSize() ; i++){
+            for (int i = 0; i < cmbType.getModel().getSize(); i++) {
                 Object item = cmbType.getModel().getElementAt(i);
-                if (item != null && ((ComboItem)item).getValue().equals(rs.getString("siteType"))){
+                if (item != null && ((ComboItem) item).getValue().equals(rs.getString("siteType"))) {
                     cmbType.setSelectedIndex(i);
                 }
             }
@@ -335,10 +335,10 @@ public class Site extends MyInternalFrame {
                     rs.getString("foundedYear"), rs.getString("siteType"),
                     rs.getString("distance")};
                 rows.add(row);
-            }
-            MyTableModel tableModel = new MyTableModel(SFSColumns, rows, null);
-            tblNearbySites.setModel(tableModel);
 
+                MyTableModel tableModel = new MyTableModel(SFSColumns, rows, null);
+                tblNearbySites.setModel(tableModel);
+            }
         } catch (SQLException ex) {
             Logger.getLogger(Site.class
                     .getName()).log(Level.SEVERE, null, ex);

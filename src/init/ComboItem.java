@@ -6,6 +6,8 @@
 
 package init;
 
+import java.sql.Date;
+
 /**
  *The class represents a single item {includes value and name} in a drop down list.
 
@@ -35,7 +37,24 @@ public class ComboItem implements Comparable<ComboItem>{
     
     @Override
     public int compareTo(ComboItem o) {
-        return this.label.compareTo(o.label);
+        try{
+            // the label represents an integer
+            Integer thisIntLabel = Integer.valueOf(this.label);
+            Integer otherIntLabel = Integer.valueOf(o.label);
+            return thisIntLabel.compareTo(otherIntLabel);
+        } catch (NumberFormatException ex1){
+            try{
+                // the label represents a date
+                Date thisDateLabel = Date.valueOf(this.label);
+                Date otherDateLabel = Date.valueOf(o.label);
+                return thisDateLabel.compareTo(otherDateLabel);
+            } catch (IllegalArgumentException ex2){
+                // the string is just a string
+                return this.label.compareTo(o.label);
+            }
+        }
+         
+        
     }
     
 }

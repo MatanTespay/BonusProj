@@ -130,7 +130,7 @@ public class GeneralParameters extends MyInternalFrame {
             st = con.prepareStatement("Select * From tblGeneralParameters As GP "
                     + "WHERE GP.depositStartYear = ? and GP.depositEndYear = ?");
             st.setInt(1, range.getFrom());
-            st.setInt(1, range.getTo());
+            st.setInt(2, range.getTo());
             rs = st.executeQuery();
 
             rs.next();

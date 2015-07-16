@@ -5,6 +5,7 @@
  */
 package gui;
 import exceptions.YearRangeException;
+import init.ActivityKey;
 import init.CloseAction;
 import init.MainClass;
 
@@ -13,6 +14,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.sql.Date;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JMenu;
@@ -98,7 +100,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
             if (!selectedUserType.equals("Agent")) {
 //branch
                 submenu = addMenuToMenuBar("Branch  ", KeyEvent.VK_B);
-                addMenuItem(submenu, "Add Branch", KeyEvent.VK_B);
+                addMenuItem(submenu, "Add Activity", KeyEvent.VK_B);
                 addMenuItem(submenu, "Add Agent To Branch", KeyEvent.VK_A);
                 aMenu.add(submenu);
                 aMenu.addSeparator();
@@ -228,8 +230,8 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
             case "Save":
                 saveIfly();
                 break;
-            case "Add Branch":
-                ifram = new AddBranch(e.getActionCommand(), selectedUserType);
+            case "Add Activity":
+                ifram = new Activity(e.getActionCommand(), selectedUserType, new ActivityKey(1,new Date(1951,03,14),new Date(1951,03,14)));
 
                 break;
             case "Add Agent To Branch":
