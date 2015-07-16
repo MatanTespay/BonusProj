@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.ListSelectionModel;
 
 /**
@@ -276,7 +275,7 @@ public class Site extends MyInternalFrame {
                 }
             }
         } catch (SQLException ex) {
-            Logger.getLogger(Station.class
+            Logger.getLogger(Site.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -295,7 +294,7 @@ public class Site extends MyInternalFrame {
             items.add(0, null);
             cmbType.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
         } catch (SQLException ex) {
-            Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Site.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -317,7 +316,7 @@ public class Site extends MyInternalFrame {
             tblNearbyExits.setModel(tableModel);
 
         } catch (SQLException ex) {
-            Logger.getLogger(Station.class
+            Logger.getLogger(Site.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -341,7 +340,7 @@ public class Site extends MyInternalFrame {
             tblNearbySites.setModel(tableModel);
 
         } catch (SQLException ex) {
-            Logger.getLogger(Station.class
+            Logger.getLogger(Site.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
     }
