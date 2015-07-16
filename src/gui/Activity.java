@@ -35,10 +35,10 @@ public class Activity extends MyInternalFrame {
     public Activity(String title, String type, ActivityKey activityKey) {
         this.activityKey = activityKey;
         initComponents();
+        fillCmbPurchaseDate(0);
+        fillCmbLine(0);
         fillCmbCard();
-//        fillCmbPurchaseDate(0);
         fillCmbStation();
-//        fillCmbLine(0);
         fillFields();
     }
 
@@ -165,15 +165,22 @@ public class Activity extends MyInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void cmbCardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbCardActionPerformed
-        ComboItem cardItem = (ComboItem)cmbCard.getSelectedItem();
-        int cardNumber = Integer.valueOf(cardItem.getValue());
-        fillCmbPurchaseDate(cardNumber);
+        try {
+            ComboItem cardItem = (ComboItem) cmbCard.getSelectedItem();
+            int cardNumber = Integer.valueOf(cardItem.getValue());
+            fillCmbPurchaseDate(cardNumber);
+        } catch (NullPointerException ex) {
+        }
     }//GEN-LAST:event_cmbCardActionPerformed
 
     private void cmbStationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbStationActionPerformed
-        ComboItem stationItem = (ComboItem)cmbStation.getSelectedItem();
-        int stationID = Integer.valueOf(stationItem.getValue());
-        fillCmbLine(stationID);
+        try {
+            ComboItem stationItem = (ComboItem) cmbStation.getSelectedItem();
+            int stationID = Integer.valueOf(stationItem.getValue());
+            fillCmbLine(stationID);
+        } catch (NullPointerException ex) {
+
+        }
     }//GEN-LAST:event_cmbStationActionPerformed
 
 
@@ -200,18 +207,38 @@ public class Activity extends MyInternalFrame {
                     + "join tblStation As S on A.stationID = S.ID WHERE "
                     + "A.cardNumber = ? and A.cardPurchaseDate = ? and A.activityDate = ?");
             st.setInt(1, this.activityKey.getCard().getNumber());
-            st.setDate(2, this.activityKey.getCard().getPurchaseDate());
-            st.setDate(3, this.activityKey.getActivityDate());
+            String myDate = "1951-03-14";
+            st.setString(2, myDate);
+            st.setString(3, myDate);
             rs = st.executeQuery();
 
             rs.next();
-            System.out.println(rs.getDate("cardPurchaseDate"));
-            cmbCard.setSelectedItem(rs.getString("cardNumber"));
-            cmbPurchaseDate.setSelectedItem(rs.getDate("cardPurchaseDate"));
+            for (int i = 1 ; i < cmbCard.getItemCount(); i++){
+                ComboItem item = (ComboItem)cmbCard.getItemAt(i);
+                if (item.getValue().equals(rs.getString("cardNumber")))
+                    cmbCard.setSelectedIndex(i);
+            }
+            
+            for (int i = 1 ; i < cmbPurchaseDate.getItemCount(); i++){
+                ComboItem item = (ComboItem)cmbPurchaseDate.getItemAt(i);
+                if (item.getValue().equals(rs.getString("cardPurchaseDate")))
+                    cmbPurchaseDate.setSelectedIndex(i);
+            }
+            
+            for (int i = 1 ; i < cmbStation.getItemCount(); i++){
+                ComboItem item = (ComboItem)cmbStation.getItemAt(i);
+                if (item.getLabel().equals(rs.getString("name")))
+                    cmbStation.setSelectedIndex(i);
+            }
+            
+            for (int i = 1 ; i < cmbLine.getItemCount(); i++){
+                ComboItem item = (ComboItem)cmbLine.getItemAt(i);
+                if (item.getValue().equals(rs.getString("lineName")))
+                    cmbLine.setSelectedIndex(i);
+            }
+            cmbActivityType.setSelectedItem((rs.getString("activityType").equals("I"))?"Ingoing":"Outgoing");
             dcActivityDate.setDate(rs.getDate("activityDate"));
-            cmbActivityType.setSelectedItem(rs.getString("activityType"));
-            cmbStation.setSelectedItem(rs.getString("name"));
-            cmbLine.setSelectedItem(rs.getString("lineName"));
+
         } catch (SQLException ex) {
             Logger.getLogger(Activity.class
                     .getName()).log(Level.SEVERE, null, ex);
@@ -235,15 +262,20 @@ public class Activity extends MyInternalFrame {
             Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     private void fillCmbPurchaseDate(int cardNumber) {
         PreparedStatement st;
         ResultSet rs;
         try {
-            st = con.prepareStatement("SELECT C.purchaseDate FROM tblCard As C WHERE C.number = ?");
-            st.setInt(1, cardNumber);
+            if (cardNumber == 0) {
+                // show all purchase dates
+                st = con.prepareStatement("SELECT purchaseDate FROM tblCard");
+            } else {
+                st = con.prepareStatement("SELECT C.purchaseDate FROM tblCard As C WHERE C.number = ?");
+                st.setInt(1, cardNumber);
+            }
             rs = st.executeQuery();
-            
+
             ArrayList<ComboItem> items = new ArrayList<>();
             while (rs.next()) {
                 items.add(new ComboItem(rs.getString("purchaseDate"), rs.getString("purchaseDate")));
@@ -255,12 +287,13 @@ public class Activity extends MyInternalFrame {
             Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
     private void fillCmbStation() {
-      Statement s;
+        Statement s;
         ResultSet rs;
         try {
             s = con.createStatement();
-            rs = s.executeQuery("SELECT S.ID, S.name FROM tblStation As S");
+            rs = s.executeQuery("SELECT ID, name FROM tblStation");
             ArrayList<ComboItem> items = new ArrayList<>();
             while (rs.next()) {
                 items.add(new ComboItem(rs.getString("ID"), rs.getString("name")));
@@ -277,11 +310,16 @@ public class Activity extends MyInternalFrame {
         PreparedStatement st;
         ResultSet rs;
         try {
-            st = con.prepareStatement("SELECT SIL.lineName FROM tblStationInLine "
-                    + "As SIL WHERE SIL.stationID = ?");
-            st.setInt(1, stationID);
+            if (stationID == 0) {
+                // show all lines
+                st = con.prepareStatement("SELECT lineName FROM tblStationInLine");
+            } else {
+                st = con.prepareStatement("SELECT SIL.lineName FROM tblStationInLine "
+                        + "As SIL WHERE SIL.stationID = ?");
+                st.setInt(1, stationID);
+            }
             rs = st.executeQuery();
-            
+
             ArrayList<ComboItem> items = new ArrayList<>();
             while (rs.next()) {
                 items.add(new ComboItem(rs.getString("lineName"), rs.getString("lineName")));
@@ -294,5 +332,4 @@ public class Activity extends MyInternalFrame {
         }
     }
 
-    
 }
