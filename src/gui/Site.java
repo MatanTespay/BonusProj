@@ -5,24 +5,73 @@
  */
 package gui;
 
+import init.ComboItem;
+import static init.MainClass.con;
+import init.MyTableModel;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.ListSelectionModel;
+
 /**
  *
  * @author asus
  */
 public class Site extends MyInternalFrame {
-    
+
     int siteID;
+    String[] SFEColumns = {
+        "ID",
+        "Station Name",
+        "Line Name",
+        "Distance"};
+
+    String[] SFSColumns = {
+        "ID",
+        "Name",
+        "Foundation Year",
+        "Type",
+        "Distance"};
+        
     /**
      * Creates new form Site
+     *
      * @param title
      * @param type
      * @param siteID
      */
-    public Site (String title, String type, int siteID) {
+    public Site(String title, String type, int siteID) {
         super(title, type);
         this.siteID = siteID;
         initComponents();
+        fillCmbType();
+
+        boolean isViewable = (siteID != 0);
+        lblNearbyExits.setVisible(isViewable);
+        lblNearbySites.setVisible(isViewable);
+        tblNearbyExits.setVisible(isViewable);
+        tblNearbySites.setVisible(isViewable);
+
+        if (siteID != 0) {
+            fillNearByExits();
+            fillNearBySites();
+            fillFields();
+            tblNearbyExits.setRowSelectionAllowed(true);
+            tblNearbyExits.setColumnSelectionAllowed(false);
+            tblNearbyExits.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            tblNearbySites.setRowSelectionAllowed(true);
+            tblNearbySites.setColumnSelectionAllowed(false);
+            tblNearbySites.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        }
+
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -48,7 +97,7 @@ public class Site extends MyInternalFrame {
         lblNearbyExits = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tblNearbySites = new javax.swing.JTable();
-        lblNearbySItes = new javax.swing.JLabel();
+        lblNearbySites = new javax.swing.JLabel();
 
         tfName.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -102,7 +151,7 @@ public class Site extends MyInternalFrame {
         ));
         jScrollPane3.setViewportView(tblNearbySites);
 
-        lblNearbySItes.setText("Nearby Sites");
+        lblNearbySites.setText("Nearby Sites");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -111,62 +160,63 @@ public class Site extends MyInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(layout.createSequentialGroup()
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(lblID)
-                                .addComponent(lblName))
-                            .addGap(41, 41, 41)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(tfName)
-                                .addComponent(tfID, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGap(18, 18, 18)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(lblFoundation)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(ycFoundation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(Type)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(cmbType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(lblDescription)
-                            .addGap(18, 18, 18)
-                            .addComponent(jScrollPane1)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblID)
+                            .addComponent(lblName))
+                        .addGap(41, 41, 41)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(tfName, javax.swing.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE)
+                            .addComponent(tfID))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblFoundation)
+                            .addComponent(Type))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cmbType, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(ycFoundation, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lblNearbySites)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 416, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lblNearbyExits)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 416, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(lblNearbySItes)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 416, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(16, Short.MAX_VALUE))
+                        .addComponent(lblDescription)
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 417, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(tfID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblID)
-                            .addComponent(lblFoundation))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(tfID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(lblID))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(ycFoundation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(tfName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lblName)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(3, 3, 3)
-                                .addComponent(cmbType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(cmbType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(Type)))
-                    .addComponent(ycFoundation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lblFoundation)
+                        .addGap(35, 35, 35)))
+                .addGap(8, 8, 8)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblDescription)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblDescription))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -174,7 +224,7 @@ public class Site extends MyInternalFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblNearbySItes))
+                    .addComponent(lblNearbySites))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -197,7 +247,7 @@ public class Site extends MyInternalFrame {
     private javax.swing.JLabel lblID;
     private javax.swing.JLabel lblName;
     private javax.swing.JLabel lblNearbyExits;
-    private javax.swing.JLabel lblNearbySItes;
+    private javax.swing.JLabel lblNearbySites;
     private javax.swing.JTextArea taDescription;
     private javax.swing.JTable tblNearbyExits;
     private javax.swing.JTable tblNearbySites;
@@ -205,4 +255,94 @@ public class Site extends MyInternalFrame {
     private javax.swing.JTextField tfName;
     private com.toedter.calendar.JYearChooser ycFoundation;
     // End of variables declaration//GEN-END:variables
+
+    private void fillFields() {
+        PreparedStatement st;
+        ResultSet rs;
+        try {
+            st = con.prepareStatement("Select * From tblSite As S WHERE S.ID = ?");
+            st.setInt(1, siteID);
+            rs = st.executeQuery();
+
+            rs.next();
+            tfName.setText(rs.getString("name"));
+            tfID.setText(rs.getString("ID"));
+            taDescription.setText(rs.getString("siteDescription"));
+            ycFoundation.setYear(rs.getInt("foundedYear"));
+            for (int i = 0 ; i < cmbType.getModel().getSize() ; i++){
+                Object item = cmbType.getModel().getElementAt(i);
+                if (item != null && ((ComboItem)item).getValue().equals(rs.getString("siteType"))){
+                    cmbType.setSelectedIndex(i);
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Station.class
+                    .getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void fillCmbType() {
+        Statement s;
+        ResultSet rs;
+        try {
+            s = con.createStatement();
+            rs = s.executeQuery("Select * From tblSiteType");
+            ArrayList<ComboItem> items = new ArrayList<>();
+            while (rs.next()) {
+                items.add(new ComboItem(rs.getString("siteType"), rs.getString("siteType")));
+            }
+            Collections.sort(items);
+            items.add(0, null);
+            cmbType.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
+        } catch (SQLException ex) {
+            Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void fillNearByExits() {
+        PreparedStatement st;
+        ResultSet rs;
+        try {
+            st = con.prepareStatement("Select * From tblSiteFromExit As SFE "
+                    + "join tblStation As S on SFE.stationID = S.ID WHERE SFE.siteID = ? ");
+            st.setInt(1, siteID);
+            rs = st.executeQuery();
+            ArrayList<Object[]> rows = new ArrayList();
+            while (rs.next()) {
+                Object[] row = {rs.getString("stationID"), rs.getString("name")/*station name*/,
+                    rs.getString("lineName"), rs.getString("distance")};
+                rows.add(row);
+            }
+            MyTableModel tableModel = new MyTableModel(SFEColumns, rows, null);
+            tblNearbyExits.setModel(tableModel);
+
+        } catch (SQLException ex) {
+            Logger.getLogger(Station.class
+                    .getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void fillNearBySites() {
+        PreparedStatement st;
+        ResultSet rs;
+        try {
+            st = con.prepareStatement("SELECT * FROM tblSiteFromSite As SFS "
+                    + "join tblSite As S on SFS.siteID2 = S.ID WHERE S.ID = ?");
+            st.setInt(1, siteID);
+            rs = st.executeQuery();
+            ArrayList<Object[]> rows = new ArrayList();
+            while (rs.next()) {
+                Object[] row = {rs.getString("siteID2"), rs.getString("name"),
+                    rs.getString("foundedYear"), rs.getString("siteType"),
+                    rs.getString("distance")};
+                rows.add(row);
+            }
+            MyTableModel tableModel = new MyTableModel(SFSColumns, rows, null);
+            tblNearbySites.setModel(tableModel);
+
+        } catch (SQLException ex) {
+            Logger.getLogger(Station.class
+                    .getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }
