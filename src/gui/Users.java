@@ -13,14 +13,19 @@ import java.awt.Color;
 import java.awt.Component;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import utils.HelperClass;
 
 /**
@@ -32,7 +37,10 @@ public class Users extends MyInternalFrame {
     String[] UserColumns = {
         "UserName",
         "Password",
-        "Role"};
+        "RoleName"};
+    boolean isEditState = false;
+    boolean isDeleteState = false;
+    int editedRiwIdx;
 
     /**
      * Creates new form Users
@@ -46,11 +54,33 @@ public class Users extends MyInternalFrame {
         fillCbUserType();
         FillUsersTable();
         setLables();
+        setTableSelection();
+        btnRemove.setEnabled(false);
+        btnEdit.setEnabled(false);
+
     }
 
     private void setLables() {
         lblerrPass.setLabelFor(txtPass);
         lblerrUserName.setLabelFor(txtUserName);
+    }
+
+    private void setTableSelection() {
+        ListSelectionModel selectionModel = tblUsers.getSelectionModel();
+        selectionModel.addListSelectionListener(new ListSelectionListener() {
+
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) {
+                    tableSelection();
+                }
+            }
+
+            private void tableSelection() {
+                btnRemove.setEnabled(true);
+                btnEdit.setEnabled(true);
+            }
+        });
     }
 
     /**
@@ -72,11 +102,11 @@ public class Users extends MyInternalFrame {
         btnAddUser = new javax.swing.JButton();
         lblerrUserName = new javax.swing.JLabel();
         lblerrPass = new javax.swing.JLabel();
+        btnEdit = new javax.swing.JButton();
+        btnRemove = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblUsers = new javax.swing.JTable();
-        btnRemove = new javax.swing.JButton();
-        btnEdit = new javax.swing.JButton();
 
         lblRole.setText("User Role");
 
@@ -86,10 +116,24 @@ public class Users extends MyInternalFrame {
 
         lblPass.setText("User Pasword:");
 
-        btnAddUser.setText("Add User");
+        btnAddUser.setText("Save");
         btnAddUser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAddUserActionPerformed(evt);
+            }
+        });
+
+        btnEdit.setText("Edit");
+        btnEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditActionPerformed(evt);
+            }
+        });
+
+        btnRemove.setText("Remove");
+        btnRemove.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoveActionPerformed(evt);
             }
         });
 
@@ -100,26 +144,31 @@ public class Users extends MyInternalFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnAddUser, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(lblerrUserName, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(btnAddUser, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnRemove, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnEdit, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(lblerrUserName, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                                 .addComponent(lblRole)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(cbRoleType, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addComponent(cbRoleType, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                                 .addComponent(lblUserName)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtUserName, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(txtUserName, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(lblerrPass, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(lblPass)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtPass, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(lblerrPass, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(txtPass, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap(123, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -140,7 +189,11 @@ public class Users extends MyInternalFrame {
                         .addComponent(lblerrUserName, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(lblerrPass, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(btnAddUser))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnAddUser)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnRemove)
+                        .addComponent(btnEdit))))
         );
 
         tblUsers.setModel(new javax.swing.table.DefaultTableModel(
@@ -156,23 +209,13 @@ public class Users extends MyInternalFrame {
         ));
         jScrollPane1.setViewportView(tblUsers);
 
-        btnRemove.setText("Remove");
-
-        btnEdit.setText("Edit");
-
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(btnRemove, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnEdit, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 492, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 492, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -180,10 +223,6 @@ public class Users extends MyInternalFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnRemove)
-                    .addComponent(btnEdit))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -213,8 +252,26 @@ public class Users extends MyInternalFrame {
 
     private void btnAddUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddUserActionPerformed
         // TODO add your handling code here:
-        AddUser();
+        saveChange();
     }//GEN-LAST:event_btnAddUserActionPerformed
+
+    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
+        // TODO add your handling code here:
+        isEditState = true;
+        String name = (String) (tblUsers.getModel().getValueAt(tblUsers.getSelectedRow(), 0));
+        String pass = (String) (tblUsers.getModel().getValueAt(tblUsers.getSelectedRow(), 1));
+        txtPass.setText(pass);
+        txtUserName.setText(name);
+        editedRiwIdx = tblUsers.getSelectedRow();
+        btnRemove.setEnabled(false);
+    }//GEN-LAST:event_btnEditActionPerformed
+
+    private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
+        // TODO add your handling code here:
+        isDeleteState = true;
+        editedRiwIdx = tblUsers.getSelectedRow();
+        saveChange();
+    }//GEN-LAST:event_btnRemoveActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -272,31 +329,33 @@ public class Users extends MyInternalFrame {
         }
     }
 
-    private void AddUser() {
+    private void saveChange() {
         boolean result = true;
-        JLabel[] arry = {lblerrPass, lblerrUserName};
-        for (JLabel lable : arry) {
-            Component c = lable.getLabelFor();
-            if (c != null) {
-                String tempErr = null;
-                String s = lable.getName();
-                if (lable.equals(lblerrPass)) {
-                    if (txtPass.getText().trim().length() == 0) {
+        if (!isDeleteState) {
+            JLabel[] arry = {lblerrPass, lblerrUserName};
+            for (JLabel lable : arry) {
+                Component c = lable.getLabelFor();
+                if (c != null) {
+                    String tempErr = null;
+                    String s = lable.getName();
+                    if (lable.equals(lblerrPass)) {
+                        if (txtPass.getText().trim().length() == 0) {
+                            tempErr = HelperClass.getErrMsg(((JTextField) c).getText(),
+                                    "Password");
+                        }
+                    } else if (lable.equals(lblerrUserName)) {
+                        
                         tempErr = HelperClass.getErrMsg(((JTextField) c).getText(),
-                                "Password");
+                                "Text");
                     }
-                } else if (lable.equals(lblerrUserName)) {
-
-                    tempErr = HelperClass.getErrMsg(((JTextField) c).getText(),
-                            "Text");
-                }
-
-                if (tempErr != null) {
-                    result = false;
-                    lable.setText(tempErr);
-                    lable.setForeground(Color.red);
-                } else {
-                    lable.setText("");
+                    
+                    if (tempErr != null) {
+                        result = false;
+                        lable.setText(tempErr);
+                        lable.setForeground(Color.red);
+                    } else {
+                        lable.setText("");
+                    }
                 }
             }
         }
@@ -307,36 +366,91 @@ public class Users extends MyInternalFrame {
             try {
 
                 PreparedStatement stmt;
-                String q = "SELECT username, password , RoleName "
-                        + "FROM tblUser u join tblRole r on u.RoleID = r.RoleID "
-                        + "WHERE u.username=? and u.password=?";
-                stmt = MainClass.con.prepareStatement(q);
+                ResultSet rs;
+                String q;
+                if (!isEditState && !isDeleteState) {
 
-                stmt.setString(1, txtUserName.getText());
-                stmt.setString(2, txtPass.getText());
-                ResultSet rs = stmt.executeQuery();
+                    q = "SELECT username, password , RoleName "
+                            + "FROM tblUser u join tblRole r on u.RoleID = r.RoleID "
+                            + "WHERE u.username=? and u.password=?";
+                    stmt = MainClass.con.prepareStatement(q);
 
-                if (rs.next()) {
-                    JOptionPane.showMessageDialog(this,
-                            "User with that password alredy exist",
-                            "Error Message",
-                            JOptionPane.ERROR_MESSAGE);
-                } else {
+                    stmt.setString(1, txtUserName.getText());
+                    stmt.setString(2, txtPass.getText());
 
-                    String insertTableSQL = "INSERT INTO tblUser"
-                            + "(UserName, Password, RoleID ) VALUES"
-                            + "(?,?,?)";
+                    rs = stmt.executeQuery();
+
+                    if (rs.next()) {
+                        JOptionPane.showMessageDialog(this,
+                                "User with that password alredy exist",
+                                "Error Message",
+                                JOptionPane.ERROR_MESSAGE);
+                    } else {
+
+                        String insertTableSQL = "INSERT INTO tblUser"
+                                + "(UserName, Password, RoleID ) VALUES"
+                                + "(?,?,?)";
+                        int RoleID = Integer.parseInt(((ComboItem) cbRoleType.getSelectedItem()).getValue());
+                        stmt = con.prepareStatement(insertTableSQL);
+                        stmt.setString(1, txtUserName.getText());
+                        stmt.setString(2, txtPass.getText());
+                        stmt.setInt(3, RoleID);
+                        // execute insert SQL stetement                
+                        stmt.executeUpdate();
+
+                        FillUsersTable();
+
+                    }
+                } else if (isEditState) {
+
+                    q = "UPDATE tblUser"
+                            + " SET username = ?"
+                            + " ,password = ?"
+                            + " ,RoleID = ? "
+                            + "WHERE username=? and password=?";
+
+                    stmt = con.prepareStatement(q,
+                            ResultSet.TYPE_SCROLL_SENSITIVE,
+                            ResultSet.CONCUR_UPDATABLE);
+
+                    //set params
                     int RoleID = Integer.parseInt(((ComboItem) cbRoleType.getSelectedItem()).getValue());
-                    stmt = con.prepareStatement(insertTableSQL);
+                    String oldName = (String) tblUsers.getModel().getValueAt(editedRiwIdx, 0);
+                    String oldPass = (String) tblUsers.getModel().getValueAt(editedRiwIdx, 1);
                     stmt.setString(1, txtUserName.getText());
                     stmt.setString(2, txtPass.getText());
                     stmt.setInt(3, RoleID);
-                    // execute insert SQL stetement                
+                    stmt.setString(4, oldName);
+                    stmt.setString(5, oldPass);
+
                     stmt.executeUpdate();
 
-                    MyTableModel model = (MyTableModel) tblUsers.getModel();
-                    model.addRow(new Object[]{txtUserName.getText() , txtPass.getText() , cbRoleType.getSelectedItem().toString()});
+                    FillUsersTable();
 
+                    btnEdit.setEnabled(false);
+                    btnRemove.setEnabled(false);
+                    txtUserName.setText("");
+                    txtPass.setText("");
+
+                    isEditState = false;
+
+                } else {
+                    q = "DELETE FROM tblUser "
+                            + "WHERE username=? and password=?";
+                    
+                    stmt = MainClass.con.prepareStatement(q);
+                    String oldName = (String) tblUsers.getModel().getValueAt(editedRiwIdx, 0);
+                    String oldPass = (String) tblUsers.getModel().getValueAt(editedRiwIdx, 1);
+                    stmt.setString(1, oldName);
+                    stmt.setString(2,oldPass);
+                    stmt.executeUpdate();
+
+                    FillUsersTable();
+
+                    btnEdit.setEnabled(false);
+                    btnRemove.setEnabled(false);
+                    
+                    isDeleteState = false;
                 }
 
             } catch (SQLException ex) {
@@ -345,4 +459,23 @@ public class Users extends MyInternalFrame {
 
         }
     }
+
+    public MyTableModel buildTableModel(ResultSet rs)
+            throws SQLException {
+
+        // data of the table
+        ArrayList<Object[]> data = new ArrayList<>();
+        while (rs.next()) {
+            Vector<Object> row = new Vector<>();
+            for (int columnIndex = 0; columnIndex < UserColumns.length; columnIndex++) {
+                String co = UserColumns[columnIndex];
+                row.add(rs.getObject(co));
+            }
+            data.add(row.toArray(new Object[row.size()]));
+        }
+
+        return new MyTableModel(UserColumns, data);
+
+    }
+
 }

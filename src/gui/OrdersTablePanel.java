@@ -67,7 +67,7 @@ public class OrdersTablePanel extends javax.swing.JPanel {
     Object key = null;
     MyTableModel tableModel = new MyTableModel();
     StringBuilder sb = new StringBuilder();
-
+    
     /**
      * Creates new form OrdersTablePanel
      *
