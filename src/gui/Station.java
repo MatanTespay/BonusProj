@@ -16,14 +16,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JDesktopPane;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JInternalFrame;
-import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.table.TableModel;
 
 /**
  *
@@ -44,6 +40,7 @@ public class Station extends MyInternalFrame {
      *
      * @param title
      * @param type
+     * @param stationID
      */
     public Station(String title, String type, int stationID) {
         super(title, type);
@@ -66,18 +63,15 @@ public class Station extends MyInternalFrame {
             cmbLines.setSelectedIndex(0);
             tblLines.setRowSelectionAllowed(true);
             tblLines.setColumnSelectionAllowed(false);
+            tblLines.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         }
 
-        //<editor-fold defaultstate="collapsed" desc="listen to row selection">
-        ListSelectionModel selectionModel = tblLines.getSelectionModel();
-        selectionModel.addListSelectionListener(new ListSelectionListener() {
-            
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) {
-                    btnViewLine.setEnabled(true);
-                    btnRemoveLine.setEnabled(true);
-                }
+        ListSelectionModel selectionModel;
+        selectionModel = tblLines.getSelectionModel();
+        selectionModel.addListSelectionListener((ListSelectionEvent e) -> {
+            if (!e.getValueIsAdjusting()) {
+                btnViewLine.setEnabled(true);
+                btnRemoveLine.setEnabled(true);
             }
         });
     //</editor-fold>
@@ -383,8 +377,7 @@ public class Station extends MyInternalFrame {
                     items.add(new ComboItem(rs.getString("name"), rs.getString("name")));
                 }
             }
-            Collections.sort(items, (ComboItem i1, ComboItem i2)
-                    -> ((ComboItem) i1).getLabel().compareTo(((ComboItem) i2).getLabel()));
+            Collections.sort(items);
             items.add(0, null);
             cmbLines.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
         } catch (SQLException ex) {

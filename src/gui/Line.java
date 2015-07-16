@@ -14,12 +14,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
+import javax.swing.ListSelectionModel;
 
 /**
  *
@@ -62,6 +61,7 @@ public class Line extends MyInternalFrame {
             fillCmbStations();
             tblStations.setRowSelectionAllowed(true);
             tblStations.setColumnSelectionAllowed(false);
+            tblStations.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         }
     }
 
@@ -390,8 +390,7 @@ public class Line extends MyInternalFrame {
                     items.add(new ComboItem(rs.getString("ID"), rs.getString("name")));
                 }
             }
-            Collections.sort(items, (ComboItem i1, ComboItem i2)
-                    -> ((ComboItem) i1).getLabel().compareTo(((ComboItem) i2).getLabel()));
+            Collections.sort(items);
             items.add(0, null);
             cmbStations.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
         } catch (SQLException ex) {
@@ -429,8 +428,7 @@ public class Line extends MyInternalFrame {
             while (rs.next()) {
                 items.add(new ComboItem(rs.getString("name"), rs.getString("name")));
             }
-            Collections.sort(items, (ComboItem i1, ComboItem i2)
-                    -> ((ComboItem) i1).getLabel().compareTo(((ComboItem) i2).getLabel()));
+            Collections.sort(items);
             cmbColor.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
             cmbColor.setEditable(true);
         } catch (SQLException ex) {
