@@ -349,7 +349,7 @@ public class Station extends MyInternalFrame {
         try {
             s = con.createStatement();
             rs = s.executeQuery("Select * From tblZone");
-            ArrayList<ComboItem> items = new ArrayList<ComboItem>();
+            ArrayList<ComboItem> items = new ArrayList<>();
             while (rs.next()) {
                 items.add(new ComboItem(rs.getString("number"), rs.getString("number")));
             }

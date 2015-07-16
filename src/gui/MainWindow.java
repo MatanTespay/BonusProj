@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package gui;
+import exceptions.YearRangeException;
 import init.CloseAction;
 import init.MainClass;
 
@@ -124,7 +125,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
             }
 
             submenu = addMenuToMenuBar("Customers   ", KeyEvent.VK_C);
-            addMenuItem(submenu, "Add Customer", KeyEvent.VK_L);
+            addMenuItem(submenu, "Add Deposit", KeyEvent.VK_L);
             aMenu.add(submenu);
             aMenu.addSeparator();
 
@@ -249,10 +250,13 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
             case "Add Site":
                 ifram = new Site(e.getActionCommand(), selectedUserType,2);
                 break;
-            case "Add Customer":
-                ifram = new AddCustomer(e.getActionCommand(), selectedUserType);
-
-                break;
+           case "Add Deposit": {
+                try {
+                    ifram = new GeneralParameters(e.getActionCommand(), selectedUserType, new init.YearRange(2010, 2015));
+                } catch (YearRangeException ex) {
+                    
+                }
+            }
             case "Update customer Details":
                 ifram = new UpdateCustomerDetails(e.getActionCommand(), selectedUserType);
 

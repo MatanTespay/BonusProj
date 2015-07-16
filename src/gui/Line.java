@@ -368,7 +368,7 @@ public class Line extends MyInternalFrame {
             MyTableModel tableModel = new MyTableModel(LineColumns, rows, null);
             tblStations.setModel(tableModel);
         } catch (SQLException ex) {
-            Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Line.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -394,7 +394,7 @@ public class Line extends MyInternalFrame {
             items.add(0, null);
             cmbStations.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
         } catch (SQLException ex) {
-            Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Line.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -414,7 +414,7 @@ public class Line extends MyInternalFrame {
             tfName.setText(rs.getString("name"));
             cmbType.setSelectedItem((rs.getString("lineType").equals("O")) ? "Overground" : "Underground");
         } catch (SQLException ex) {
-            Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Line.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -432,7 +432,7 @@ public class Line extends MyInternalFrame {
             cmbColor.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
             cmbColor.setEditable(true);
         } catch (SQLException ex) {
-            Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Line.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }
