@@ -11,17 +11,15 @@ package init;
 
 * @author Matan
 */
-public class ComboItem {
-    private String value;
-    private String label;
+public class ComboItem implements Comparable<ComboItem>{
+    private final String value;
+    private final String label;
 
     public ComboItem(String value, String label) {
         this.value = value;
         this.label = label;
     }
     
-
-
     public String getValue() {
         return this.value;
     }
@@ -33,6 +31,11 @@ public class ComboItem {
     @Override
     public String toString() {
         return label;
+    }
+    
+    @Override
+    public int compareTo(ComboItem o) {
+        return this.label.compareTo(o.label);
     }
     
 }
