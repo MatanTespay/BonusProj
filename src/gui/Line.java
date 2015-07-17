@@ -43,6 +43,7 @@ public class Line extends MyInternalFrame {
      */
     public Line(String title, String type, String lineName) {
         super(title, type);
+        setMode((lineName == null) ? utils.Constants.VIEW_MODE : utils.Constants.VIEW_MODE);
         this.lineName = lineName;
         initComponents();
         fillCmbColor();
@@ -68,6 +69,10 @@ public class Line extends MyInternalFrame {
     public Line(String title, String type, String lineName, JInternalFrame parent) {
         this(title, type, lineName);
         this.parent = parent;
+    }
+
+    public Line(String title, String type) {
+        this(title, type, null);
     }
 
     /**
@@ -274,7 +279,7 @@ public class Line extends MyInternalFrame {
 
     private void btnViewStationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewStationActionPerformed
         int stationID = Integer.valueOf((String) (tblStations.getModel().getValueAt(tblStations.getSelectedRow(), 0)));
-        Station newFrame = new Station(evt.getActionCommand(), selectedUserType, stationID,this);
+        Station newFrame = new Station(evt.getActionCommand(), selectedUserType, stationID, this);
         openChildFrame(newFrame);
         //JDesktopPane desk = this.getDesktopPane();
 //        Station newFrame = new Station(evt.getActionCommand(), selectedUserType, stationID);
@@ -308,8 +313,8 @@ public class Line extends MyInternalFrame {
     private void cmbStationsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbStationsActionPerformed
         try {
             PreparedStatement st;
-            DefaultComboBoxModel model = (DefaultComboBoxModel)cmbStations.getModel();
-            ComboItem item = (ComboItem)model.getSelectedItem();
+            DefaultComboBoxModel model = (DefaultComboBoxModel) cmbStations.getModel();
+            ComboItem item = (ComboItem) model.getSelectedItem();
             String value = item.getValue();
             int stationID = Integer.valueOf(value);
 
@@ -320,7 +325,7 @@ public class Line extends MyInternalFrame {
             fillStations();
 
             int chosenRow = cmbStations.getSelectedIndex();
-            ((DefaultComboBoxModel)cmbStations.getModel()).removeElementAt(chosenRow);
+            ((DefaultComboBoxModel) cmbStations.getModel()).removeElementAt(chosenRow);
         } catch (SQLException | NullPointerException ex) {
 //            Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -371,7 +376,7 @@ public class Line extends MyInternalFrame {
             Logger.getLogger(Line.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     private void fillCmbStations() {
         Statement s;
         ResultSet rs;

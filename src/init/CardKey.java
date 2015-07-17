@@ -11,12 +11,12 @@ import java.sql.Date;
  *
  * @author asus
  */
-public class Card {
+public class CardKey {
 
     private int number;
     private Date purchaseDate;
 
-    public Card(int number, Date purchaseDate) {
+    public CardKey(int number, Date purchaseDate) {
         this.number = number;
         this.purchaseDate = purchaseDate;
     }

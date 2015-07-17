@@ -27,13 +27,10 @@ import javax.swing.event.ListSelectionEvent;
  */
 public class Station extends MyInternalFrame {
 
-    int stationID;
-    String[] LineColumns = {
-        "Name",
-        "Color",
-        "FoundedYear",
-        "Type",
-        "Length"};
+    private int stationID;
+    private final String[] LineColumns = new String[]{"Name", "Color", "FoundedYear", "Type", "Length"};
+
+    ;
 
     /**
      * Creates new form Station2
@@ -44,6 +41,7 @@ public class Station extends MyInternalFrame {
      */
     public Station(String title, String type, int stationID) {
         super(title, type);
+        setMode((stationID == 0) ? utils.Constants.VIEW_MODE : utils.Constants.VIEW_MODE);
         this.stationID = stationID;
         initComponents();
         fillCmbZone();
@@ -74,7 +72,11 @@ public class Station extends MyInternalFrame {
                 btnRemoveLine.setEnabled(true);
             }
         });
-    //</editor-fold>
+        //</editor-fold>
+    }
+
+    public Station(String title, String type) {
+        this(title, type, 0);
     }
 
     public Station(String title, String type, int stationID, JInternalFrame parent) {
@@ -429,6 +431,5 @@ public class Station extends MyInternalFrame {
                     .getName()).log(Level.SEVERE, null, ex);
         }
     }
-
 
 }
