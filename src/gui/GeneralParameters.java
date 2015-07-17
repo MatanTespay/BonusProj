@@ -6,10 +6,13 @@
 package gui;
 
 import static init.MainClass.con;
+import init.MyTableModel;
 import init.YearRange;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,6 +23,7 @@ import java.util.logging.Logger;
 public class GeneralParameters extends MyInternalFrame {
 
     private final YearRange range;
+    private final String[] DepositColumns = new String[]{"Start Year", "End Year", "Price"};
 
     /**
      * Creates new form GeneralParameters
@@ -29,8 +33,11 @@ public class GeneralParameters extends MyInternalFrame {
      * @param range
      */
     public GeneralParameters(String title, String type, YearRange range) {
+        super(title, type);
+        setMode(utils.Constants.EDIT_MODE);
         this.range = range;
         initComponents();
+        fillDeposits();
 
         if (range != null) {
             fillFields();
@@ -52,72 +59,179 @@ public class GeneralParameters extends MyInternalFrame {
         ycFrom = new com.toedter.calendar.JYearChooser();
         ycTo = new com.toedter.calendar.JYearChooser();
         tfDeposit = new javax.swing.JTextField();
-        lblDeposit = new javax.swing.JLabel();
         lblFrom = new javax.swing.JLabel();
         lblTo = new javax.swing.JLabel();
         lblIs = new javax.swing.JLabel();
+        lblDepositFees = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblDeposits = new javax.swing.JTable();
+        btnRemove = new javax.swing.JButton();
+        btnSubmit = new javax.swing.JButton();
+        btnCancel = new javax.swing.JButton();
+        btnCreate = new javax.swing.JButton();
 
         tfDeposit.setText("jTextField1");
 
-        lblDeposit.setText("Deposit Fee");
-
-        lblFrom.setText("From");
+        lblFrom.setText("Deposit from");
 
         lblTo.setText("to");
 
         lblIs.setText("is");
+
+        lblDepositFees.setText("Deposit Fees");
+
+        tblDeposits.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(tblDeposits);
+
+        btnRemove.setText("Delete");
+        btnRemove.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoveActionPerformed(evt);
+            }
+        });
+
+        btnSubmit.setText("Submit");
+
+        btnCancel.setText("Cancel");
+
+        btnCreate.setText("Create");
+        btnCreate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCreateActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(lblDeposit))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(lblFrom)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(ycFrom, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(lblTo)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(ycTo, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(lblIs)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(tfDeposit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(lblDepositFees)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(lblFrom)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(ycFrom, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(lblTo)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(ycTo, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(lblIs)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(tfDeposit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnCreate, javax.swing.GroupLayout.DEFAULT_SIZE, 79, Short.MAX_VALUE)
+                    .addComponent(btnRemove, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(lblDeposit)
-                        .addGap(15, 15, 15)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(ycFrom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblTo)
-                            .addComponent(lblFrom)
-                            .addComponent(ycTo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(lblIs)
-                    .addComponent(tfDeposit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(ycFrom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblTo)
+                    .addComponent(lblFrom)
+                    .addComponent(ycTo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(lblIs)
+                        .addComponent(tfDeposit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnCreate))
+                .addGap(20, 20, 20)
+                .addComponent(lblDepositFees)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnRemove))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnCancel)
+                    .addComponent(btnSubmit))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
+        PreparedStatement st;
+        int fromYear;
+        int toYear;
+
+        try {
+
+            fromYear = ycFrom.getYear();
+            toYear = ycTo.getYear();
+
+            st = con.prepareStatement("DELETE FROM tblGeneralParameters WHERE "
+                    + "depositStartYear = ? and depositEndYear = ?");
+            st.setInt(1, fromYear);
+            st.setInt(2, toYear);
+            st.executeUpdate();
+
+            fillDeposits();
+        } catch (SQLException ex) {
+            Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnRemoveActionPerformed
+
+    private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
+        PreparedStatement st;
+        int fromYear;
+        int toYear;
+        double price;
+
+        try {
+
+            fromYear = ycFrom.getYear();
+            toYear = ycTo.getYear();
+            price = Double.valueOf(tfDeposit.getText());
+
+            st = con.prepareStatement("INSERT INTO tblGeneralParameters VALUES (?,?,?)");
+            st.setInt(1, fromYear);
+            st.setInt(2, toYear);
+            st.setDouble(3, price);
+            st.executeUpdate();
+            fillDeposits();
+
+        } catch (SQLException | NullPointerException ex) {
+//            Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnCreateActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel lblDeposit;
+    private javax.swing.JButton btnCancel;
+    private javax.swing.JButton btnCreate;
+    private javax.swing.JButton btnRemove;
+    private javax.swing.JButton btnSubmit;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblDepositFees;
     private javax.swing.JLabel lblFrom;
     private javax.swing.JLabel lblIs;
     private javax.swing.JLabel lblTo;
+    private javax.swing.JTable tblDeposits;
     private javax.swing.JTextField tfDeposit;
     private com.toedter.calendar.JYearChooser ycFrom;
     private com.toedter.calendar.JYearChooser ycTo;
@@ -139,6 +253,28 @@ public class GeneralParameters extends MyInternalFrame {
             tfDeposit.setText(rs.getString("price"));
         } catch (SQLException ex) {
             Logger.getLogger(GeneralParameters.class
+                    .getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void fillDeposits() {
+        Statement s;
+        ResultSet rs;
+        try {
+            s = con.createStatement();
+            rs = s.executeQuery("Select * From tblGeneralParameters");
+
+            ArrayList<Object[]> rows = new ArrayList();
+            while (rs.next()) {
+                Object[] row = {rs.getString("depositStartYear"), rs.getString("depositEndYear"),
+                    rs.getString("price")};
+                rows.add(row);
+            }
+            MyTableModel tableModel = new MyTableModel(DepositColumns, rows, null);
+            tblDeposits.setModel(tableModel);
+
+        } catch (SQLException ex) {
+            Logger.getLogger(CardLengths.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
     }

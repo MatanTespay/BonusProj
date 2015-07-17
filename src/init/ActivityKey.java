@@ -13,30 +13,30 @@ import java.sql.Date;
  */
 public class ActivityKey {
 
-    private Card card;
+    private CardKey card;
     private Date activityDate;
 
-    public ActivityKey(Card card, Date activityDate) {
+    public ActivityKey(CardKey card, Date activityDate) {
         this.card = card;
         this.activityDate = activityDate;
     }
     
      public ActivityKey(int cardNumber, Date purchaseDate, Date activityDate) {
-        this (new Card (cardNumber, purchaseDate),activityDate);
+        this (new CardKey (cardNumber, purchaseDate),activityDate);
         
     }
 
     /**
      * @return the card
      */
-    public Card getCard() {
+    public CardKey getCard() {
         return card;
     }
 
     /**
      * @param card the card to set
      */
-    public void setCard(Card card) {
+    public void setCard(CardKey card) {
         this.card = card;
     }
 
