@@ -5,19 +5,25 @@
  */
 package gui;
 
+import init.InputValidator;
 import init.MainClass;
+import java.awt.Color;
 
 import java.util.AbstractMap;
+import java.util.ArrayList;
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import utils.HelperClass;
 
 /**
-
- *The class represents the root object of the internal frames in the system.
+ *
+ * The class represents the root object of the internal frames in the system.
+ *
  * @author Matan
- 
-*/
+ *
+ */
 /* Used by InternalFrameDemo.java. */
 public class MyInternalFrame extends JInternalFrame {
 
@@ -28,6 +34,8 @@ public class MyInternalFrame extends JInternalFrame {
     DisabledGlassPane glassPane;
     JInternalFrame parent;
     JInternalFrame child;
+    protected ArrayList<InputValidator> validators;
+
     /**
      *
      * @param title the value of title
@@ -44,41 +52,41 @@ public class MyInternalFrame extends JInternalFrame {
         selectedUserType = userType;
         //...Create the GUI and put it in the window..;
         //Set the window's location.
-        
+
         setLocation(xOffset, yOffset);
         glassPane = new DisabledGlassPane();
         //ToolTipManager.sharedInstance().registerComponent(this);
-       
+
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
             @Override
-			public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
+            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
                 SetActivate();
             }
 
             @Override
-			public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
+            public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
             }
 
             @Override
-			public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
+            public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
                 formInternalFrameClosing(evt);
             }
 
             @Override
-			public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
+            public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
 
             }
 
             @Override
-			public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
+            public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
             }
 
             @Override
-			public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
+            public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
             }
 
             @Override
-			public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
+            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
             }
         });
     }
@@ -89,6 +97,7 @@ public class MyInternalFrame extends JInternalFrame {
 
     /**
      * returns the frame's glass pane
+     *
      * @return returns the glass pane
      */
     public DisabledGlassPane getDisabledGlassPane() {
@@ -96,7 +105,9 @@ public class MyInternalFrame extends JInternalFrame {
     }
 
     /**
-     * changes the state of the window title buttons according to the given state
+     * changes the state of the window title buttons according to the given
+     * state
+     *
      * @param state
      */
     public void changeWindowButtons(boolean state) {
@@ -104,6 +115,22 @@ public class MyInternalFrame extends JInternalFrame {
         setMaximizable(state);
         setIconifiable(state);
         setClosable(state);
+    }
+
+    public boolean isInputOk() {
+        boolean result = true;
+        for (InputValidator validator : validators) {
+            JTextField txt = (JTextField) validator.getComponent();
+            validator.setErrMsg(HelperClass.getErrMsg(txt.getText(), validator.getInputType().getType()));
+            if (validator.getErrMsg() != null) {
+                result = false;
+                validator.getErrLable().setText(validator.getErrMsg());
+                validator.getErrLable().setForeground(Color.red);
+            } else {
+                validator.getErrLable().setText("");
+            }
+        }
+        return result;
     }
 
     /**
@@ -154,21 +181,23 @@ public class MyInternalFrame extends JInternalFrame {
 
     /**
      * show a diakog messsage with the given string
+     *
      * @param s
      */
     public void shoMissingDataMsg(String s) {
         JOptionPane.showInternalConfirmDialog(this, "Cant process request\n" + s, "Information", JOptionPane.PLAIN_MESSAGE, JOptionPane.INFORMATION_MESSAGE);
     }
-    
+
     /**
      * changes the save state of the {@link init.IFly}}
+     *
      * @param state
      */
-    public void setIflyState(boolean state){
+    public void setIflyState(boolean state) {
         MainClass.setIsIflySaved(state);
     }
 
-    public void openChildFrame(MyInternalFrame child){
+    public void openChildFrame(MyInternalFrame child) {
         JDesktopPane desk = this.getDesktopPane();
 
         if (desk != null) {

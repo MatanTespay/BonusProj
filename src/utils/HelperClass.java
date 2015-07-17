@@ -185,7 +185,7 @@ public class HelperClass {
                         }
                         break;
                     case "Password":
-                        if (text.length() < 4) {
+                        if (text.length() >= 4) {
                             return null;
                         } else {
                             s = "Minimum 4 characters";

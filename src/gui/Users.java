@@ -5,7 +5,9 @@
  */
 package gui;
 
+import com.toedter.calendar.JDateChooser;
 import init.ComboItem;
+import init.InputValidator;
 import init.MainClass;
 import static init.MainClass.con;
 import init.MyTableModel;
@@ -53,6 +55,13 @@ public class Users extends MyInternalFrame {
         initComponents();
         fillCbUserType();
         FillUsersTable();
+        super.validators = new ArrayList<InputValidator>() {
+            {
+                add(new InputValidator(txtPass, utils.InputType.PASSWOORD, lblerrPass, null));
+                add(new InputValidator(txtUserName, utils.InputType.TEXT, lblerrUserName, null));
+            }
+        };
+
         setLables();
         setTableSelection();
         btnRemove.setEnabled(false);
@@ -189,11 +198,11 @@ public class Users extends MyInternalFrame {
                         .addComponent(lblerrUserName, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(lblerrPass, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnAddUser)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(btnRemove)
-                        .addComponent(btnEdit))))
+                        .addComponent(btnEdit))
+                    .addComponent(btnAddUser)))
         );
 
         tblUsers.setModel(new javax.swing.table.DefaultTableModel(
@@ -329,35 +338,13 @@ public class Users extends MyInternalFrame {
         }
     }
 
+
     private void saveChange() {
         boolean result = true;
         if (!isDeleteState) {
-            JLabel[] arry = {lblerrPass, lblerrUserName};
-            for (JLabel lable : arry) {
-                Component c = lable.getLabelFor();
-                if (c != null) {
-                    String tempErr = null;
-                    String s = lable.getName();
-                    if (lable.equals(lblerrPass)) {
-                        if (txtPass.getText().trim().length() == 0) {
-                            tempErr = HelperClass.getErrMsg(((JTextField) c).getText(),
-                                    "Password");
-                        }
-                    } else if (lable.equals(lblerrUserName)) {
-                        
-                        tempErr = HelperClass.getErrMsg(((JTextField) c).getText(),
-                                "Text");
-                    }
-                    
-                    if (tempErr != null) {
-                        result = false;
-                        lable.setText(tempErr);
-                        lable.setForeground(Color.red);
-                    } else {
-                        lable.setText("");
-                    }
-                }
-            }
+            
+            result = super.isInputOk();
+            
         }
 
         if (result) {
@@ -397,7 +384,8 @@ public class Users extends MyInternalFrame {
                         stmt.setInt(3, RoleID);
                         // execute insert SQL stetement                
                         stmt.executeUpdate();
-
+                        txtUserName.setText("");
+                        txtPass.setText("");
                         FillUsersTable();
 
                     }
@@ -437,19 +425,19 @@ public class Users extends MyInternalFrame {
                 } else {
                     q = "DELETE FROM tblUser "
                             + "WHERE username=? and password=?";
-                    
+
                     stmt = MainClass.con.prepareStatement(q);
                     String oldName = (String) tblUsers.getModel().getValueAt(editedRiwIdx, 0);
                     String oldPass = (String) tblUsers.getModel().getValueAt(editedRiwIdx, 1);
                     stmt.setString(1, oldName);
-                    stmt.setString(2,oldPass);
+                    stmt.setString(2, oldPass);
                     stmt.executeUpdate();
 
                     FillUsersTable();
 
                     btnEdit.setEnabled(false);
                     btnRemove.setEnabled(false);
-                    
+
                     isDeleteState = false;
                 }
 
