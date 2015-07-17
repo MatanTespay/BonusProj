@@ -5,6 +5,7 @@
  */
 package gui;
 
+import com.microsoft.sqlserver.jdbc.SQLServerException;
 import com.toedter.calendar.JDateChooser;
 import init.ComboItem;
 import init.InputValidator;
@@ -13,11 +14,15 @@ import static init.MainClass.con;
 import init.MyTableModel;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Graphics2D;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
+import java.sql.SQLNonTransientException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -59,6 +64,7 @@ public class Users extends MyInternalFrame {
             {
                 add(new InputValidator(txtPass, utils.InputType.PASSWOORD, lblerrPass, null));
                 add(new InputValidator(txtUserName, utils.InputType.TEXT, lblerrUserName, null));
+                
             }
         };
 
@@ -66,6 +72,7 @@ public class Users extends MyInternalFrame {
         setTableSelection();
         btnRemove.setEnabled(false);
         btnEdit.setEnabled(false);
+        
 
     }
 
@@ -177,7 +184,7 @@ public class Users extends MyInternalFrame {
                                 .addComponent(lblPass)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(txtPass, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(123, Short.MAX_VALUE))
+                .addContainerGap(133, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -202,7 +209,8 @@ public class Users extends MyInternalFrame {
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(btnRemove)
                         .addComponent(btnEdit))
-                    .addComponent(btnAddUser)))
+                    .addComponent(btnAddUser))
+                .addGap(0, 5, Short.MAX_VALUE))
         );
 
         tblUsers.setModel(new javax.swing.table.DefaultTableModel(
@@ -224,7 +232,7 @@ public class Users extends MyInternalFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 492, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 502, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -338,13 +346,12 @@ public class Users extends MyInternalFrame {
         }
     }
 
-
     private void saveChange() {
         boolean result = true;
         if (!isDeleteState) {
-            
+
             result = super.isInputOk();
-            
+
         }
 
         if (result) {
@@ -420,6 +427,16 @@ public class Users extends MyInternalFrame {
                     txtUserName.setText("");
                     txtPass.setText("");
 
+//                    String up = "UPDATE [LondonU2].[dbo].[tblCard]"
+//                            + " SET [purchaseDate] = ?"
+//                            + " WHERE number = 14";
+//                    stmt = con.prepareStatement(up,
+//                            ResultSet.TYPE_SCROLL_SENSITIVE,
+//                            ResultSet.CONCUR_UPDATABLE);
+//                    Timestamp l = new Timestamp(dater.getDate().getTime());
+//                    stmt.setTimestamp(1, l);
+//                    
+//                    stmt.executeUpdate();
                     isEditState = false;
 
                 } else {
@@ -440,11 +457,26 @@ public class Users extends MyInternalFrame {
 
                     isDeleteState = false;
                 }
+            } catch (SQLServerException ex) {
+                String msg = "There was an error in the action";
+                if(ex.getErrorCode() == 2627){ // 2627 is unique constraint (includes primary key), 2601 is unique index
+                    msg = "This User Name alredy exit!";
+                }
+                JOptionPane.showInternalConfirmDialog(this, msg ,
+						"Error", JOptionPane.PLAIN_MESSAGE,
+						JOptionPane.ERROR_MESSAGE);
+                
+                Logger.getLogger(Users.class.getName()).log(Level.SEVERE, null, ex);
 
             } catch (SQLException ex) {
                 Logger.getLogger(Users.class.getName()).log(Level.SEVERE, null, ex);
             }
 
+            JOptionPane.showMessageDialog(this,
+                                "Changes Saved",
+                                "INFORMATION MESSAGE",
+                                JOptionPane.INFORMATION_MESSAGE);
+            
         }
     }
 
@@ -463,6 +495,10 @@ public class Users extends MyInternalFrame {
         }
 
         return new MyTableModel(UserColumns, data);
+
+    }
+
+    class mydate extends JDateChooser {
 
     }
 

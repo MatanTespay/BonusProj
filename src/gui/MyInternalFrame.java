@@ -5,6 +5,7 @@
  */
 package gui;
 
+import com.toedter.calendar.JDateChooser;
 import init.InputValidator;
 import init.MainClass;
 import java.awt.Color;
@@ -120,8 +121,18 @@ public class MyInternalFrame extends JInternalFrame {
     public boolean isInputOk() {
         boolean result = true;
         for (InputValidator validator : validators) {
-            JTextField txt = (JTextField) validator.getComponent();
-            validator.setErrMsg(HelperClass.getErrMsg(txt.getText(), validator.getInputType().getType()));
+            //String e = new SimpleDateFormat("dd/MM/yy").format(((JDateChooser) c).getDate());
+            
+            if (validator.getComponent() instanceof JTextField) {
+                JTextField field = (JTextField) validator.getComponent();
+                validator.setErrMsg(HelperClass.getErrMsg(field.getText(), validator.getInputType().getType()));
+            }
+            else if(validator.getComponent() instanceof JDateChooser){
+                JDateChooser field = (JDateChooser) validator.getComponent();
+                String value = (field.getDate() == null) ? "" : field.getDate().toString() ;
+                //validator.setErrMsg(HelperClass.getErrMsg(value, validator.getInputType().getType()));
+            }
+            
             if (validator.getErrMsg() != null) {
                 result = false;
                 validator.getErrLable().setText(validator.getErrMsg());
