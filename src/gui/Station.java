@@ -27,13 +27,8 @@ import javax.swing.event.ListSelectionEvent;
  */
 public class Station extends MyInternalFrame {
 
-    int stationID;
-    String[] LineColumns = {
-        "Name",
-        "Color",
-        "FoundedYear",
-        "Type",
-        "Length"};
+    private int stationID;
+    private final String[] LineColumns = new String[]{"Name", "Color", "FoundedYear", "Type", "Length"};;
 
     /**
      * Creates new form Station2
