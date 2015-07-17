@@ -24,14 +24,14 @@ import javax.swing.ListSelectionModel;
  */
 public class Site extends MyInternalFrame {
 
-    int siteID;
-    String[] SFEColumns = {
+    private final int siteID;
+    private final String[] SFEColumns = {
         "ID",
         "Station Name",
         "Line Name",
         "Distance"};
 
-    String[] SFSColumns = {
+    private final String[] SFSColumns = {
         "ID",
         "Name",
         "Foundation Year",
@@ -47,6 +47,7 @@ public class Site extends MyInternalFrame {
      */
     public Site(String title, String type, int siteID) {
         super(title, type);
+        setMode((siteID == 0) ? utils.Constants.VIEW_MODE : utils.Constants.VIEW_MODE);
         this.siteID = siteID;
         initComponents();
         fillCmbType();
@@ -68,7 +69,10 @@ public class Site extends MyInternalFrame {
             tblNearbySites.setColumnSelectionAllowed(false);
             tblNearbySites.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         }
+    }
 
+    public Site(String title, String type) {
+        this(title, type, 0);
     }
 
     /**

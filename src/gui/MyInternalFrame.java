@@ -35,6 +35,7 @@ public class MyInternalFrame extends JInternalFrame {
     JInternalFrame parent;
     JInternalFrame child;
     protected ArrayList<InputValidator> validators;
+    private boolean mode;
 
     /**
      *
@@ -221,5 +222,19 @@ public class MyInternalFrame extends JInternalFrame {
             } catch (java.beans.PropertyVetoException ex) {
             }
         }
+    }
+
+    /**
+     * @return the mode
+     */
+    public boolean getMode() {
+        return mode;
+    }
+
+    /**
+     * @param mode the mode to set
+     */
+    public void setMode(boolean mode) {
+        this.mode = mode;
     }
 }

@@ -19,9 +19,9 @@ import java.util.logging.Logger;
  *
  * @author asus
  */
-public class CardLength extends MyInternalFrame {
+public class CardLengths extends MyInternalFrame {
 
-    private final String[] lengthColumns = new String[]{"Length (days)", "Description"};;
+    private final String[] lengthColumns = new String[]{"Length (days)", "Description"};
 
     /**
      * Creates new form CardLength
@@ -29,7 +29,9 @@ public class CardLength extends MyInternalFrame {
      * @param title
      * @param type
      */
-    public CardLength(String title, String type) {
+    public CardLengths(String title, String type) {
+        super(title, type);
+        setMode(utils.Constants.EDIT_MODE);
         initComponents();
         fillLengths();
     }
@@ -49,8 +51,8 @@ public class CardLength extends MyInternalFrame {
         spLength = new javax.swing.JSpinner();
         tfDescription = new javax.swing.JTextField();
         lblDescription = new javax.swing.JLabel();
-        btnAdd = new javax.swing.JButton();
-        btnRemove = new javax.swing.JButton();
+        btnCreate = new javax.swing.JButton();
+        btnDelete = new javax.swing.JButton();
         btnSubmit = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
         lblTblLengths = new javax.swing.JLabel();
@@ -74,17 +76,17 @@ public class CardLength extends MyInternalFrame {
 
         lblDescription.setText("Description");
 
-        btnAdd.setText("Add");
-        btnAdd.addActionListener(new java.awt.event.ActionListener() {
+        btnCreate.setText("Create");
+        btnCreate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddActionPerformed(evt);
+                btnCreateActionPerformed(evt);
             }
         });
 
-        btnRemove.setText("Remove");
-        btnRemove.addActionListener(new java.awt.event.ActionListener() {
+        btnDelete.setText("Delete");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRemoveActionPerformed(evt);
+                btnDeleteActionPerformed(evt);
             }
         });
 
@@ -107,7 +109,11 @@ public class CardLength extends MyInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnDelete, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(lblLength)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -117,11 +123,7 @@ public class CardLength extends MyInternalFrame {
                                 .addGap(18, 18, 18)
                                 .addComponent(tfDescription, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 288, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnRemove))
+                                .addComponent(btnCreate, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(lblTblLengths))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
@@ -134,14 +136,14 @@ public class CardLength extends MyInternalFrame {
                     .addComponent(spLength, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblDescription)
                     .addComponent(tfDescription, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnAdd)
+                    .addComponent(btnCreate)
                     .addComponent(lblLength))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
                 .addComponent(lblTblLengths)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnRemove))
+                    .addComponent(btnDelete))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCancel)
@@ -152,10 +154,13 @@ public class CardLength extends MyInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+    private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
+        PreparedStatement st;
+        int length;
+        
         try {
-            PreparedStatement st;
-            int length = (Integer) spLength.getModel().getValue();
+            
+            length = (Integer) spLength.getModel().getValue();
             String description = tfDescription.getText();
 
             st = con.prepareStatement("INSERT INTO tblCardLengths VALUES (?,?)");
@@ -167,13 +172,14 @@ public class CardLength extends MyInternalFrame {
         } catch (SQLException | NullPointerException ex) {
 //            Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_btnAddActionPerformed
+    }//GEN-LAST:event_btnCreateActionPerformed
 
-    private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         PreparedStatement st;
-        int length = (Integer) (tblLengths.getModel().getValueAt(tblLengths.getSelectedRow(), 0));
-
+        int length;
+        
         try {
+            length = (Integer) (tblLengths.getModel().getValueAt(tblLengths.getSelectedRow(), 0));
             st = con.prepareStatement("DELETE FROM tblCardLengths WHERE "
                     + "cardLength = ?");
             st.setInt(1, length);
@@ -183,13 +189,13 @@ public class CardLength extends MyInternalFrame {
         } catch (SQLException ex) {
             Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_btnRemoveActionPerformed
+    }//GEN-LAST:event_btnDeleteActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnCancel;
-    private javax.swing.JButton btnRemove;
+    private javax.swing.JButton btnCreate;
+    private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnSubmit;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblDescription;
@@ -216,7 +222,7 @@ public class CardLength extends MyInternalFrame {
             tblLengths.setModel(tableModel);
 
         } catch (SQLException ex) {
-            Logger.getLogger(Card.class
+            Logger.getLogger(CardLengths.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
     }

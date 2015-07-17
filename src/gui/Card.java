@@ -30,7 +30,9 @@ public class Card extends MyInternalFrame {
 
     private final CardKey cardkey;
     private JFileChooser picFileChooser;
-    private final String[] programColumns = {"#","Zone","Length"};;
+    private final String[] programColumns = {"#", "Zone", "Length"};
+
+    ;
     /**
      * Creates new form Card
      *
@@ -39,6 +41,8 @@ public class Card extends MyInternalFrame {
      * @param cardkey
      */
     public Card(String title, String type, CardKey cardkey) {
+        super(title, type);
+        setMode((cardkey == null) ? utils.Constants.VIEW_MODE : utils.Constants.VIEW_MODE);
         initComponents();
         this.cardkey = cardkey;
         fillCmbCard();
@@ -48,6 +52,10 @@ public class Card extends MyInternalFrame {
         tblPrograms.setRowSelectionAllowed(true);
         tblPrograms.setColumnSelectionAllowed(false);
         tblPrograms.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    }
+
+    public Card(String title, String type) {
+        this(title, type, null);
     }
 
     /**

@@ -5,30 +5,23 @@
  */
 package gui;
 
-import com.toedter.calendar.JDateChooser;
 import init.ComboItem;
 import init.InputValidator;
 import init.MainClass;
 import static init.MainClass.con;
 import init.MyTableModel;
-import java.awt.Color;
-import java.awt.Component;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import utils.HelperClass;
 
 /**
  *
@@ -52,6 +45,7 @@ public class Users extends MyInternalFrame {
      */
     public Users(String title, String type) {
         super(title, type);
+        setMode(utils.Constants.EDIT_MODE);
         initComponents();
         fillCbUserType();
         FillUsersTable();

@@ -33,6 +33,8 @@ public class Activity extends MyInternalFrame {
      * @param activityKey
      */
     public Activity(String title, String type, ActivityKey activityKey) {
+        super(title, type);
+        setMode((activityKey == null)?utils.Constants.VIEW_MODE:utils.Constants.VIEW_MODE);
         this.activityKey = activityKey;
         initComponents();
         fillCmbPurchaseDate(0);
@@ -40,6 +42,10 @@ public class Activity extends MyInternalFrame {
         fillCmbCard();
         fillCmbStation();
         fillFields();
+    }
+    
+    public Activity(String title, String type) {
+        this (title, type, null);
     }
 
     /**
