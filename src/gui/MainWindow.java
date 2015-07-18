@@ -119,6 +119,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         addMenuItem(aMenu, "Add Site", KeyEvent.VK_P);
         addMenuItem(aMenu, "Add Activity", KeyEvent.VK_B);
         addMenuItem(aMenu, "Add Card", KeyEvent.VK_B);
+        addMenuItem(aMenu, "Export/Import CSV", KeyEvent.VK_B);
 
         //</editor-fold>
     }
@@ -200,8 +201,8 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 
                 break;
 
-            case "Add Flight":
-                ifram = new AddFlight(e.getActionCommand(), selectedUserType);
+            case "Export/Import CSV":
+                ifram = new ExportImportCsv(e.getActionCommand(), selectedUserType);
                 break;
             case "Add Stop To Flight":
                 ifram = new AddStop(e.getActionCommand(), selectedUserType);

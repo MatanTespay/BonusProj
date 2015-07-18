@@ -225,7 +225,7 @@ public class MainClass {
         }
     }
     
-    private static Connection getDBConnection() {
+    public static Connection getDBConnection() {
  
 		Connection dbConnection = null;
  

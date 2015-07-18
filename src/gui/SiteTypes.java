@@ -22,19 +22,18 @@ import static utils.Constants.EDIT_MODE;
  *
  * @author asus
  */
-public class Zones extends MyInternalFrame {
+public class SiteTypes extends MyInternalFrame {
 
     /**
-     * Creates new form Zones
-     *
+     * Creates new form SiteType
      * @param title
      * @param type
      */
-    public Zones(String title, String type) {
+    public SiteTypes (String title, String type) {
         super(title, type);
         setMode(EDIT_MODE);
         initComponents();
-        fillZones();
+        fillTypes();
     }
 
     /**
@@ -46,19 +45,17 @@ public class Zones extends MyInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        lblZoneNumber = new javax.swing.JLabel();
-        lblZones = new javax.swing.JLabel();
-        spZoneNumber = new javax.swing.JSpinner();
+        lblSiteType = new javax.swing.JLabel();
         btnCreate = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        lsttypes = new javax.swing.JList();
+        lblTypes = new javax.swing.JLabel();
         btnDelete = new javax.swing.JButton();
         btnSubmit = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        lstZones = new javax.swing.JList();
+        tfType = new javax.swing.JTextField();
 
-        lblZoneNumber.setText("Zone number");
-
-        lblZones.setText("Zones");
+        lblSiteType.setText("Type");
 
         btnCreate.setText("Create");
         btnCreate.addActionListener(new java.awt.event.ActionListener() {
@@ -66,6 +63,15 @@ public class Zones extends MyInternalFrame {
                 btnCreateActionPerformed(evt);
             }
         });
+
+        lsttypes.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane2.setViewportView(lsttypes);
+
+        lblTypes.setText("Types");
 
         btnDelete.setText("Delete");
         btnDelete.addActionListener(new java.awt.event.ActionListener() {
@@ -78,12 +84,7 @@ public class Zones extends MyInternalFrame {
 
         btnCancel.setText("Cancel");
 
-        lstZones.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane2.setViewportView(lstZones);
+        tfType.setText("jTextField1");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -92,35 +93,35 @@ public class Zones extends MyInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblZones)
+                    .addComponent(lblTypes)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addGroup(layout.createSequentialGroup()
                             .addComponent(btnSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                             .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(layout.createSequentialGroup()
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(jScrollPane2)
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                    .addComponent(lblZoneNumber)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(spZoneNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGap(18, 18, 18)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(lblSiteType)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(tfType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jScrollPane2))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(btnCreate, javax.swing.GroupLayout.DEFAULT_SIZE, 79, Short.MAX_VALUE)
                                 .addComponent(btnDelete, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(spZoneNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnCreate)
-                    .addComponent(lblZoneNumber))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
-                .addComponent(lblZones)
+                    .addComponent(lblSiteType)
+                    .addComponent(tfType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
+                .addComponent(lblTypes)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnDelete)
@@ -137,14 +138,14 @@ public class Zones extends MyInternalFrame {
 
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
         PreparedStatement st;
-        int zoneNumber;
+        String siteType;
         try {
-            zoneNumber = (Integer) spZoneNumber.getModel().getValue();
+            siteType = tfType.getText();
 
-            st = con.prepareStatement("INSERT INTO tblZone VALUES (?)");
-            st.setInt(1, zoneNumber);
+            st = con.prepareStatement("INSERT INTO tblSiteType VALUES (?)");
+            st.setString(1, siteType);
             st.executeUpdate();
-            fillZones();
+            fillTypes();
 
         } catch (SQLException | NullPointerException ex) {
             //            Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
@@ -153,19 +154,19 @@ public class Zones extends MyInternalFrame {
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         PreparedStatement st;
-        ComboItem zoneItem;
-        int zoneNumber;
+        ComboItem typeItem;
+        String siteType;
         try {
-            zoneItem = (ComboItem)(lstZones.getSelectedValue());
-            zoneNumber = Integer.parseInt(zoneItem.getValue());
-            st = con.prepareStatement("DELETE FROM tblZone WHERE "
-                    + "number = ?");
-            st.setInt(1, zoneNumber);
+            typeItem = (ComboItem)(lsttypes.getSelectedValue());
+            siteType = typeItem.getValue();
+            st = con.prepareStatement("DELETE FROM tblSiteType WHERE "
+                + "siteType = ?");
+            st.setString(1, siteType);
             st.executeUpdate();
 
-            fillZones();
+            fillTypes();
         } catch (SQLException ex) {
-            Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SiteTypes.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnDeleteActionPerformed
 
@@ -176,32 +177,32 @@ public class Zones extends MyInternalFrame {
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnSubmit;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JLabel lblZoneNumber;
-    private javax.swing.JLabel lblZones;
-    private javax.swing.JList lstZones;
-    private javax.swing.JSpinner spZoneNumber;
+    private javax.swing.JLabel lblSiteType;
+    private javax.swing.JLabel lblTypes;
+    private javax.swing.JList lsttypes;
+    private javax.swing.JTextField tfType;
     // End of variables declaration//GEN-END:variables
 
-    private void fillZones() {
+    private void fillTypes() {
         Statement s;
         ResultSet rs;
         try {
             s = con.createStatement();
-            rs = s.executeQuery("Select * From tblZone");
+            rs = s.executeQuery("Select * From tblSiteType");
 
             Set<ComboItem> items = new TreeSet<>();
             while (rs.next()) {
-                items.add(new ComboItem(rs.getString("number"), "Zone " + rs.getString("number")));
+                items.add(new ComboItem(rs.getString("siteType"), rs.getString("siteType")));
             }
 
             DefaultListModel listModel = new DefaultListModel();
             for (ComboItem ci : items) {
                 listModel.addElement(ci);
             }
-            lstZones.setModel(listModel);
+            lsttypes.setModel(listModel);
 
         } catch (SQLException ex) {
-            Logger.getLogger(Zones.class
+            Logger.getLogger(SiteTypes.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
     }
