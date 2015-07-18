@@ -15,6 +15,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static utils.Constants.EDIT_MODE;
 
 /**
  *
@@ -34,7 +35,7 @@ public class GeneralParameters extends MyInternalFrame {
      */
     public GeneralParameters(String title, String type, YearRange range) {
         super(title, type);
-        setMode(utils.Constants.EDIT_MODE);
+        setMode(EDIT_MODE);
         this.range = range;
         initComponents();
         fillDeposits();
@@ -206,7 +207,7 @@ public class GeneralParameters extends MyInternalFrame {
 
             fromYear = ycFrom.getYear();
             toYear = ycTo.getYear();
-            price = Double.valueOf(tfDeposit.getText());
+            price = Double.parseDouble(tfDeposit.getText());
 
             st = con.prepareStatement("INSERT INTO tblGeneralParameters VALUES (?,?,?)");
             st.setInt(1, fromYear);

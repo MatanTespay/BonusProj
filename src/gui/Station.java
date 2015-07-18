@@ -20,6 +20,8 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JInternalFrame;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
+import static utils.Constants.ADD_MODE;
+import static utils.Constants.EDIT_MODE;
 
 /**
  *
@@ -41,7 +43,7 @@ public class Station extends MyInternalFrame {
      */
     public Station(String title, String type, int stationID) {
         super(title, type);
-        setMode((stationID == 0) ? utils.Constants.VIEW_MODE : utils.Constants.VIEW_MODE);
+        setMode((stationID == 0) ? ADD_MODE : EDIT_MODE);
         this.stationID = stationID;
         initComponents();
         fillCmbZone();
@@ -287,9 +289,10 @@ public class Station extends MyInternalFrame {
 
     private void btnRemoveLineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveLineActionPerformed
         PreparedStatement st;
-        String lineName = (String) (tblLines.getModel().getValueAt(tblLines.getSelectedRow(), 0));
+        String lineName;
 
         try {
+            lineName = (String) (tblLines.getModel().getValueAt(tblLines.getSelectedRow(), 0));
             st = con.prepareStatement("DELETE FROM tblStationInLine WHERE "
                     + "stationID = ? AND  lineName = ?");
             st.setInt(1, stationID);

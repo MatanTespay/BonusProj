@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static utils.Constants.ADD_MODE;
+import static utils.Constants.EDIT_MODE;
 
 /**
  *
@@ -34,7 +36,7 @@ public class Activity extends MyInternalFrame {
      */
     public Activity(String title, String type, ActivityKey activityKey) {
         super(title, type);
-        setMode((activityKey == null)?utils.Constants.VIEW_MODE:utils.Constants.VIEW_MODE);
+        setMode((activityKey == null) ? ADD_MODE : EDIT_MODE);
         this.activityKey = activityKey;
         initComponents();
         fillCmbPurchaseDate(0);
@@ -43,9 +45,9 @@ public class Activity extends MyInternalFrame {
         fillCmbStation();
         fillFields();
     }
-    
+
     public Activity(String title, String type) {
-        this (title, type, null);
+        this(title, type, null);
     }
 
     /**
@@ -189,7 +191,7 @@ public class Activity extends MyInternalFrame {
     private void cmbCardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbCardActionPerformed
         try {
             ComboItem cardItem = (ComboItem) cmbCard.getSelectedItem();
-            int cardNumber = Integer.valueOf(cardItem.getValue());
+            int cardNumber = Integer.parseInt(cardItem.getValue());
             fillCmbPurchaseDate(cardNumber);
         } catch (NullPointerException ex) {
         }
@@ -198,7 +200,7 @@ public class Activity extends MyInternalFrame {
     private void cmbStationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbStationActionPerformed
         try {
             ComboItem stationItem = (ComboItem) cmbStation.getSelectedItem();
-            int stationID = Integer.valueOf(stationItem.getValue());
+            int stationID = Integer.parseInt(stationItem.getValue());
             fillCmbLine(stationID);
         } catch (NullPointerException ex) {
 
@@ -237,30 +239,34 @@ public class Activity extends MyInternalFrame {
             rs = st.executeQuery();
 
             rs.next();
-            for (int i = 1 ; i < cmbCard.getItemCount(); i++){
-                ComboItem item = (ComboItem)cmbCard.getItemAt(i);
-                if (item.getValue().equals(rs.getString("cardNumber")))
+            for (int i = 1; i < cmbCard.getItemCount(); i++) {
+                ComboItem item = (ComboItem) cmbCard.getItemAt(i);
+                if (item.getValue().equals(rs.getString("cardNumber"))) {
                     cmbCard.setSelectedIndex(i);
+                }
             }
-            
-            for (int i = 1 ; i < cmbPurchaseDate.getItemCount(); i++){
-                ComboItem item = (ComboItem)cmbPurchaseDate.getItemAt(i);
-                if (item.getValue().equals(rs.getString("cardPurchaseDate")))
+
+            for (int i = 1; i < cmbPurchaseDate.getItemCount(); i++) {
+                ComboItem item = (ComboItem) cmbPurchaseDate.getItemAt(i);
+                if (item.getValue().equals(rs.getString("cardPurchaseDate"))) {
                     cmbPurchaseDate.setSelectedIndex(i);
+                }
             }
-            
-            for (int i = 1 ; i < cmbStation.getItemCount(); i++){
-                ComboItem item = (ComboItem)cmbStation.getItemAt(i);
-                if (item.getLabel().equals(rs.getString("name")))
+
+            for (int i = 1; i < cmbStation.getItemCount(); i++) {
+                ComboItem item = (ComboItem) cmbStation.getItemAt(i);
+                if (item.getLabel().equals(rs.getString("name"))) {
                     cmbStation.setSelectedIndex(i);
+                }
             }
-            
-            for (int i = 1 ; i < cmbLine.getItemCount(); i++){
-                ComboItem item = (ComboItem)cmbLine.getItemAt(i);
-                if (item.getValue().equals(rs.getString("lineName")))
+
+            for (int i = 1; i < cmbLine.getItemCount(); i++) {
+                ComboItem item = (ComboItem) cmbLine.getItemAt(i);
+                if (item.getValue().equals(rs.getString("lineName"))) {
                     cmbLine.setSelectedIndex(i);
+                }
             }
-            cmbActivityType.setSelectedItem((rs.getString("activityType").equals("I"))?"Ingoing":"Outgoing");
+            cmbActivityType.setSelectedItem((rs.getString("activityType").equals("I")) ? "Ingoing" : "Outgoing");
             dcActivityDate.setDate(rs.getDate("activityDate"));
 
         } catch (SQLException ex) {
