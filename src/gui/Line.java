@@ -19,6 +19,8 @@ import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JInternalFrame;
 import javax.swing.ListSelectionModel;
+import static utils.Constants.ADD_MODE;
+import static utils.Constants.EDIT_MODE;
 
 /**
  *
@@ -43,7 +45,7 @@ public class Line extends MyInternalFrame {
      */
     public Line(String title, String type, String lineName) {
         super(title, type);
-        setMode((lineName == null) ? utils.Constants.VIEW_MODE : utils.Constants.VIEW_MODE);
+        setMode((lineName == null) ? ADD_MODE : EDIT_MODE);
         this.lineName = lineName;
         initComponents();
         fillCmbColor();
@@ -278,7 +280,7 @@ public class Line extends MyInternalFrame {
     }//GEN-LAST:event_tfFoundationActionPerformed
 
     private void btnViewStationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewStationActionPerformed
-        int stationID = Integer.valueOf((String) (tblStations.getModel().getValueAt(tblStations.getSelectedRow(), 0)));
+        int stationID = Integer.parseInt((String) (tblStations.getModel().getValueAt(tblStations.getSelectedRow(), 0)));
         Station newFrame = new Station(evt.getActionCommand(), selectedUserType, stationID, this);
         openChildFrame(newFrame);
         //JDesktopPane desk = this.getDesktopPane();
@@ -295,7 +297,7 @@ public class Line extends MyInternalFrame {
 
     private void btnRemoveStationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveStationActionPerformed
         PreparedStatement st;
-        int stationId = Integer.valueOf((String) (tblStations.getModel().getValueAt(tblStations.getSelectedRow(), 0)));
+        int stationId = Integer.parseInt((String) (tblStations.getModel().getValueAt(tblStations.getSelectedRow(), 0)));
 
         try {
             st = con.prepareStatement("DELETE FROM tblStationInLine WHERE "
@@ -316,7 +318,7 @@ public class Line extends MyInternalFrame {
             DefaultComboBoxModel model = (DefaultComboBoxModel) cmbStations.getModel();
             ComboItem item = (ComboItem) model.getSelectedItem();
             String value = item.getValue();
-            int stationID = Integer.valueOf(value);
+            int stationID = Integer.parseInt(value);
 
             st = con.prepareStatement("INSERT INTO tblStationInLine VALUES (?,?)");
             st.setInt(1, stationID);

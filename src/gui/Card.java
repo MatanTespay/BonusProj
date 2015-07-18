@@ -21,6 +21,8 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.ListSelectionModel;
+import static utils.Constants.ADD_MODE;
+import static utils.Constants.EDIT_MODE;
 
 /**
  *
@@ -42,7 +44,7 @@ public class Card extends MyInternalFrame {
      */
     public Card(String title, String type, CardKey cardkey) {
         super(title, type);
-        setMode((cardkey == null) ? utils.Constants.VIEW_MODE : utils.Constants.VIEW_MODE);
+        setMode((cardkey == null) ? ADD_MODE : EDIT_MODE);
         initComponents();
         this.cardkey = cardkey;
         fillCmbCard();
@@ -252,7 +254,7 @@ public class Card extends MyInternalFrame {
     private void cmbCardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbCardActionPerformed
         try {
             ComboItem cardItem = (ComboItem) cmbCard.getSelectedItem();
-            int cardNumber = Integer.valueOf(cardItem.getValue());
+            int cardNumber = Integer.parseInt(cardItem.getValue());
             fillCmbPurchaseDate(cardNumber);
         } catch (NullPointerException ex) {
         }
@@ -274,8 +276,8 @@ public class Card extends MyInternalFrame {
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         String cardType = String.valueOf(cmbType.getSelectedItem());
         String tableName = (cardType.equals("Paper") ? "tblPaperCardAreas" : "tblOysterCardAreas");
-        int zoneNumber = Integer.valueOf(((ComboItem) cmbZone.getSelectedItem()).getValue());
-        int cardLength = Integer.valueOf(((ComboItem) cmbLength.getSelectedItem()).getValue());
+        int zoneNumber = Integer.parseInt(((ComboItem) cmbZone.getSelectedItem()).getValue());
+        int cardLength = Integer.parseInt(((ComboItem) cmbLength.getSelectedItem()).getValue());
 
         PreparedStatement st;
         try {

@@ -14,6 +14,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static utils.Constants.EDIT_MODE;
 
 /**
  *
@@ -31,7 +32,7 @@ public class CardLengths extends MyInternalFrame {
      */
     public CardLengths(String title, String type) {
         super(title, type);
-        setMode(utils.Constants.EDIT_MODE);
+        setMode(EDIT_MODE);
         initComponents();
         fillLengths();
     }
@@ -157,9 +158,9 @@ public class CardLengths extends MyInternalFrame {
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
         PreparedStatement st;
         int length;
-        
+
         try {
-            
+
             length = (Integer) spLength.getModel().getValue();
             String description = tfDescription.getText();
 
@@ -177,7 +178,7 @@ public class CardLengths extends MyInternalFrame {
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         PreparedStatement st;
         int length;
-        
+
         try {
             length = (Integer) (tblLengths.getModel().getValueAt(tblLengths.getSelectedRow(), 0));
             st = con.prepareStatement("DELETE FROM tblCardLengths WHERE "

@@ -45,7 +45,7 @@ public final class Constants {
             + "Choose \'save\' from the menu-bar (File>save)<br>"
             + "To confirm changes.</html>";
 
-    public static boolean VIEW_MODE = false;
+    public static boolean ADD_MODE = false;
     
     public static boolean EDIT_MODE = true;
 
