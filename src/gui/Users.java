@@ -53,7 +53,7 @@ public class Users extends MyInternalFrame {
         FillUsersTable();
         super.validators = new ArrayList<InputValidator>() {
             {
-                add(new InputValidator(txtPass, utils.InputType.PASSWOORD, lblerrPass, null));
+                add(new InputValidator(txtPass, utils.InputType.PASSWORD, lblerrPass, null));
                 add(new InputValidator(txtUserName, utils.InputType.TEXT, lblerrUserName, null));
                 
             }

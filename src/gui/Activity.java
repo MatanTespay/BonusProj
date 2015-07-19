@@ -414,6 +414,7 @@ public class Activity extends MyInternalFrame {
     }
 
     private void setActiveness() {
+        dchActivityDate.getDateEditor().setEnabled(false);
         if (getMode() == ADD_MODE) {
             // key fields
             cmbCard.setEnabled(true);

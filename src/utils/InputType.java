@@ -13,7 +13,7 @@ public enum  InputType {
     
     
     TEXT("Text"),
-    PASSWOORD("Password"),
+    PASSWORD("Password"),
     NUMBER("Number"),
     DATE("Date"),
     EMAIL("Email"),

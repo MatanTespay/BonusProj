@@ -107,9 +107,7 @@ public class Line extends MyInternalFrame {
         cmbStations = new javax.swing.JComboBox();
         lblAddStations = new javax.swing.JLabel();
         ychFoundationYear = new com.toedter.calendar.JYearChooser();
-        btnCreate = new javax.swing.JButton();
-        btnUpdate = new javax.swing.JButton();
-        btnDelete = new javax.swing.JButton();
+        btnSave = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
 
         tfLength.addActionListener(new java.awt.event.ActionListener() {
@@ -197,11 +195,7 @@ public class Line extends MyInternalFrame {
             }
         });
 
-        btnCreate.setText("Create");
-
-        btnUpdate.setText("Update");
-
-        btnDelete.setText("Delete");
+        btnSave.setText("Save");
 
         btnCancel.setText("Cancel");
 
@@ -260,11 +254,7 @@ public class Line extends MyInternalFrame {
                             .addComponent(cmbType, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(184, 184, 184))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(btnCreate, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())))
@@ -289,9 +279,9 @@ public class Line extends MyInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(ychFoundationYear, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblFoundation))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
                 .addComponent(lblStations)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
@@ -304,9 +294,7 @@ public class Line extends MyInternalFrame {
                         .addComponent(btnRemoveStation)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnCreate)
-                    .addComponent(btnUpdate)
-                    .addComponent(btnDelete)
+                    .addComponent(btnSave)
                     .addComponent(btnCancel))
                 .addContainerGap())
         );
@@ -400,10 +388,8 @@ public class Line extends MyInternalFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancel;
-    private javax.swing.JButton btnCreate;
-    private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnRemoveStation;
-    private javax.swing.JButton btnUpdate;
+    private javax.swing.JButton btnSave;
     private javax.swing.JButton btnViewStation;
     private javax.swing.JComboBox cmbColor;
     private javax.swing.JComboBox cmbStations;
@@ -521,22 +507,10 @@ public class Line extends MyInternalFrame {
 
     private void setActiveness() {
         if (getMode() == ADD_MODE) {
-            // key fields
             tfName.setEnabled(true);
-
-            // control buttons
-            btnCreate.setVisible(true);
-            btnDelete.setVisible(false);
-            btnDelete.setVisible(false);
-
-        } else { // edit mode
-            // key fields
+        } else {
+            // edit mode
             tfName.setEnabled(false);
-
-            // control buttons
-            btnCreate.setVisible(false);
-            btnDelete.setVisible(true);
-            btnUpdate.setVisible(true);
         }
     }
 }

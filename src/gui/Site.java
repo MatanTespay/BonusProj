@@ -213,8 +213,6 @@ public class Site extends MyInternalFrame {
 
         lblDistToExit.setText("Distance (km)");
 
-        tfDistToExit.setText("jTextField1");
-
         btnAddExit.setText("Add exit");
         btnAddExit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -227,8 +225,6 @@ public class Site extends MyInternalFrame {
         cmbSite.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         lblDistToSite.setText("Distance (km)");
-
-        tfDistToSite.setText("jTextField1");
 
         btnAddSite.setText("Add site");
         btnAddSite.addActionListener(new java.awt.event.ActionListener() {

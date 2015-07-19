@@ -65,7 +65,6 @@ public class Card extends MyInternalFrame {
         super(title, type);
         setMode(ADD_MODE);
         this.purchaseDate = null;
-        initComponents();
         buildForm();
     }
 
@@ -581,7 +580,7 @@ public class Card extends MyInternalFrame {
             // control buttons
             btnCreate.setVisible(true);
             btnDelete.setVisible(false);
-            btnDelete.setVisible(false);
+            btnUpdate.setVisible(false);
 
         } else { // edit mode
             // key fields

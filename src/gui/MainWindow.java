@@ -204,7 +204,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
                 ifram = new Site(e.getActionCommand(), selectedUserType, 2);
                 break;
             case "Add Deposit": {
-                ifram = new GeneralParameters(e.getActionCommand(), selectedUserType);
+                ifram = new Deposits(e.getActionCommand(), selectedUserType);
                 break;
             }
             case "Update customer Details":
