@@ -138,8 +138,8 @@ public class AddAgentToBranch extends MyInternalFrame {
         }
             
         
-        int branchNum = Integer.parseInt(((ComboItem) cbBranches.getSelectedItem()).getValue());
-        int agentNum = Integer.parseInt(((ComboItem) CbEmployees.getSelectedItem()).getValue());
+        int branchNum = Integer.parseInt((String)((ComboItem) cbBranches.getSelectedItem()).getKey());
+        int agentNum = Integer.parseInt((String)((ComboItem) CbEmployees.getSelectedItem()).getKey());
         try {
             MainClass.getIfly().connectAgentToBranch(agentNum, branchNum);
             long num = branchNum;
@@ -158,7 +158,7 @@ public class AddAgentToBranch extends MyInternalFrame {
         if(CbEmployees.getModel().getSize() <= 0)
             return;
         
-        int agentId = Integer.parseInt(((ComboItem)CbEmployees.getSelectedItem()).getValue());
+        int agentId = Integer.parseInt((String)((ComboItem)CbEmployees.getSelectedItem()).getKey());
         try {
             Branch branchToremove = MainClass.getIfly().getBranchByAgentID(agentId);
             if(branchToremove != null)

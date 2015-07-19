@@ -5,8 +5,6 @@
  */
 package gui;
 
-import exceptions.YearRangeException;
-import init.ActivityKey;
 import init.CloseAction;
 import init.MainClass;
 
@@ -94,34 +92,54 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         menu.add(menuItem);
 //</editor-fold>
 
-        if (!selectedUserType.equals("Employee")) {
+        //<editor-fold defaultstate="collapsed" desc="Operations Menu">
+        if (!selectedUserType.equals("Customer")) {
+            aMenu = addMenuToMenuBar("Operations", KeyEvent.VK_O);
 
-            //<editor-fold defaultstate="collapsed" desc="Only Admin">
-            if (!selectedUserType.equals("Manager")) {
+            if (!selectedUserType.equals("Agent")) {
+//branch
+                submenu = addMenuToMenuBar("Branch  ", KeyEvent.VK_B);
+                addMenuItem(submenu, "Add Activity", KeyEvent.VK_B);
+                addMenuItem(submenu, "Add Agent To Branch", KeyEvent.VK_A);
+                aMenu.add(submenu);
+                aMenu.addSeparator();
+                //Agents
+                submenu = addMenuToMenuBar("Employees   ", KeyEvent.VK_F);
+                addMenuItem(submenu, "Add Station", KeyEvent.VK_A);
+                //addMenuItem(submenu, "Add Flight Attendant", KeyEvent.VK_F);
+                addMenuItem(submenu, "Add User", KeyEvent.VK_F);
+                addMenuItem(submenu, "Add Line", KeyEvent.VK_F);
+                addMenuItem(submenu, "Add Site", KeyEvent.VK_P);
+                aMenu.add(submenu);
+                aMenu.addSeparator();
 
-                aMenu = addMenuToMenuBar("System", KeyEvent.VK_O);
-                addMenuItem(aMenu, "Add User", KeyEvent.VK_U);
-                addMenuItem(aMenu, "Add Role", KeyEvent.VK_U);
-                addMenuItem(aMenu, "Add Deposit", KeyEvent.VK_D);
-                addMenuItem(aMenu, "Add Card Length", KeyEvent.VK_B);
+                //<editor-fold defaultstate="collapsed" desc="Only Admin">
+                if (!selectedUserType.equals("Manager")) {
 
+                    aMenu = addMenuToMenuBar("System", KeyEvent.VK_O);
+                    addMenuItem(aMenu, "Add User", KeyEvent.VK_U);
+                    addMenuItem(aMenu, "Add Role", KeyEvent.VK_U);
+                    addMenuItem(aMenu, "Add Deposit", KeyEvent.VK_D);
+                    addMenuItem(aMenu, "Add Card Length", KeyEvent.VK_B);
+
+                }
+
+            //</editor-fold>
+                //<editor-fold defaultstate="collapsed" desc=" Admin + Manger">
+                //</editor-fold>
             }
 
-            //</editor-fold>
-            //<editor-fold defaultstate="collapsed" desc=" Admin + Manger">
+            //<editor-fold defaultstate="collapsed" desc="All Workers">
+            aMenu = addMenuToMenuBar("management", KeyEvent.VK_O);
+            addMenuItem(aMenu, "Add Station", KeyEvent.VK_A);
+            addMenuItem(aMenu, "Add Line", KeyEvent.VK_F);
+            addMenuItem(aMenu, "Add Site", KeyEvent.VK_P);
+            addMenuItem(aMenu, "Add Activity", KeyEvent.VK_B);
+            addMenuItem(aMenu, "Add Card", KeyEvent.VK_B);
+            addMenuItem(aMenu, "Export/Import CSV", KeyEvent.VK_B);
+
             //</editor-fold>
         }
-
-        //<editor-fold defaultstate="collapsed" desc="All Workers">
-        aMenu = addMenuToMenuBar("management", KeyEvent.VK_O);
-        addMenuItem(aMenu, "Add Station", KeyEvent.VK_A);
-        addMenuItem(aMenu, "Add Line", KeyEvent.VK_F);
-        addMenuItem(aMenu, "Add Site", KeyEvent.VK_P);
-        addMenuItem(aMenu, "Add Activity", KeyEvent.VK_B);
-        addMenuItem(aMenu, "Add Card", KeyEvent.VK_B);
-        addMenuItem(aMenu, "Export/Import CSV", KeyEvent.VK_B);
-
-        //</editor-fold>
     }
 
     /**
@@ -158,7 +176,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
                 saveIfly();
                 break;
             case "Add Activity":
-                ifram = new Activity(e.getActionCommand(), selectedUserType, new ActivityKey(1, new Date(1951, 03, 14), new Date(1951, 03, 14)));
+                ifram = new Activity(e.getActionCommand(), selectedUserType, 1, new Date(1951, 03, 14), new Date(1951, 03, 14));
 
                 break;
             case "Add Role":
@@ -186,11 +204,8 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
                 ifram = new Site(e.getActionCommand(), selectedUserType, 2);
                 break;
             case "Add Deposit": {
-                try {
-                    ifram = new GeneralParameters(e.getActionCommand(), selectedUserType, new init.YearRange(2010, 2015));
-                } catch (YearRangeException ex) {
-
-                }
+                ifram = new Deposits(e.getActionCommand(), selectedUserType);
+                break;
             }
             case "Update customer Details":
                 ifram = new UpdateCustomerDetails(e.getActionCommand(), selectedUserType);

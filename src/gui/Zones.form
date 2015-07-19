@@ -35,7 +35,7 @@
                               <Group type="102" alignment="0" attributes="0">
                                   <Component id="lblZoneNumber" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                  <Component id="spZoneNumber" min="-2" max="-2" attributes="0"/>
+                                  <Component id="spnZoneNumber" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -55,7 +55,7 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="spZoneNumber" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="spnZoneNumber" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="btnCreate" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="lblZoneNumber" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
@@ -87,7 +87,7 @@
         <Property name="text" type="java.lang.String" value="Zones"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JSpinner" name="spZoneNumber">
+    <Component class="javax.swing.JSpinner" name="spnZoneNumber">
     </Component>
     <Component class="javax.swing.JButton" name="btnCreate">
       <Properties>

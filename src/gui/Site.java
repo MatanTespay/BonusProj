@@ -6,6 +6,7 @@
 package gui;
 
 import init.ComboItem;
+import init.InputValidator;
 import static init.MainClass.con;
 import init.MyTableModel;
 import java.sql.PreparedStatement;
@@ -16,10 +17,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.ListSelectionModel;
 import javax.swing.table.TableModel;
 import static utils.Constants.ADD_MODE;
 import static utils.Constants.EDIT_MODE;
+import static utils.HelperClass.setSelectedValue;
+import static utils.HelperClass.setTableProperties;
 
 /**
  *
@@ -27,7 +29,12 @@ import static utils.Constants.EDIT_MODE;
  */
 public class Site extends MyInternalFrame {
 
-    private final int siteID;
+    private int siteID;
+    private String name;
+    private String description;
+    private int foundedYear;
+    private String type;
+
     private final String[] SFEColumns = {
         "ID",
         "Station Name",
@@ -50,40 +57,37 @@ public class Site extends MyInternalFrame {
      */
     public Site(String title, String type, int siteID) {
         super(title, type);
-        setMode((siteID == 0) ? ADD_MODE : EDIT_MODE);
+        setMode(EDIT_MODE);
         this.siteID = siteID;
-        initComponents();
-        fillCmbType();
-
-        if (getMode() == ADD_MODE) {
-            // edit mode
-            lblNearbyExits.setVisible(true);
-            lblNearbySites.setVisible(true);
-            tblNearbyExits.setVisible(true);
-            tblNearbySites.setVisible(true);
-        } else {
-            // add mode
-            lblNearbyExits.setVisible(false);
-            lblNearbySites.setVisible(false);
-            tblNearbyExits.setVisible(false);
-            tblNearbySites.setVisible(false);
-        }
-
-        if (siteID != 0) {
-            fillNearByExits();
-            fillNearBySites();
-            fillFields();
-            tblNearbyExits.setRowSelectionAllowed(true);
-            tblNearbyExits.setColumnSelectionAllowed(false);
-            tblNearbyExits.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-            tblNearbySites.setRowSelectionAllowed(true);
-            tblNearbySites.setColumnSelectionAllowed(false);
-            tblNearbySites.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        }
+        setVariables();
+        buildForm();
+        setDefaults();
     }
 
     public Site(String title, String type) {
-        this(title, type, 0);
+        super(title, type);
+        setMode(ADD_MODE);
+        this.siteID = 0;
+        buildForm();
+    }
+
+    private void buildForm() {
+        initComponents();
+        fillCmbType();
+        fillNearByExits();
+        fillNearBySites();
+        setTableProperties(tblNearbyExits);
+        setTableProperties(tblNearbySites);
+        setActiveness();
+        super.validators = new ArrayList<InputValidator>() {
+            {
+                add(new InputValidator(tfDistToExit, utils.InputType.DOUBLE, null, null));
+                add(new InputValidator(tfDistToSite, utils.InputType.DOUBLE, null, null));
+                add(new InputValidator(tfID, utils.InputType.INT, null, null));
+                add(new InputValidator(tfName, utils.InputType.TEXT, null, null));
+                add(new InputValidator(taDescription, utils.InputType.TEXT, null, null));
+            }
+        };
     }
 
     /**
@@ -104,7 +108,7 @@ public class Site extends MyInternalFrame {
         Type = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         taDescription = new javax.swing.JTextArea();
-        ycFoundation = new com.toedter.calendar.JYearChooser();
+        ychFoundation = new com.toedter.calendar.JYearChooser();
         cmbType = new javax.swing.JComboBox();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblNearbyExits = new javax.swing.JTable();
@@ -112,8 +116,6 @@ public class Site extends MyInternalFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         tblNearbySites = new javax.swing.JTable();
         lblNearbySites = new javax.swing.JLabel();
-        btnSubmit = new javax.swing.JButton();
-        btnCancel = new javax.swing.JButton();
         cmbStation = new javax.swing.JComboBox();
         lblStation = new javax.swing.JLabel();
         lblLine = new javax.swing.JLabel();
@@ -130,6 +132,10 @@ public class Site extends MyInternalFrame {
         btnDeleteSite = new javax.swing.JButton();
         btnRemoveExit = new javax.swing.JButton();
         btnRemoveSite = new javax.swing.JButton();
+        btnCreate = new javax.swing.JButton();
+        btnUpdate = new javax.swing.JButton();
+        btnDelete = new javax.swing.JButton();
+        btnCancel = new javax.swing.JButton();
 
         tfName.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -140,6 +146,11 @@ public class Site extends MyInternalFrame {
         lblDescription.setText("Description");
 
         tfID.setEnabled(false);
+        tfID.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tfIDActionPerformed(evt);
+            }
+        });
 
         lblFoundation.setText("Foundation Year");
 
@@ -151,9 +162,25 @@ public class Site extends MyInternalFrame {
 
         taDescription.setColumns(20);
         taDescription.setRows(5);
+        taDescription.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                taDescriptionPropertyChange(evt);
+            }
+        });
         jScrollPane1.setViewportView(taDescription);
 
+        ychFoundation.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                ychFoundationPropertyChange(evt);
+            }
+        });
+
         cmbType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmbType.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbTypeActionPerformed(evt);
+            }
+        });
 
         tblNearbyExits.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -185,10 +212,6 @@ public class Site extends MyInternalFrame {
 
         lblNearbySites.setText("Nearby Sites");
 
-        btnSubmit.setText("Submit");
-
-        btnCancel.setText("Cancel");
-
         cmbStation.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         lblStation.setText("Station");
@@ -198,8 +221,6 @@ public class Site extends MyInternalFrame {
         cmbLine.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         lblDistToExit.setText("Distance (km)");
-
-        tfDistToExit.setText("jTextField1");
 
         btnAddExit.setText("Add exit");
         btnAddExit.addActionListener(new java.awt.event.ActionListener() {
@@ -213,8 +234,6 @@ public class Site extends MyInternalFrame {
         cmbSite.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         lblDistToSite.setText("Distance (km)");
-
-        tfDistToSite.setText("jTextField1");
 
         btnAddSite.setText("Add site");
         btnAddSite.addActionListener(new java.awt.event.ActionListener() {
@@ -251,6 +270,14 @@ public class Site extends MyInternalFrame {
             }
         });
 
+        btnCreate.setText("Create");
+
+        btnUpdate.setText("Update");
+
+        btnDelete.setText("Delete");
+
+        btnCancel.setText("Cancel");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -273,7 +300,7 @@ public class Site extends MyInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(cmbType, 0, 119, Short.MAX_VALUE)
-                            .addComponent(ycFoundation, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(ychFoundation, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -300,9 +327,7 @@ public class Site extends MyInternalFrame {
                                         .addComponent(lblLine)
                                         .addComponent(lblDistToExit)
                                         .addComponent(btnAddExit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(btnSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(btnAddSite, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(btnAddSite, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(516, 516, 516)
                                 .addComponent(lblSite)))
@@ -319,6 +344,12 @@ public class Site extends MyInternalFrame {
                         .addContainerGap())))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnCreate, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -335,7 +366,7 @@ public class Site extends MyInternalFrame {
                                     .addComponent(lblID))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addComponent(ycFoundation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(ychFoundation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(tfName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -389,18 +420,20 @@ public class Site extends MyInternalFrame {
                             .addComponent(btnAddSite)
                             .addComponent(btnRemoveSite)))
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnCancel)
-                    .addComponent(btnSubmit))
-                .addContainerGap())
+                    .addComponent(btnCreate)
+                    .addComponent(btnUpdate)
+                    .addComponent(btnDelete)
+                    .addComponent(btnCancel))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void tfNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfNameActionPerformed
-        // TODO add your handling code here:
+        this.name = tfName.getText();
     }//GEN-LAST:event_tfNameActionPerformed
 
     private void btnAddExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddExitActionPerformed
@@ -413,9 +446,9 @@ public class Site extends MyInternalFrame {
 
         try {
             stationItem = (ComboItem) cmbStation.getSelectedItem();
-            stationNumber = Integer.parseInt(stationItem.getValue());
+            stationNumber = (Integer) stationItem.getKey();
             lineItem = (ComboItem) cmbLine.getSelectedItem();
-            lineName = lineItem.getValue();
+            lineName = (String) lineItem.getKey();
             distance = Double.parseDouble(tfDistToExit.getText());
 
             st = con.prepareStatement("INSERT INTO tblSiteFromExit VALUES (?,?,?,?)");
@@ -439,7 +472,7 @@ public class Site extends MyInternalFrame {
 
         try {
             siteItem = (ComboItem) cmbSite.getSelectedItem();
-            otherSiteNumber = Integer.parseInt(siteItem.getValue());
+            otherSiteNumber = (Integer) siteItem.getKey();
             distance = Double.parseDouble(tfDistToExit.getText());
 
             st = con.prepareStatement("INSERT INTO tblSiteFromSite VALUES (?,?,?)");
@@ -501,27 +534,15 @@ public class Site extends MyInternalFrame {
 
     private void btnCreateSiteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateSiteActionPerformed
         PreparedStatement st;
-        int id;
-        String siteName;
-        String description;
-        int foundedYear;
-        String siteType;
-        ComboItem typeItem;
 
         try {
-            id = Integer.parseInt(tfID.getText());
-            siteName = tfName.getText();
-            description = taDescription.getText();
-            foundedYear = ycFoundation.getYear();
-            typeItem = (ComboItem) cmbType.getSelectedItem();
-            siteType = typeItem.getValue();
 
             st = con.prepareStatement("INSERT INTO tblSite VALUES (?,?,?,?,?)");
-            st.setInt(1, id);
-            st.setString(2, siteName);
-            st.setString(3, description);
-            st.setInt(4, foundedYear);
-            st.setString(5, siteType);
+            st.setInt(1, this.siteID);
+            st.setString(2, this.name);
+            st.setString(3, this.description);
+            st.setInt(4, this.foundedYear);
+            st.setString(5, this.type);
             st.executeUpdate();
 
         } catch (SQLException | NullPointerException ex) {
@@ -531,13 +552,11 @@ public class Site extends MyInternalFrame {
 
     private void btnDeleteSiteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteSiteActionPerformed
         PreparedStatement st;
-        int id;
 
         try {
-            id = Integer.parseInt(tfID.getText());
             st = con.prepareStatement("DELETE FROM tblSite WHERE "
                     + "number = ?");
-            st.setInt(1, id);
+            st.setInt(1, this.siteID);
             st.executeUpdate();
 
         } catch (SQLException ex) {
@@ -545,17 +564,36 @@ public class Site extends MyInternalFrame {
         }
     }//GEN-LAST:event_btnDeleteSiteActionPerformed
 
+    private void tfIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfIDActionPerformed
+        this.siteID = Integer.valueOf(tfID.getText());
+    }//GEN-LAST:event_tfIDActionPerformed
+
+    private void ychFoundationPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_ychFoundationPropertyChange
+        this.foundedYear = ychFoundation.getYear();
+    }//GEN-LAST:event_ychFoundationPropertyChange
+
+    private void cmbTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbTypeActionPerformed
+        ComboItem typeItem = (ComboItem) cmbType.getSelectedItem();
+        this.type = (String) typeItem.getKey();
+    }//GEN-LAST:event_cmbTypeActionPerformed
+
+    private void taDescriptionPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_taDescriptionPropertyChange
+        this.description = taDescription.getText();
+    }//GEN-LAST:event_taDescriptionPropertyChange
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Type;
     private javax.swing.JButton btnAddExit;
     private javax.swing.JButton btnAddSite;
     private javax.swing.JButton btnCancel;
+    private javax.swing.JButton btnCreate;
     private javax.swing.JButton btnCreateSite;
+    private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnDeleteSite;
     private javax.swing.JButton btnRemoveExit;
     private javax.swing.JButton btnRemoveSite;
-    private javax.swing.JButton btnSubmit;
+    private javax.swing.JButton btnUpdate;
     private javax.swing.JComboBox cmbLine;
     private javax.swing.JComboBox cmbSite;
     private javax.swing.JComboBox cmbStation;
@@ -581,28 +619,23 @@ public class Site extends MyInternalFrame {
     private javax.swing.JTextField tfDistToSite;
     private javax.swing.JTextField tfID;
     private javax.swing.JTextField tfName;
-    private com.toedter.calendar.JYearChooser ycFoundation;
+    private com.toedter.calendar.JYearChooser ychFoundation;
     // End of variables declaration//GEN-END:variables
 
-    private void fillFields() {
+    private void setVariables() {
         PreparedStatement st;
         ResultSet rs;
         try {
             st = con.prepareStatement("Select * From tblSite As S WHERE S.ID = ?");
-            st.setInt(1, siteID);
+            st.setInt(1, this.siteID);
             rs = st.executeQuery();
 
             rs.next();
-            tfName.setText(rs.getString("name"));
-            tfID.setText(rs.getString("ID"));
-            taDescription.setText(rs.getString("siteDescription"));
-            ycFoundation.setYear(rs.getInt("foundedYear"));
-            for (int i = 0; i < cmbType.getModel().getSize(); i++) {
-                Object item = cmbType.getModel().getElementAt(i);
-                if (item != null && ((ComboItem) item).getValue().equals(rs.getString("siteType"))) {
-                    cmbType.setSelectedIndex(i);
-                }
-            }
+            this.name = rs.getString("name");
+            this.description = rs.getString("siteDescription");
+            this.foundedYear = rs.getInt("foundedYear");
+            this.type = rs.getString("siteType");
+
         } catch (SQLException ex) {
             Logger.getLogger(Site.class
                     .getName()).log(Level.SEVERE, null, ex);
@@ -682,7 +715,7 @@ public class Site extends MyInternalFrame {
             rs = s.executeQuery("SELECT ID, name FROM tblStation");
             ArrayList<ComboItem> items = new ArrayList<>();
             while (rs.next()) {
-                items.add(new ComboItem(rs.getString("ID"), rs.getString("name")));
+                items.add(new ComboItem(rs.getInt("ID"), rs.getString("name")));
             }
             Collections.sort(items);
             items.add(0, null);
@@ -726,13 +759,42 @@ public class Site extends MyInternalFrame {
             rs = s.executeQuery("SELECT ID, name FROM tblSite");
             ArrayList<ComboItem> items = new ArrayList<>();
             while (rs.next()) {
-                items.add(new ComboItem(rs.getString("ID"), rs.getString("name")));
+                items.add(new ComboItem(rs.getInt("ID"), rs.getString("name")));
             }
             Collections.sort(items);
             items.add(0, null);
             cmbSite.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
         } catch (SQLException ex) {
             Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void setDefaults() {
+        tfID.setText(String.valueOf(this.siteID));
+        tfName.setText(this.name);
+        ychFoundation.setYear(this.foundedYear);
+        setSelectedValue(cmbType, this.type);
+        taDescription.setText(this.description);
+    }
+
+    private void setActiveness() {
+        if (getMode() == ADD_MODE) {
+            // key fields
+            tfID.setEnabled(true);
+
+            // control buttons
+            btnCreate.setVisible(true);
+            btnDelete.setVisible(false);
+            btnDelete.setVisible(false);
+
+        } else { // edit mode
+            // key fields
+            tfID.setEnabled(false);
+
+            // control buttons
+            btnCreate.setVisible(false);
+            btnDelete.setVisible(true);
+            btnUpdate.setVisible(true);
         }
     }
 }

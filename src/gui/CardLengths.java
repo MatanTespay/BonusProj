@@ -21,7 +21,8 @@ import static utils.Constants.EDIT_MODE;
  * @author asus
  */
 public class CardLengths extends MyInternalFrame {
-
+    private int length;
+    private String description;
     private final String[] lengthColumns = new String[]{"Length (days)", "Description"};
 
     /**
@@ -49,7 +50,7 @@ public class CardLengths extends MyInternalFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tblLengths = new javax.swing.JTable();
         lblLength = new javax.swing.JLabel();
-        spLength = new javax.swing.JSpinner();
+        spnLength = new javax.swing.JSpinner();
         tfDescription = new javax.swing.JTextField();
         lblDescription = new javax.swing.JLabel();
         btnCreate = new javax.swing.JButton();
@@ -73,7 +74,18 @@ public class CardLengths extends MyInternalFrame {
 
         lblLength.setText("Length (days)");
 
+        spnLength.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                spnLengthPropertyChange(evt);
+            }
+        });
+
         tfDescription.setText("jTextField1");
+        tfDescription.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tfDescriptionActionPerformed(evt);
+            }
+        });
 
         lblDescription.setText("Description");
 
@@ -118,7 +130,7 @@ public class CardLengths extends MyInternalFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(lblLength)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(spLength, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(spnLength, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(lblDescription)
                                 .addGap(18, 18, 18)
@@ -134,7 +146,7 @@ public class CardLengths extends MyInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(spLength, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(spnLength, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblDescription)
                     .addComponent(tfDescription, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnCreate)
@@ -157,16 +169,11 @@ public class CardLengths extends MyInternalFrame {
 
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
         PreparedStatement st;
-        int length;
 
         try {
-
-            length = (Integer) spLength.getModel().getValue();
-            String description = tfDescription.getText();
-
             st = con.prepareStatement("INSERT INTO tblCardLengths VALUES (?,?)");
-            st.setInt(1, length);
-            st.setString(2, description);
+            st.setInt(1, this.length);
+            st.setString(2, this.description);
             st.executeUpdate();
             fillLengths();
 
@@ -177,13 +184,12 @@ public class CardLengths extends MyInternalFrame {
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         PreparedStatement st;
-        int length;
 
         try {
             length = (Integer) (tblLengths.getModel().getValueAt(tblLengths.getSelectedRow(), 0));
             st = con.prepareStatement("DELETE FROM tblCardLengths WHERE "
                     + "cardLength = ?");
-            st.setInt(1, length);
+            st.setInt(1, this.length);
             st.executeUpdate();
 
             fillLengths();
@@ -191,6 +197,14 @@ public class CardLengths extends MyInternalFrame {
             Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnDeleteActionPerformed
+
+    private void spnLengthPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_spnLengthPropertyChange
+        this.length = (int)spnLength.getValue();
+    }//GEN-LAST:event_spnLengthPropertyChange
+
+    private void tfDescriptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfDescriptionActionPerformed
+        this.description = tfDescription.getText();
+    }//GEN-LAST:event_tfDescriptionActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -202,7 +216,7 @@ public class CardLengths extends MyInternalFrame {
     private javax.swing.JLabel lblDescription;
     private javax.swing.JLabel lblLength;
     private javax.swing.JLabel lblTblLengths;
-    private javax.swing.JSpinner spLength;
+    private javax.swing.JSpinner spnLength;
     private javax.swing.JTable tblLengths;
     private javax.swing.JTextField tfDescription;
     // End of variables declaration//GEN-END:variables

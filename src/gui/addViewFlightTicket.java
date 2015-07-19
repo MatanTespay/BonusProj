@@ -308,7 +308,7 @@ public class addViewFlightTicket extends MyInternalFrame {
 
             flight = MainClass.getIfly().getFlights().get(fligthNumber);
         } else {
-            int flightNum = Integer.parseInt(((ComboItem) cbFligthNum.getSelectedItem()).getValue());
+            int flightNum = Integer.parseInt((String)((ComboItem) cbFligthNum.getSelectedItem()).getKey());
             flight = MainClass.getIfly().getFlights().get(flightNum);
         }
 
@@ -334,9 +334,9 @@ public class addViewFlightTicket extends MyInternalFrame {
 
         int orderNum, flightNum;
         String customerPass;
-        orderNum = Integer.parseInt(((ComboItem) cbOrderNum.getSelectedItem()).getValue());
-        flightNum = Integer.parseInt(((ComboItem) cbFligthNum.getSelectedItem()).getValue());
-        customerPass = ((ComboItem) cbCustomers.getSelectedItem()).getValue();
+        orderNum = Integer.parseInt((String)((ComboItem) cbOrderNum.getSelectedItem()).getKey());
+        flightNum = Integer.parseInt((String)((ComboItem) cbFligthNum.getSelectedItem()).getKey());
+        customerPass = ((String)((ComboItem) cbCustomers.getSelectedItem()).getKey());
         //Flight f = MainClass.getIfly().getFlights().get(flightNum);
 
         JDesktopPane desk = this.getDesktopPane();
@@ -393,7 +393,7 @@ public class addViewFlightTicket extends MyInternalFrame {
     private void fillOrders() {
         String custPassport;
         if (cbCustomers.getModel().getSize() > 0) {
-            custPassport = ((ComboItem) cbCustomers.getSelectedItem()).getValue();
+            custPassport = ((String)((ComboItem) cbCustomers.getSelectedItem()).getKey());
             Customer c = MainClass.getIfly().getCustomers().get(custPassport);
             HelperClass.fillOrdersCombo(this, cbOrderNum, c);
 
@@ -406,11 +406,11 @@ public class addViewFlightTicket extends MyInternalFrame {
     private void fillFlightsCombo() {
         int orderNum;
         if (cbOrderNum.getModel().getSize() > 0) {
-            orderNum = Integer.parseInt(((ComboItem) cbOrderNum.getSelectedItem()).getValue());
+            orderNum = Integer.parseInt((String)((ComboItem) cbOrderNum.getSelectedItem()).getKey());
             HelperClass.getFlightsForSelectedOrder(this, cbFligthNum, orderNum);
 
             //cbFligthNum.setSelectedItem(0);
-            int flightNum = Integer.parseInt(((ComboItem) cbFligthNum.getSelectedItem()).getValue());
+            int flightNum = Integer.parseInt((String)((ComboItem) cbFligthNum.getSelectedItem()).getKey());
             flight = MainClass.getIfly().getFlights().get(flightNum);
 
         }

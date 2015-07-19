@@ -6,11 +6,13 @@
 package gui;
 
 import init.ComboItem;
+import init.InputValidator;
 import static init.MainClass.con;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
@@ -34,6 +36,11 @@ public class SiteTypes extends MyInternalFrame {
         setMode(EDIT_MODE);
         initComponents();
         fillTypes();
+        super.validators = new ArrayList<InputValidator>() {
+            {
+                add(new InputValidator(tfType, utils.InputType.TEXT, null, null));
+            }
+        };
     }
 
     /**
@@ -156,9 +163,10 @@ public class SiteTypes extends MyInternalFrame {
         PreparedStatement st;
         ComboItem typeItem;
         String siteType;
+        
         try {
             typeItem = (ComboItem)(lsttypes.getSelectedValue());
-            siteType = typeItem.getValue();
+            siteType = (String)typeItem.getKey();
             st = con.prepareStatement("DELETE FROM tblSiteType WHERE "
                 + "siteType = ?");
             st.setString(1, siteType);

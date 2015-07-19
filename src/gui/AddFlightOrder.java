@@ -65,7 +65,7 @@ public class AddFlightOrder extends MyInternalFrame {
         fillCustomers();
         String cust = null;
         if (cbCustomers.getModel().getSize() > 0) {
-            cust = ((ComboItem) cbCustomers.getSelectedItem()).getValue();
+            cust = ((String)((ComboItem) cbCustomers.getSelectedItem()).getKey());
         }
         fillCustomerOrders(cust);
         if (cbOrders.getModel().getSize() <= 0) {
@@ -469,7 +469,7 @@ public class AddFlightOrder extends MyInternalFrame {
         if (cbSource.getModel().getSize() <= 0) {
             return;
         }
-        String name = ((ComboItem) cbSource.getSelectedItem()).getValue();
+        String name = ((String)((ComboItem) cbSource.getSelectedItem()).getKey());
         E_Airports airPort = E_Airports.valueOf(name);
         ArrayList<E_Airports> list = new ArrayList<E_Airports>();
         list.add(airPort);
@@ -523,14 +523,14 @@ public class AddFlightOrder extends MyInternalFrame {
             orderNum = Integer.parseInt(txtOrderNumber.getText());
 
         } else if (rbSelectOrder.isSelected() && cbCustomers.getModel().getSize() > 0) {
-            orderNum = Integer.parseInt(((ComboItem) cbOrders.getSelectedItem()).getValue());
+            orderNum = Integer.parseInt((String)((ComboItem) cbOrders.getSelectedItem()).getKey());
         } else {
             return;
         }
 
         
         Flight f = MainClass.getIfly().getFlights().get(savedlightNumber);
-        String customerPassport = ((ComboItem) cbCustomers.getSelectedItem()).getValue();
+        String customerPassport = ((String)((ComboItem) cbCustomers.getSelectedItem()).getKey());
         ViewFlightTickets ticketFrame = new ViewFlightTickets("View Flight Ticket - Flight No. " + savedlightNumber, selectedUserType, this, f, orderNum, customerPassport);
         OpenChildWindow(ticketFrame);
 
@@ -592,7 +592,7 @@ public class AddFlightOrder extends MyInternalFrame {
     private void cbCustomersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbCustomersActionPerformed
         // TODO add your handling code here:
         String cust;
-        cust = ((ComboItem) cbCustomers.getSelectedItem()).getValue();
+        cust = ((String)((ComboItem) cbCustomers.getSelectedItem()).getKey());
         fillCustomerOrders(cust);
         btnAddTicket.setEnabled(false);
         btnOk.setEnabled(false);
@@ -670,7 +670,7 @@ public class AddFlightOrder extends MyInternalFrame {
         if (cbSource.getModel().getSize() <= 0) {
             return;
         }
-        String name = ((ComboItem) cbSource.getSelectedItem()).getValue();
+        String name = ((String)((ComboItem) cbSource.getSelectedItem()).getKey());
         E_Airports airPort = E_Airports.valueOf(name);
         ArrayList<E_Airports> list = new ArrayList<E_Airports>();
         list.add(airPort);
@@ -726,8 +726,8 @@ public class AddFlightOrder extends MyInternalFrame {
         if (cbSource.getModel().getSize() <= 0 || cbDestination.getModel().getSize() <= 0) {
             return;
         }
-        source = E_Airports.valueOf(((ComboItem) cbSource.getSelectedItem()).getValue());
-        destination = E_Airports.valueOf(((ComboItem) cbDestination.getSelectedItem()).getValue());
+        source = E_Airports.valueOf((String)((ComboItem) cbSource.getSelectedItem()).getKey());
+        destination = E_Airports.valueOf((String)((ComboItem) cbDestination.getSelectedItem()).getKey());
 
         if (ckbFilterDates.isSelected()) {
             fromDate = jdateFrom.getDate();
@@ -839,15 +839,15 @@ public class AddFlightOrder extends MyInternalFrame {
                 agentNumber = ((Agent) MainClass.getUserData().getValue()).getEmployeeNumber();
             } else {
 
-                agentNumber = Integer.parseInt(((ComboItem) CbEmployees.getSelectedItem()).getValue());
+                agentNumber = Integer.parseInt((String)((ComboItem) CbEmployees.getSelectedItem()).getKey());
             }
 
-            String customerPassport = ((ComboItem) cbCustomers.getSelectedItem()).getValue();
+            String customerPassport = ((String)((ComboItem) cbCustomers.getSelectedItem()).getKey());
             int orderNumber = 0;
             if (rbNewOrder.isSelected()) {
                 orderNumber = Integer.parseInt(txtOrderNumber.getText());
             } else if (rbSelectOrder.isSelected()) {
-                orderNumber = Integer.parseInt(((ComboItem) cbOrders.getSelectedItem()).getValue());
+                orderNumber = Integer.parseInt((String)((ComboItem) cbOrders.getSelectedItem()).getKey());
             }
 
             int flightNumber = selectFlightNumber;

@@ -201,7 +201,7 @@ public class ViewTickets extends MyInternalFrame {
                 return;
             }
             
-            custId = Integer.parseInt(((ComboItem)cbCustomers.getSelectedItem()).getValue());
+            custId = Integer.parseInt((String)((ComboItem)cbCustomers.getSelectedItem()).getKey());
             sb.append(((ComboItem)cbCustomers.getSelectedItem()).getLabel()).append(" has no tickets to show");
         }
         else{

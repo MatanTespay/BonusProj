@@ -36,6 +36,7 @@ import core.Flight;
 import core.FlightAttendant;
 import core.Order;
 import core.Pilot;
+import javax.swing.ListSelectionModel;
 
 /**
  * The class provide helper functions used in the the system
@@ -723,7 +724,7 @@ public class HelperClass {
             int count = combo.getItemCount();
             for (int i = 0; i < count; i++) {
                 ComboItem item = ((ComboItem) combo.getItemAt(i));
-                if (item.getValue().equals("" + value + "")) {
+                if (item.getKey().equals("" + value + "")) {
                     return item;
                 }
             }
@@ -737,5 +738,25 @@ public class HelperClass {
 
         result = pattern.matcher(text).matches();
         return result;
+    }
+    
+    public static void setSelectedValue(JComboBox comboBox, String label)
+    {
+        ComboItem item;
+        for (int i = 0; i < comboBox.getItemCount(); i++)
+        {
+            item = (ComboItem)comboBox.getItemAt(i);
+            if (item.getLabel().equals(label))
+            {
+                comboBox.setSelectedIndex(i);
+                break;
+            }
+        }
+    }
+    
+    public static void setTableProperties(JTable table){
+        table.setRowSelectionAllowed(true);
+        table.setColumnSelectionAllowed(false);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }
 }

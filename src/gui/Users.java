@@ -53,7 +53,7 @@ public class Users extends MyInternalFrame {
         FillUsersTable();
         super.validators = new ArrayList<InputValidator>() {
             {
-                add(new InputValidator(txtPass, utils.InputType.PASSWOORD, lblerrPass, null));
+                add(new InputValidator(txtPass, utils.InputType.PASSWORD, lblerrPass, null));
                 add(new InputValidator(txtUserName, utils.InputType.TEXT, lblerrUserName, null));
                 
             }
@@ -375,7 +375,7 @@ public class Users extends MyInternalFrame {
                         String insertTableSQL = "INSERT INTO tblUser"
                                 + "(UserName, Password, RoleID ) VALUES"
                                 + "(?,?,?)";
-                        int RoleID = Integer.parseInt(((ComboItem) cbRoleType.getSelectedItem()).getValue());
+                        int RoleID = Integer.parseInt((String)((ComboItem) cbRoleType.getSelectedItem()).getKey());
                         stmt = con.prepareStatement(insertTableSQL);
                         stmt.setString(1, txtUserName.getText());
                         stmt.setString(2, txtPass.getText());
@@ -400,7 +400,7 @@ public class Users extends MyInternalFrame {
                             ResultSet.CONCUR_UPDATABLE);
 
                     //set params
-                    int RoleID = Integer.parseInt(((ComboItem) cbRoleType.getSelectedItem()).getValue());
+                    int RoleID = Integer.parseInt((String)((ComboItem) cbRoleType.getSelectedItem()).getKey());
                     String oldName = (String) tblUsers.getModel().getValueAt(editedRiwIdx, 0);
                     String oldPass = (String) tblUsers.getModel().getValueAt(editedRiwIdx, 1);
                     stmt.setString(1, txtUserName.getText());

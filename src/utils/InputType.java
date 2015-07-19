@@ -13,8 +13,9 @@ public enum  InputType {
     
     
     TEXT("Text"),
-    PASSWOORD("Password"),
-    NUMBER("Number"),
+    PASSWORD("Password"),
+    INT("Int"),
+    DOUBLE("Double"),
     DATE("Date"),
     EMAIL("Email"),
     ROLE("ROLE");

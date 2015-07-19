@@ -837,7 +837,7 @@ public class AddFlight extends MyInternalFrame {
 			return;
 		}
 
-		String name = ((ComboItem) cbSource.getSelectedItem()).getValue();
+		String name = ((String)((ComboItem) cbSource.getSelectedItem()).getKey());
 		E_Airports airPort = E_Airports.valueOf(name);
 		ArrayList<E_Airports> list = new ArrayList<E_Airports>();
 		list.add(airPort);
@@ -927,7 +927,7 @@ public class AddFlight extends MyInternalFrame {
 		if (cbSource.getModel().getSize() <= 0) {
 			return;
 		}
-		String name = ((ComboItem) cbSource.getSelectedItem()).getValue();
+		String name = ((String)((ComboItem) cbSource.getSelectedItem()).getKey());
 		E_Airports airPort = E_Airports.valueOf(name);
 		ArrayList<E_Airports> list = new ArrayList<E_Airports>();
 		list.add(airPort);
@@ -1032,8 +1032,8 @@ public class AddFlight extends MyInternalFrame {
 						return;
 					}
 
-					airplaneNumber = Integer.parseInt(((ComboItem) cbAirplaines
-							.getSelectedItem()).getValue());
+					airplaneNumber = Integer.parseInt((String)((ComboItem) cbAirplaines
+							.getSelectedItem()).getKey());
 					airplane = MainClass.getIfly()
 							.getAirplaines(airplaneNumber).get(0);
 
@@ -1043,10 +1043,10 @@ public class AddFlight extends MyInternalFrame {
 				flightDateAndTimeSource = jdSourceDate.getDate();
 				flightDateAndTimeDestination = jdDestinationDate.getDate();
 
-				source = E_Airports.valueOf(((ComboItem) cbSource
-						.getSelectedItem()).getValue());
-				destination = E_Airports.valueOf(((ComboItem) cbDestination
-						.getSelectedItem()).getValue());
+				source = E_Airports.valueOf((String)((ComboItem) cbSource
+						.getSelectedItem()).getKey());
+				destination = E_Airports.valueOf((String)((ComboItem) cbDestination
+						.getSelectedItem()).getKey());
 
 				MainClass.getIfly().addFlight(flightNumber,
 						flightDateAndTimeSource, flightDateAndTimeDestination,
@@ -1105,8 +1105,8 @@ public class AddFlight extends MyInternalFrame {
 		if (autoMode && cbAirplaines.getModel().getSize() > 0) {
 			int airplaneNumber;
 			Airplane airplane;
-			airplaneNumber = Integer.parseInt(((ComboItem) cbAirplaines
-					.getSelectedItem()).getValue());
+			airplaneNumber = Integer.parseInt((String)((ComboItem) cbAirplaines
+					.getSelectedItem()).getKey());
 			airplane = MainClass.getIfly().getAirplaines(airplaneNumber).get(0);
 			txtBCNum.setText("" + airplane.getNumberOfSeatsBusinessClass() + "");
 			txtFCNum.setText("" + airplane.getNumberOfSeatsFirstClass() + "");
