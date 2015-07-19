@@ -6,7 +6,6 @@
 package utils;
 
 import init.MainClass;
-import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;

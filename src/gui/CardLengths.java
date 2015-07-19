@@ -186,7 +186,7 @@ public class CardLengths extends MyInternalFrame {
         PreparedStatement st;
 
         try {
-            length = (Integer) (tblLengths.getModel().getValueAt(tblLengths.getSelectedRow(), 0));
+            length = Integer.parseInt((tblLengths.getModel().getValueAt(tblLengths.getSelectedRow(), 0)).toString());
             st = con.prepareStatement("DELETE FROM tblCardLengths WHERE "
                     + "cardLength = ?");
             st.setInt(1, this.length);
@@ -199,7 +199,7 @@ public class CardLengths extends MyInternalFrame {
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void spnLengthPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_spnLengthPropertyChange
-        this.length = (int)spnLength.getValue();
+        this.length = Integer.parseInt(spnLength.getValue().toString());
     }//GEN-LAST:event_spnLengthPropertyChange
 
     private void tfDescriptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfDescriptionActionPerformed

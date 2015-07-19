@@ -36,6 +36,17 @@ import core.Flight;
 import core.FlightAttendant;
 import core.Order;
 import core.Pilot;
+import gui.Activity;
+import gui.QueryComboBox;
+import static init.MainClass.con;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Collections;
+import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ListSelectionModel;
 
 /**
@@ -110,7 +121,7 @@ public class HelperClass {
             return false;
         }
         SimpleDateFormat sdf = new SimpleDateFormat(dateFromat);
-        
+
         sdf.setLenient(false);
         try {
 
@@ -194,7 +205,7 @@ public class HelperClass {
                             s = "Minimum 4 characters";
                         }
                         break;
-                        case "ROLE":
+                    case "ROLE":
                         if (isRole(text)) {
                             return null;
                         } else {
@@ -733,28 +744,25 @@ public class HelperClass {
     }
 
     private static boolean isRole(String text) {
-       Pattern pattern = Pattern.compile("[a-zA-Z]+([' '-_]?)([a-zA-Z]+)");
+        Pattern pattern = Pattern.compile("[a-zA-Z]+([' '-_]?)([a-zA-Z]+)");
         boolean result;
 
         result = pattern.matcher(text).matches();
         return result;
     }
-    
-    public static void setSelectedValue(JComboBox comboBox, String label)
-    {
+
+    public static void setSelectedValue(JComboBox comboBox, String label) {
         ComboItem item;
-        for (int i = 0; i < comboBox.getItemCount(); i++)
-        {
-            item = (ComboItem)comboBox.getItemAt(i);
-            if (item.getLabel().equals(label))
-            {
+        for (int i = 0; i < comboBox.getItemCount(); i++) {
+            item = (ComboItem) comboBox.getItemAt(i);
+            if (item.getLabel().equals(label)) {
                 comboBox.setSelectedIndex(i);
                 break;
             }
         }
     }
-    
-    public static void setTableProperties(JTable table){
+
+    public static void setTableProperties(JTable table) {
         table.setRowSelectionAllowed(true);
         table.setColumnSelectionAllowed(false);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

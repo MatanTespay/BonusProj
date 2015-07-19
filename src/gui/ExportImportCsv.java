@@ -6,19 +6,7 @@
 package gui;
 
 import javax.swing.JFileChooser;
-import utils.CsvHandler;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.util.Date;
-
-import org.apache.commons.lang.StringUtils;
-
-import com.opencsv.CSVReader;
-import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+//import utils.CsvHandler;
 import javax.swing.JOptionPane;
 
 /**
@@ -114,13 +102,13 @@ public class ExportImportCsv extends MyInternalFrame {
 
             String fileName = c.getSelectedFile().getAbsolutePath();
 
-            CsvHandler csv = new CsvHandler();
+//            CsvHandler csv = new CsvHandler();
 
             if (!fileName.endsWith(".csv".toLowerCase())) {
                 fileName += ".csv";
             }
 
-            csv.exportSiteExitDistanceToCsv(null, fileName);
+//            csv.exportSiteExitDistanceToCsv(null, fileName);
 
         }
 
@@ -138,13 +126,13 @@ public class ExportImportCsv extends MyInternalFrame {
             try {
                 String fileName = c.getSelectedFile().getAbsolutePath();
 
-                CsvHandler csv = new CsvHandler();
+//                CsvHandler csv = new CsvHandler();
 
                 if (!fileName.endsWith(".csv".toLowerCase())) {
                     fileName += ".csv";
                 }
 
-                csv.loadCSV(fileName, "TempAct", true);
+//                csv.loadCSV(fileName, "TempAct", true);
                 
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(null,
