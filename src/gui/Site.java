@@ -6,6 +6,7 @@
 package gui;
 
 import init.ComboItem;
+import init.InputValidator;
 import static init.MainClass.con;
 import init.MyTableModel;
 import java.sql.PreparedStatement;
@@ -16,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.ListSelectionModel;
 import javax.swing.table.TableModel;
 import static utils.Constants.ADD_MODE;
 import static utils.Constants.EDIT_MODE;
@@ -79,6 +79,15 @@ public class Site extends MyInternalFrame {
         setTableProperties(tblNearbyExits);
         setTableProperties(tblNearbySites);
         setActiveness();
+        super.validators = new ArrayList<InputValidator>() {
+            {
+                add(new InputValidator(tfDistToExit, utils.InputType.DOUBLE, null, null));
+                add(new InputValidator(tfDistToSite, utils.InputType.DOUBLE, null, null));
+                add(new InputValidator(tfID, utils.InputType.INT, null, null));
+                add(new InputValidator(tfName, utils.InputType.TEXT, null, null));
+                add(new InputValidator(taDescription, utils.InputType.TEXT, null, null));
+            }
+        };
     }
 
     /**

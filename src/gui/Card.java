@@ -6,6 +6,7 @@
 package gui;
 
 import init.ComboItem;
+import init.InputValidator;
 import static init.MainClass.con;
 import init.MyTableModel;
 import java.io.File;

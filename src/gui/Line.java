@@ -6,6 +6,7 @@
 package gui;
 
 import init.ComboItem;
+import init.InputValidator;
 import static init.MainClass.con;
 import init.MyTableModel;
 import java.sql.PreparedStatement;
@@ -78,6 +79,12 @@ public class Line extends MyInternalFrame {
         fillCmbStations();
         setTableProperties(tblStations);
         setActiveness();
+        super.validators = new ArrayList<InputValidator>() {
+            {
+                add(new InputValidator(tfLength, utils.InputType.DOUBLE, null, null));
+                add(new InputValidator(tfName, utils.InputType.TEXT, null, null));
+            }
+        };
     }
 
     /**

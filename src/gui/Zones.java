@@ -6,11 +6,13 @@
 package gui;
 
 import init.ComboItem;
+import init.InputValidator;
 import static init.MainClass.con;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
@@ -35,6 +37,11 @@ public class Zones extends MyInternalFrame {
         setMode(EDIT_MODE);
         initComponents();
         fillZones();
+        super.validators = new ArrayList<InputValidator>() {
+            {
+                add(new InputValidator(spnZoneNumber, utils.InputType.INT, null, null));
+            }
+        };
     }
 
     /**
@@ -48,7 +55,7 @@ public class Zones extends MyInternalFrame {
 
         lblZoneNumber = new javax.swing.JLabel();
         lblZones = new javax.swing.JLabel();
-        spZoneNumber = new javax.swing.JSpinner();
+        spnZoneNumber = new javax.swing.JSpinner();
         btnCreate = new javax.swing.JButton();
         btnDelete = new javax.swing.JButton();
         btnSubmit = new javax.swing.JButton();
@@ -104,7 +111,7 @@ public class Zones extends MyInternalFrame {
                                 .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                     .addComponent(lblZoneNumber)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(spZoneNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(spnZoneNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGap(18, 18, 18)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(btnCreate, javax.swing.GroupLayout.DEFAULT_SIZE, 79, Short.MAX_VALUE)
@@ -116,7 +123,7 @@ public class Zones extends MyInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(spZoneNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(spnZoneNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnCreate)
                     .addComponent(lblZoneNumber))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
@@ -139,7 +146,7 @@ public class Zones extends MyInternalFrame {
         PreparedStatement st;
         int zoneNumber;
         try {
-            zoneNumber = (Integer) spZoneNumber.getModel().getValue();
+            zoneNumber = (Integer) spnZoneNumber.getModel().getValue();
 
             st = con.prepareStatement("INSERT INTO tblZone VALUES (?)");
             st.setInt(1, zoneNumber);
@@ -179,7 +186,7 @@ public class Zones extends MyInternalFrame {
     private javax.swing.JLabel lblZoneNumber;
     private javax.swing.JLabel lblZones;
     private javax.swing.JList lstZones;
-    private javax.swing.JSpinner spZoneNumber;
+    private javax.swing.JSpinner spnZoneNumber;
     // End of variables declaration//GEN-END:variables
 
     private void fillZones() {
