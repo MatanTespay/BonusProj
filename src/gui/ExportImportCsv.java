@@ -7,6 +7,19 @@ package gui;
 
 import javax.swing.JFileChooser;
 import utils.CsvHandler;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.util.Date;
+
+import org.apache.commons.lang.StringUtils;
+
+import com.opencsv.CSVReader;
+import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -34,7 +47,6 @@ public class ExportImportCsv extends MyInternalFrame {
         jPanel1 = new javax.swing.JPanel();
         btnExport = new javax.swing.JButton();
         btnImport = new javax.swing.JButton();
-        txtFileName = new javax.swing.JTextField();
 
         btnExport.setText("Export Site Info");
         btnExport.addActionListener(new java.awt.event.ActionListener() {
@@ -56,20 +68,15 @@ public class ExportImportCsv extends MyInternalFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(txtFileName)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(btnExport)
-                        .addGap(38, 38, 38)
-                        .addComponent(btnImport)))
+                .addComponent(btnExport)
+                .addGap(38, 38, 38)
+                .addComponent(btnImport)
                 .addContainerGap(22, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(txtFileName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 100, Short.MAX_VALUE)
+                .addContainerGap(131, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnExport)
                     .addComponent(btnImport))
@@ -89,8 +96,8 @@ public class ExportImportCsv extends MyInternalFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
@@ -98,35 +105,55 @@ public class ExportImportCsv extends MyInternalFrame {
 
     private void btnExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportActionPerformed
         // TODO add your handling code here:
-        
-             JFileChooser c = new JFileChooser();
-            // Demonstrate "Open" dialog:
-            int rVal = c.showOpenDialog(ExportImportCsv.this);
-            
-            if (rVal == JFileChooser.APPROVE_OPTION) {
-                
-                String fileName = c.getSelectedFile().getAbsolutePath();
-                txtFileName.setText(fileName);
-                
-                CsvHandler csv = new CsvHandler();
-                
-                if (!fileName.endsWith(".csv".toLowerCase())) {
-                    fileName += ".csv";
-                }
-                
-                csv.exportSiteExitDistanceToCsv(null, fileName);
 
+        JFileChooser c = new JFileChooser();
+        // Demonstrate "Open" dialog:
+        int rVal = c.showOpenDialog(ExportImportCsv.this);
+
+        if (rVal == JFileChooser.APPROVE_OPTION) {
+
+            String fileName = c.getSelectedFile().getAbsolutePath();
+
+            CsvHandler csv = new CsvHandler();
+
+            if (!fileName.endsWith(".csv".toLowerCase())) {
+                fileName += ".csv";
             }
-            if (rVal == JFileChooser.CANCEL_OPTION) {
-                txtFileName.setText("You pressed cancel");
-                
-            }
-        
-        
+
+            csv.exportSiteExitDistanceToCsv(null, fileName);
+
+        }
+
+
     }//GEN-LAST:event_btnExportActionPerformed
 
     private void btnImportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImportActionPerformed
         // TODO add your handling code here:
+        JFileChooser c = new JFileChooser();
+        // Demonstrate "Open" dialog:
+        int rVal = c.showOpenDialog(ExportImportCsv.this);
+
+        if (rVal == JFileChooser.APPROVE_OPTION) {
+
+            try {
+                String fileName = c.getSelectedFile().getAbsolutePath();
+
+                CsvHandler csv = new CsvHandler();
+
+                if (!fileName.endsWith(".csv".toLowerCase())) {
+                    fileName += ".csv";
+                }
+
+                csv.loadCSV(fileName, "TempAct", true);
+                
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null,
+                        ex.getMessage(),
+                        "ERROR MESSAGE",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+
+        }
     }//GEN-LAST:event_btnImportActionPerformed
 
 
@@ -134,6 +161,5 @@ public class ExportImportCsv extends MyInternalFrame {
     private javax.swing.JButton btnExport;
     private javax.swing.JButton btnImport;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JTextField txtFileName;
     // End of variables declaration//GEN-END:variables
 }

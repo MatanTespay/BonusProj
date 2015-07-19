@@ -240,7 +240,10 @@ public class MainClass {
                              DB_CONNECTION);
 			return dbConnection;
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			JOptionPane.showMessageDialog(null,
+                        "Can't connect to DB.",
+                        "ERROR MESSAGE",
+                        JOptionPane.ERROR_MESSAGE);
 		}
 		return dbConnection;
 	}

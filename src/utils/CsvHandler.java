@@ -17,6 +17,15 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.util.Date;
+
+import org.apache.commons.lang.StringUtils;
+
+import com.opencsv.CSVReader;
 
 /**
  *
@@ -25,8 +34,22 @@ import javax.swing.JOptionPane;
 public class CsvHandler {
 
     public static String SCHEMA_NAME = null;
+   String SQL_INSERT = "INSERT INTO ${table}(${keys}) VALUES(${values})";
+    private static final String TABLE_REGEX = "\\$\\{table\\}";
+    private static final String KEYS_REGEX = "\\$\\{keys\\}";
+    private static final String VALUES_REGEX = "\\$\\{values\\}";
+    private char seprator;
 
+    /**
+     * Public constructor to build CSVLoader object with Connection details. The
+     * connection is closed on success or failure.
+     *
+     * @param connection
+     */
     public CsvHandler() {
+
+        //Set default separator
+        this.seprator = ',';
     }
 
     public static void PrintTablesMetaData() {
@@ -69,16 +92,122 @@ public class CsvHandler {
 
     }
 
-    public void exportSiteExitDistanceToCsv(String table, String name) {
-        Connection con = null;
+    /**
+     * Parse CSV file using OpenCSV library and load in given database table.
+     *
+     * @param csvFile Input CSV file
+     * @param tableName Database table name to import data
+     * @param truncateBeforeLoad Truncate the table before inserting new
+     * records.
+     * @throws Exception
+     */
+    public void loadCSV(String csvFile, String tableName,
+            boolean truncateBeforeLoad) throws Exception {
 
-        String driver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
+        CSVReader csvReader = null;
+        if (null == MainClass.con) {
+            throw new Exception("Not a valid connection.");
+        }
+        try {
+
+            csvReader = new CSVReader(new FileReader(csvFile), this.seprator);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new Exception("Error occured while executing file. "
+                    + e.getMessage());
+        }
+
+        String[] headerRow = csvReader.readNext();
+        if (null == headerRow) {
+            throw new FileNotFoundException(
+                    "No columns defined in given CSV file."
+                    + "Please check the CSV file format.");
+        }       
+        
+        String questionmarks = StringUtils.repeat("?,", headerRow.length);
+        questionmarks = (String) questionmarks.subSequence(0, questionmarks.length() - 1);
+ 
+        String query = SQL_INSERT.replaceFirst(TABLE_REGEX, tableName);
+        query = query.replaceFirst(KEYS_REGEX, StringUtils.join(headerRow, ","));
+        query = query.replaceFirst(VALUES_REGEX, questionmarks);
+ 
+        //for testing
+        System.out.println("Query: " + query);
+
+        String[] nextLine;
+        Connection con = null;
+        PreparedStatement ps = null;
+        try {
+            con = MainClass.con;
+            con.setAutoCommit(false);
+            ps = con.prepareStatement(query);
+
+            if (truncateBeforeLoad) {
+                //delete data from table before loading csv
+                con.createStatement().execute("DELETE FROM " + tableName);
+            }
+
+            final int batchSize = 1000;
+            int count = 0;
+            Date date = null;
+            while ((nextLine = csvReader.readNext()) != null) {
+
+                if (null != nextLine) {
+                    int index = 1;
+                    for (String string : nextLine) {
+                        date = DateUtil.convertToDate(string);
+                        if (null != date) {
+                            Timestamp time = new Timestamp(date.getTime());
+                            ps.setTimestamp(index++, time);
+                            //ps.setDate(index++, new java.sql.Date(date.getTime()));
+                        } else {
+                            string = string.trim();
+                            ps.setString(index++, string);
+                        }
+                    }
+                    ps.addBatch();
+                }
+
+                if (++count % batchSize == 0) {
+                    ps.executeBatch();
+                }
+            }
+            ps.executeBatch(); // insert remaining records
+            con.commit();
+            JOptionPane.showMessageDialog(null,
+                        "data has been imported successfully",
+                        "INFORMATION MESSAGE",
+                        JOptionPane.INFORMATION_MESSAGE);
+        } catch (Exception e) {
+            con.rollback();
+            e.printStackTrace();
+            throw new Exception(
+                    "Error occured while loading data from file to database."
+                    + e.getMessage());
+        } finally {
+            if (null != ps) {
+                ps.close();
+            }
+
+            csvReader.close();
+        }
+    }
+
+    public char getSeprator() {
+        return seprator;
+    }
+
+    public void setSeprator(char seprator) {
+        this.seprator = seprator;
+    }
+
+    public void exportSiteExitDistanceToCsv(String table, String name) {
 
         FileWriter fw;
         try {
-            Class.forName(driver);
-            con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=LondonU2;user=TOM;password=1234;");
-            Statement st = con.createStatement();
+            Statement st = MainClass.con.createStatement();
+                    //con.createStatement();
 
             //this query gets all the tables in your database(put your db name in the query)
             ResultSet res = null;
@@ -103,7 +232,9 @@ public class CsvHandler {
                 //this loop is used to add column names at the top of file , if you do not need it just comment this loop
                 for (int i = 1; i <= colunmCount; i++) {
                     fw.append(res.getMetaData().getColumnName(i).toLowerCase());
-                    fw.append(",");
+                    if (i != colunmCount) {
+                                fw.append(",");
+                    }
 
                 }
 
@@ -135,11 +266,11 @@ public class CsvHandler {
 
                 fw.flush();
                 fw.close();
-                
+
                 JOptionPane.showMessageDialog(null,
-                    "data has been exported successfully",
-                    "INFORMATION MESSAGE",
-                    JOptionPane.INFORMATION_MESSAGE);
+                        "data has been exported successfully",
+                        "INFORMATION MESSAGE",
+                        JOptionPane.INFORMATION_MESSAGE);
 
             } catch (IOException e) {
                 // TODO Auto-generated catch block
@@ -149,13 +280,6 @@ public class CsvHandler {
                         JOptionPane.ERROR_MESSAGE);
             }
 
-            con.close();
-        } catch (ClassNotFoundException e) {
-
-            JOptionPane.showMessageDialog(null,
-                    "Could not load JDBC driver",
-                    "ERROR MESSAGE",
-                    JOptionPane.ERROR_MESSAGE);
         } catch (SQLException ex) {
 
             JOptionPane.showMessageDialog(null,
@@ -279,4 +403,5 @@ public class CsvHandler {
         res.beforeFirst();
         return numberOfRows;
     }
+
 }
