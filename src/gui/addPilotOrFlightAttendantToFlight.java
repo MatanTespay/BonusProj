@@ -218,14 +218,14 @@ public class addPilotOrFlightAttendantToFlight extends MyInternalFrame {
                 return;
             }
             
-            int flightNumber = Integer.parseInt(((ComboItem) cbFlights.getSelectedItem()).getValue());
+            int flightNumber = Integer.parseInt((String)((ComboItem) cbFlights.getSelectedItem()).getKey());
             Flight selectFlight = MainClass.getIfly().getFlights().get(flightNumber);
             int employeeNumber;
 
             if (cbPilots.isVisible()) {
-                employeeNumber = Integer.parseInt(((ComboItem) cbPilots.getSelectedItem()).getValue());
+                employeeNumber = Integer.parseInt((String)((ComboItem) cbPilots.getSelectedItem()).getKey());
             } else if (cbFlightAttendant.isVisible()) {
-                employeeNumber = Integer.parseInt(((ComboItem) cbFlightAttendant.getSelectedItem()).getValue());
+                employeeNumber = Integer.parseInt((String)((ComboItem) cbFlightAttendant.getSelectedItem()).getKey());
             } else {
                 return;
             }
@@ -245,7 +245,7 @@ public class addPilotOrFlightAttendantToFlight extends MyInternalFrame {
             return;
         }
 
-        int flightNumber = Integer.parseInt(((ComboItem) cbFlights.getSelectedItem()).getValue());
+        int flightNumber = Integer.parseInt((String)((ComboItem) cbFlights.getSelectedItem()).getKey());
         Flight selectFlight = MainClass.getIfly().getFlights().get(flightNumber);
         lblSource.setText(selectFlight.getSource().getCity());
         lblDestination.setText(selectFlight.getDestination().getCity());
@@ -275,7 +275,7 @@ public class addPilotOrFlightAttendantToFlight extends MyInternalFrame {
     private void fillStaff() {
         int flightNumber = -1;
         if (cbFlights.getModel().getSize() > 0) {
-            flightNumber = Integer.parseInt(((ComboItem) cbFlights.getSelectedItem()).getValue());
+            flightNumber = Integer.parseInt((String)((ComboItem) cbFlights.getSelectedItem()).getKey());
         }
 
         Flight selectFlight = MainClass.getIfly().getFlights().get(flightNumber);

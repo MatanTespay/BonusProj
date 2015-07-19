@@ -104,7 +104,7 @@ public class ViewFlights extends MyInternalFrame {
         if (cbSource.getModel().getSize() <= 0) {
             return;
         }
-        String name = ((ComboItem) cbSource.getSelectedItem()).getValue();
+        String name = ((String)((ComboItem) cbSource.getSelectedItem()).getKey());
         E_Airports airPort = E_Airports.valueOf(name);
         ArrayList<E_Airports> list = new ArrayList<E_Airports>();
         list.add(airPort);
@@ -309,7 +309,7 @@ public class ViewFlights extends MyInternalFrame {
         if (cbSource.getModel().getSize() <= 0) {
             return;
         }
-        String name = ((ComboItem) cbSource.getSelectedItem()).getValue();
+        String name = ((String)((ComboItem) cbSource.getSelectedItem()).getKey());
         E_Airports airPort = E_Airports.valueOf(name);
         ArrayList<E_Airports> list = new ArrayList<E_Airports>();
         list.add(airPort);
@@ -411,8 +411,8 @@ public class ViewFlights extends MyInternalFrame {
         if (cbSource.getModel().getSize() <= 0 || cbDestination.getModel().getSize() <= 0) {
             return;
         }
-        source = E_Airports.valueOf(((ComboItem) cbSource.getSelectedItem()).getValue());
-        destination = E_Airports.valueOf(((ComboItem) cbDestination.getSelectedItem()).getValue());
+        source = E_Airports.valueOf((String)((ComboItem) cbSource.getSelectedItem()).getKey());
+        destination = E_Airports.valueOf((String)((ComboItem) cbDestination.getSelectedItem()).getKey());
 
         if (selectedUserType.equals("Customer")) {
             if (ckbFilterDates.isSelected()) {

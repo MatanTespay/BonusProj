@@ -335,7 +335,7 @@ public class UpdateCustomerDetails extends MyInternalFrame implements MethodInte
         ComboItem item = (ComboItem) cb.getSelectedItem();
         
         for (Map.Entry<String, Customer> tempc : MainClass.getIfly().getCustomers().entrySet()) {
-            if (tempc.getKey().equals(item.getValue())) {
+            if (tempc.getKey().equals(item.getKey())) {
                 selectedCustomer = new AbstractMap.SimpleEntry(tempc.getKey(), tempc.getValue());
                 break;
             }

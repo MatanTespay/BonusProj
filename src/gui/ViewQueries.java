@@ -271,8 +271,8 @@ public class ViewQueries extends MyInternalFrame {
 			lblErr.setText("");
 			lblErr.setVisible(false);
 		}
-		E_Airports airports = E_Airports.valueOf(((ComboItem) cbLocation
-				.getSelectedItem()).getValue());
+		E_Airports airports = E_Airports.valueOf((String)((ComboItem) cbLocation
+				.getSelectedItem()).getKey());
 		model = new MyTableModel(flightColumns);
 		tblData.setModel(model);
 		dataRows = new ArrayList<>();
@@ -319,8 +319,8 @@ public class ViewQueries extends MyInternalFrame {
 		tblData.setModel(model);
 		dataRows = new ArrayList<>();
 		int vicationDays = (int) jSpinner1.getValue();
-		int flightNum = Integer.parseInt(((ComboItem) cbFligthSource
-				.getSelectedItem()).getValue());
+		int flightNum = Integer.parseInt((String)((ComboItem) cbFligthSource
+				.getSelectedItem()).getKey());
 		List<Flight> findTheBestFlightBack = MainClass.getIfly()
 				.findTheBestFlightBack(flightNum, vicationDays);
 		if (findTheBestFlightBack.isEmpty()) {
@@ -816,8 +816,8 @@ public class ViewQueries extends MyInternalFrame {
 			return;
 		}
 
-		int fNum = Integer.parseInt(((ComboItem) cbFligthSource
-				.getSelectedItem()).getValue());
+		int fNum = Integer.parseInt((String)((ComboItem) cbFligthSource
+				.getSelectedItem()).getKey());
 		Flight f = MainClass.getIfly().getFlights().get(fNum);
 		String d = this.outputFormatter.format(f
 				.getFlightDateAndTimeDestination());

@@ -156,9 +156,10 @@ public class SiteTypes extends MyInternalFrame {
         PreparedStatement st;
         ComboItem typeItem;
         String siteType;
+        
         try {
             typeItem = (ComboItem)(lsttypes.getSelectedValue());
-            siteType = typeItem.getValue();
+            siteType = (String)typeItem.getKey();
             st = con.prepareStatement("DELETE FROM tblSiteType WHERE "
                 + "siteType = ?");
             st.setString(1, siteType);

@@ -157,7 +157,7 @@ public class Zones extends MyInternalFrame {
         int zoneNumber;
         try {
             zoneItem = (ComboItem)(lstZones.getSelectedValue());
-            zoneNumber = Integer.parseInt(zoneItem.getValue());
+            zoneNumber = (Integer)zoneItem.getKey();
             st = con.prepareStatement("DELETE FROM tblZone WHERE "
                     + "number = ?");
             st.setInt(1, zoneNumber);

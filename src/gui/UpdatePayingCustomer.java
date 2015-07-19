@@ -194,7 +194,7 @@ public class UpdatePayingCustomer extends MyInternalFrame implements MethodInter
         ComboItem item = (ComboItem) cb.getSelectedItem();
         AbstractMap.SimpleEntry c = null;
         for (Map.Entry<String, Customer> tempc : MainClass.getIfly().getCustomers().entrySet()) {
-            if (tempc.getKey().equals(item.getValue())) {
+            if (tempc.getKey().equals(item.getKey())) {
                 selectedCustomer = new AbstractMap.SimpleEntry(tempc.getKey(), tempc.getValue());
                 break;
             }
@@ -419,7 +419,7 @@ public class UpdatePayingCustomer extends MyInternalFrame implements MethodInter
                 return;
             }
             Object id = tblOrders.getValueAt(tblOrders.getSelectedRow(), 0);
-            payCust = ((ComboItem) cbCustomers.getSelectedItem()).getValue();
+            payCust = (String)((ComboItem) cbCustomers.getSelectedItem()).getKey();
             orderNumber = Integer.parseInt(id.toString());
             boolean res = MainClass.getIfly().associateCustomerPayingOrder(orderNumber, payCust);
             fillTable();

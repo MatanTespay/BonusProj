@@ -12,16 +12,10 @@ import init.InputValidator;
 import init.MainClass;
 import static init.MainClass.con;
 import init.MyTableModel;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Graphics2D;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
-import java.sql.SQLNonTransientException;
 import java.sql.Statement;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -381,7 +375,7 @@ public class Users extends MyInternalFrame {
                         String insertTableSQL = "INSERT INTO tblUser"
                                 + "(UserName, Password, RoleID ) VALUES"
                                 + "(?,?,?)";
-                        int RoleID = Integer.parseInt(((ComboItem) cbRoleType.getSelectedItem()).getValue());
+                        int RoleID = Integer.parseInt((String)((ComboItem) cbRoleType.getSelectedItem()).getKey());
                         stmt = con.prepareStatement(insertTableSQL);
                         stmt.setString(1, txtUserName.getText());
                         stmt.setString(2, txtPass.getText());
@@ -406,7 +400,7 @@ public class Users extends MyInternalFrame {
                             ResultSet.CONCUR_UPDATABLE);
 
                     //set params
-                    int RoleID = Integer.parseInt(((ComboItem) cbRoleType.getSelectedItem()).getValue());
+                    int RoleID = Integer.parseInt((String)((ComboItem) cbRoleType.getSelectedItem()).getKey());
                     String oldName = (String) tblUsers.getModel().getValueAt(editedRiwIdx, 0);
                     String oldPass = (String) tblUsers.getModel().getValueAt(editedRiwIdx, 1);
                     stmt.setString(1, txtUserName.getText());

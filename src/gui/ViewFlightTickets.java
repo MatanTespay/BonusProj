@@ -165,7 +165,7 @@ public class ViewFlightTickets extends MyInternalFrame {
         int rowNum = Integer.parseInt(values[0]);
         int seat = Integer.parseInt(values[1]);
         String classType = values[2];
-        String passanger = ((ComboItem) cbPassenger.getSelectedItem()).getValue();
+        String passanger = ((String)((ComboItem) cbPassenger.getSelectedItem()).getKey());
         String passName = ((ComboItem) cbPassenger.getSelectedItem()).getLabel();
         try {
             MainClass.getIfly().addFlightTicketToFlightOrder(flightNumber, orderNum, passanger, seat, rowNum, classType);

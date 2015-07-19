@@ -14,16 +14,16 @@ import java.sql.Date;
 * @author Matan
 */
 public class ComboItem implements Comparable<ComboItem>{
-    private final String value;
+    private final Object key;
     private final String label;
 
-    public ComboItem(String value, String label) {
-        this.value = value;
+    public ComboItem(Object key, String label) {
+        this.key = key;
         this.label = label;
     }
     
-    public String getValue() {
-        return this.value;
+    public Object getKey() {
+        return this.key;
     }
 
     public String getLabel() {
@@ -53,8 +53,6 @@ public class ComboItem implements Comparable<ComboItem>{
                 return this.label.compareTo(o.label);
             }
         }
-         
-        
-    }
-    
+ 
+    } 
 }

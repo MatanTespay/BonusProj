@@ -28,11 +28,11 @@
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="lblFrom" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Component id="ycFrom" min="-2" pref="69" max="-2" attributes="0"/>
+                          <Component id="ychFrom" min="-2" pref="69" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="lblTo" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Component id="ycTo" min="-2" pref="69" max="-2" attributes="0"/>
+                          <Component id="ychTo" min="-2" pref="69" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="lblIs" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -61,10 +61,10 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="ycFrom" min="-2" max="-2" attributes="0"/>
+                  <Component id="ychFrom" min="-2" max="-2" attributes="0"/>
                   <Component id="lblTo" min="-2" max="-2" attributes="0"/>
                   <Component id="lblFrom" alignment="1" min="-2" max="-2" attributes="0"/>
-                  <Component id="ycTo" min="-2" max="-2" attributes="0"/>
+                  <Component id="ychTo" min="-2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="lblIs" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="tfDeposit" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -89,14 +89,23 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="com.toedter.calendar.JYearChooser" name="ycFrom">
+    <Component class="com.toedter.calendar.JYearChooser" name="ychFrom">
+      <Events>
+        <EventHandler event="propertyChange" listener="java.beans.PropertyChangeListener" parameters="java.beans.PropertyChangeEvent" handler="ychFromPropertyChange"/>
+      </Events>
     </Component>
-    <Component class="com.toedter.calendar.JYearChooser" name="ycTo">
+    <Component class="com.toedter.calendar.JYearChooser" name="ychTo">
+      <Events>
+        <EventHandler event="propertyChange" listener="java.beans.PropertyChangeListener" parameters="java.beans.PropertyChangeEvent" handler="ychToPropertyChange"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="tfDeposit">
       <Properties>
         <Property name="text" type="java.lang.String" value="jTextField1"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tfDepositActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="lblFrom">
       <Properties>

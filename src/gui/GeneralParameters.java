@@ -7,7 +7,6 @@ package gui;
 
 import static init.MainClass.con;
 import init.MyTableModel;
-import init.YearRange;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -23,29 +22,26 @@ import static utils.Constants.EDIT_MODE;
  */
 public class GeneralParameters extends MyInternalFrame {
 
-    private final YearRange range;
+    private int fromYear;
+    private int toYear;
+    private double price;
     private final String[] DepositColumns = new String[]{"Start Year", "End Year", "Price"};
-
+    
     /**
      * Creates new form GeneralParameters
      *
      * @param title
      * @param type
-     * @param range
      */
-    public GeneralParameters(String title, String type, YearRange range) {
+    public GeneralParameters(String title, String type) {
         super(title, type);
         setMode(EDIT_MODE);
-        this.range = range;
         initComponents();
         fillDeposits();
 
-        if (range != null) {
-            fillFields();
-        } else {
-            ycFrom.setStartYear(1863);
-            ycTo.setStartYear(1863);
-        }
+        ychFrom.setStartYear(1863);
+        ychTo.setStartYear(1863);
+
     }
 
     /**
@@ -57,8 +53,8 @@ public class GeneralParameters extends MyInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        ycFrom = new com.toedter.calendar.JYearChooser();
-        ycTo = new com.toedter.calendar.JYearChooser();
+        ychFrom = new com.toedter.calendar.JYearChooser();
+        ychTo = new com.toedter.calendar.JYearChooser();
         tfDeposit = new javax.swing.JTextField();
         lblFrom = new javax.swing.JLabel();
         lblTo = new javax.swing.JLabel();
@@ -71,7 +67,24 @@ public class GeneralParameters extends MyInternalFrame {
         btnCancel = new javax.swing.JButton();
         btnCreate = new javax.swing.JButton();
 
+        ychFrom.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                ychFromPropertyChange(evt);
+            }
+        });
+
+        ychTo.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                ychToPropertyChange(evt);
+            }
+        });
+
         tfDeposit.setText("jTextField1");
+        tfDeposit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tfDepositActionPerformed(evt);
+            }
+        });
 
         lblFrom.setText("Deposit from");
 
@@ -125,11 +138,11 @@ public class GeneralParameters extends MyInternalFrame {
                         .addGroup(layout.createSequentialGroup()
                             .addComponent(lblFrom)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(ycFrom, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(ychFrom, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                             .addComponent(lblTo)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(ycTo, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(ychTo, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                             .addComponent(lblIs)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -151,10 +164,10 @@ public class GeneralParameters extends MyInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(ycFrom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ychFrom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblTo)
                     .addComponent(lblFrom)
-                    .addComponent(ycTo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ychTo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(lblIs)
                         .addComponent(tfDeposit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -177,13 +190,11 @@ public class GeneralParameters extends MyInternalFrame {
 
     private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
         PreparedStatement st;
-        int fromYear;
-        int toYear;
 
         try {
 
-            fromYear = ycFrom.getYear();
-            toYear = ycTo.getYear();
+            fromYear = ychFrom.getYear();
+            toYear = ychTo.getYear();
 
             st = con.prepareStatement("DELETE FROM tblGeneralParameters WHERE "
                     + "depositStartYear = ? and depositEndYear = ?");
@@ -199,20 +210,17 @@ public class GeneralParameters extends MyInternalFrame {
 
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
         PreparedStatement st;
-        int fromYear;
-        int toYear;
-        double price;
 
         try {
 
-            fromYear = ycFrom.getYear();
-            toYear = ycTo.getYear();
-            price = Double.parseDouble(tfDeposit.getText());
+            fromYear = ychFrom.getYear();
+            toYear = ychTo.getYear();
+            this.price = Double.parseDouble(tfDeposit.getText());
 
             st = con.prepareStatement("INSERT INTO tblGeneralParameters VALUES (?,?,?)");
             st.setInt(1, fromYear);
             st.setInt(2, toYear);
-            st.setDouble(3, price);
+            st.setDouble(3, this.price);
             st.executeUpdate();
             fillDeposits();
 
@@ -220,6 +228,18 @@ public class GeneralParameters extends MyInternalFrame {
 //            Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnCreateActionPerformed
+
+    private void ychFromPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_ychFromPropertyChange
+        this.fromYear = ychFrom.getYear();
+    }//GEN-LAST:event_ychFromPropertyChange
+
+    private void ychToPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_ychToPropertyChange
+        this.toYear = ychTo.getYear();
+    }//GEN-LAST:event_ychToPropertyChange
+
+    private void tfDepositActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfDepositActionPerformed
+        this.price = Double.valueOf(tfDeposit.getText());
+    }//GEN-LAST:event_tfDepositActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -234,8 +254,8 @@ public class GeneralParameters extends MyInternalFrame {
     private javax.swing.JLabel lblTo;
     private javax.swing.JTable tblDeposits;
     private javax.swing.JTextField tfDeposit;
-    private com.toedter.calendar.JYearChooser ycFrom;
-    private com.toedter.calendar.JYearChooser ycTo;
+    private com.toedter.calendar.JYearChooser ychFrom;
+    private com.toedter.calendar.JYearChooser ychTo;
     // End of variables declaration//GEN-END:variables
 
     private void fillFields() {
@@ -244,13 +264,13 @@ public class GeneralParameters extends MyInternalFrame {
         try {
             st = con.prepareStatement("Select * From tblGeneralParameters As GP "
                     + "WHERE GP.depositStartYear = ? and GP.depositEndYear = ?");
-            st.setInt(1, range.getFrom());
-            st.setInt(2, range.getTo());
+            st.setInt(1, this.fromYear);
+            st.setInt(2, this.toYear);
             rs = st.executeQuery();
 
             rs.next();
-            ycFrom.setYear(rs.getInt("depositStartYear"));
-            ycTo.setYear(rs.getInt("depositEndYear"));
+            ychFrom.setYear(rs.getInt("depositStartYear"));
+            ychTo.setYear(rs.getInt("depositEndYear"));
             tfDeposit.setText(rs.getString("price"));
         } catch (SQLException ex) {
             Logger.getLogger(GeneralParameters.class

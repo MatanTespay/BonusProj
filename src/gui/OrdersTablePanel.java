@@ -159,14 +159,14 @@ public class OrdersTablePanel extends javax.swing.JPanel {
                 tableModel = new MyTableModel(agentOrdercolumn);
                 if (parent.getCombAgents().getModel().getSize() > 0) {
                     isAgentView = true;
-                    key = Integer.parseInt(((ComboItem) parent.getCombAgents().getSelectedItem()).getValue());
+                    key = Integer.parseInt((String)((ComboItem) parent.getCombAgents().getSelectedItem()).getKey());
                     sb.append(((ComboItem) parent.getCombAgents().getSelectedItem()).getLabel());
                 }
             } else if (parent.getRbCust().isSelected()) {
                 tableModel = new MyTableModel(cutomerOrdercolumn);
                 if (parent.getCombCustomers().getModel().getSize() > 0) {
                     isCustView = true;
-                    key = ((ComboItem) parent.getCombCustomers().getSelectedItem()).getValue();
+                    key = (String)((ComboItem) parent.getCombCustomers().getSelectedItem()).getKey();
                     sb.append(((ComboItem) parent.getCombCustomers().getSelectedItem()).getLabel());
                 }
             }

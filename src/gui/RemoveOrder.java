@@ -44,7 +44,7 @@ public class RemoveOrder extends MyInternalFrame {
      */
     private void setOrderInfo() {
         if (cbOrders.getModel().getSize() > 0) {
-            o = MainClass.getIfly().getOrderById(Integer.parseInt(((ComboItem) cbOrders.getSelectedItem()).getValue()));
+            o = MainClass.getIfly().getOrderById(Integer.parseInt((String)((ComboItem) cbOrders.getSelectedItem()).getKey()));
             if (o != null) {
                 cName.setText(o.getResponsibleCustomer().getFirstName() + " " + o.getResponsibleCustomer().getLastName());
                 aName.setText(o.getAgent().getFirstName() + " " + o.getAgent().getLastName());
@@ -182,7 +182,7 @@ public class RemoveOrder extends MyInternalFrame {
             return;
         }
 
-        OrderToRemove = Integer.parseInt(((ComboItem) cbOrders.getSelectedItem()).getValue());
+        OrderToRemove = Integer.parseInt((String)((ComboItem) cbOrders.getSelectedItem()).getKey());
         try {
             MainClass.getIfly().cancelOrder(OrderToRemove);
             JOptionPane.showInternalConfirmDialog(this, "Saved changes", "Confirmation", JOptionPane.PLAIN_MESSAGE, JOptionPane.INFORMATION_MESSAGE);

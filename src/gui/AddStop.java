@@ -163,8 +163,8 @@ public class AddStop extends MyInternalFrame {
             return;
         }
 
-        int flightNumber = Integer.parseInt(((ComboItem) cbFlights.getSelectedItem()).getValue());
-        stop = E_Airports.valueOf(((ComboItem) cbStops.getSelectedItem()).getValue());
+        int flightNumber = Integer.parseInt((String)((ComboItem) cbFlights.getSelectedItem()).getKey());
+        stop = E_Airports.valueOf((String)((ComboItem) cbStops.getSelectedItem()).getKey());
 
         try {
             MainClass.getIfly().addStepInToFlight(flightNumber, stop);
@@ -188,7 +188,7 @@ public class AddStop extends MyInternalFrame {
 
         int flightNumber = -1;
         if (cbFlights.getModel().getSize() > 0) {
-            flightNumber = Integer.parseInt(((ComboItem) cbFlights.getSelectedItem()).getValue());
+            flightNumber = Integer.parseInt((String)((ComboItem) cbFlights.getSelectedItem()).getKey());
         }
 
         Flight selectFlight = MainClass.getIfly().getFlights().get(flightNumber);

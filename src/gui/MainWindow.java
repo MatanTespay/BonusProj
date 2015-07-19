@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package gui;
+
 import exceptions.YearRangeException;
 import init.ActivityKey;
 import init.CloseAction;
@@ -22,10 +23,11 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
 /**
-*
- *The class represents the main window of the application
- *@author Matan
-*/
+ *
+ * The class represents the main window of the application
+ *
+ * @author Matan
+ */
 /**
  * @author Matan
  *
@@ -77,7 +79,6 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         super(title);
     }
 
-    
     /**
      * fill the {@link #MainMenuBar}}
      */
@@ -96,7 +97,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         //<editor-fold defaultstate="collapsed" desc="Operations Menu">
         if (!selectedUserType.equals("Customer")) {
             aMenu = addMenuToMenuBar("Operations", KeyEvent.VK_O);
-            
+
             if (!selectedUserType.equals("Agent")) {
 //branch
                 submenu = addMenuToMenuBar("Branch  ", KeyEvent.VK_B);
@@ -198,9 +199,10 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 //</editor-fold>
     }
 
-    
     /**
-     * creates the required internal frame by the given name and add it to the {@link #desktop}}
+     * creates the required internal frame by the given name and add it to the
+     * {@link #desktop}}
+     *
      * @param frame
      */
     public void createFrame(MyInternalFrame frame) {
@@ -231,7 +233,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
                 saveIfly();
                 break;
             case "Add Activity":
-                ifram = new Activity(e.getActionCommand(), selectedUserType, new ActivityKey(1,new Date(1951,03,14),new Date(1951,03,14)));
+                ifram = new Activity(e.getActionCommand(), selectedUserType, 1, new Date(1951, 03, 14), new Date(1951, 03, 14));
 
                 break;
             case "Add Agent To Branch":
@@ -245,19 +247,16 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
             case "Add User":
                 ifram = new Users(e.getActionCommand(), selectedUserType);
                 break;
-                //Add User
+            //Add User
             case "Add Line":
                 ifram = new Line(e.getActionCommand(), selectedUserType, null);
                 break;
             case "Add Site":
-                ifram = new Site(e.getActionCommand(), selectedUserType,2);
+                ifram = new Site(e.getActionCommand(), selectedUserType, 2);
                 break;
-           case "Add Deposit": {
-                try {
-                    ifram = new GeneralParameters(e.getActionCommand(), selectedUserType, new init.YearRange(2010, 2015));
-                } catch (YearRangeException ex) {
-                    
-                }
+            case "Add Deposit": {
+                ifram = new GeneralParameters(e.getActionCommand(), selectedUserType);
+                break;
             }
             case "Update customer Details":
                 ifram = new UpdateCustomerDetails(e.getActionCommand(), selectedUserType);
@@ -314,15 +313,15 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 
         }
         createFrame(ifram);
-        
 
     }
 
     /**
      * add new menu bar and add it to the {@link #MainMenuBar}}
+     *
      * @param menuTitle
      * @param key
-     * @return the menu bar 
+     * @return the menu bar
      */
     private JMenu addMenuToMenuBar(String menuTitle, int key) {
         menu = new JMenu(menuTitle);
@@ -336,9 +335,9 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 
     }
 
-    
     /**
      * add new menu item to a given menu
+     *
      * @param theMenu
      * @param itemTitle
      * @param key
@@ -391,7 +390,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     }// </editor-fold>//GEN-END:initComponents
 
     /**
-     * 
+     *
      * @param evt
      */
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
@@ -416,14 +415,14 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
                 login.resetFocus(0);
                 this.setVisible(false);
                 //} else if (result == JOptionPane.CANCEL_OPTION) {
-               
+
             } else if (result == JOptionPane.NO_OPTION) {
                 MainClass.deserializeIfly();
                 login.setVisible(true);
                 login.resetFocus(0);
                 this.setVisible(false);
             }
-            
+
             MainClass.setIsIflySaved(true);
             return;
         }

@@ -48,5 +48,17 @@ public final class Constants {
     public static boolean ADD_MODE = false;
     
     public static boolean EDIT_MODE = true;
+    
+    public static boolean PAPER = false;
+    
+    public static boolean OYSTER = true;
+    
+    public static boolean OVERGROUND = false;
+    
+    public static boolean UNDERGROUND = true;
+    
+    public static boolean INGOING = false;
+    
+    public static boolean OUTGOING = true;
 
 }// ~ END OF Class Constants

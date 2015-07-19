@@ -10,10 +10,11 @@ import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
 
 /**
- *The class represents customized DefaultTableModel enables use of ArrayList in the tables used in the system
-
-* @author Matan
-*/
+ * The class represents customized DefaultTableModel enables use of ArrayList in
+ * the tables used in the system
+ *
+ * @author Matan
+ */
 public class MyTableModel extends DefaultTableModel {
 
     private String[] columnNames;
@@ -59,7 +60,7 @@ public class MyTableModel extends DefaultTableModel {
     }
 
     private static ArrayList<Object[]> newData(int size) {
-        ArrayList<Object[]> v = new ArrayList<Object[]>(size);
+        ArrayList<Object[]> v = new ArrayList<>(size);
         return v;
     }
 
@@ -74,7 +75,7 @@ public class MyTableModel extends DefaultTableModel {
     }
 
     @Override
-	public String getColumnName(int col) {
+    public String getColumnName(int col) {
         return columnNames[col] != null ? columnNames[col] : "";
     }
 
@@ -104,7 +105,7 @@ public class MyTableModel extends DefaultTableModel {
     }
 
     @Override
-	public boolean isCellEditable(int row, int col) {
+    public boolean isCellEditable(int row, int col) {
         //Note that the data/cell address is constant,
         //no matter where the cell appears onscreen.
         if (enabledCells == null) {
@@ -129,23 +130,21 @@ public class MyTableModel extends DefaultTableModel {
     }
 
     @Override
-	public void removeRow(int row) {
+    public void removeRow(int row) {
         data.remove(row);
         fireTableRowsDeleted(row, row);
         for (int i = 0; i < data.size(); i++) {
-            setValueAt((i+1), i, 0);
+            setValueAt((i + 1), i, 0);
         }
     }
 
     @Override
-	public void setValueAt(Object value, int row, int col) {
+    public void setValueAt(Object value, int row, int col) {
         // change made here
         if (data != null && data.get(row) != null) {
             Object[] rowData = data.get(row);
             rowData[col] = value;
             fireTableCellUpdated(row, col);
         }
-
-    }
-
+    }    
 }
