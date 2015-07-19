@@ -86,7 +86,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 
         //<editor-fold defaultstate="collapsed" desc="File Menu">
         JMenu aMenu = addMenuToMenuBar("File", 'F');
-        addMenuItem(aMenu, "Save", KeyEvent.VK_S);
+        //addMenuItem(aMenu, "Save", KeyEvent.VK_S);
 
         CloseAction closeAction = new CloseAction("Exit", null, "Close The Application", new Integer(KeyEvent.VK_X), this);
         menuItem = new JMenuItem(closeAction);
@@ -115,88 +115,32 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
                 aMenu.add(submenu);
                 aMenu.addSeparator();
 
-                //flight
-                submenu = addMenuToMenuBar("Flight  ", KeyEvent.VK_F);
+            //<editor-fold defaultstate="collapsed" desc="Only Admin">
+            if (!selectedUserType.equals("Manager")) {
 
-                addMenuItem(submenu, "Add Flight", KeyEvent.VK_L);
-                addMenuItem(submenu, "Add Stop To Flight", KeyEvent.VK_T);
-                addMenuItem(submenu, "Add Pilot To Flight", KeyEvent.VK_P);
-                addMenuItem(submenu, "Add FlightAttendant To Flight", KeyEvent.VK_I);
-                aMenu.add(submenu);
-                aMenu.addSeparator();
-
-            }
-
-            submenu = addMenuToMenuBar("Customers   ", KeyEvent.VK_C);
-            addMenuItem(submenu, "Add Deposit", KeyEvent.VK_L);
-            aMenu.add(submenu);
-            aMenu.addSeparator();
-
-            submenu = addMenuToMenuBar("Orders  ", KeyEvent.VK_O);
-            //           addMenuItem(submenu, "Add Order", KeyEvent.VK_O);
-
-//            aMenu.add(submenu);
-//            submenu = addMenuToMenuBar("Flight Orders", KeyEvent.VK_O);
-            addMenuItem(submenu, "Add Flight Order", KeyEvent.VK_O);
-            addMenuItem(submenu, "Add Flight Ticket", KeyEvent.VK_R);
-            addMenuItem(submenu, "Remove Order", KeyEvent.VK_R);
-            aMenu.add(submenu);
-
-        }
-
-//</editor-fold>
-        //<editor-fold defaultstate="collapsed" desc="Update Menu">
-        aMenu = addMenuToMenuBar("Update", KeyEvent.VK_U);
-        addMenuItem(aMenu, "Update customer Details", KeyEvent.VK_D);
-        if (!selectedUserType.equals("Customer")) {
-            addMenuItem(aMenu, "Update Paying Customer", KeyEvent.VK_P);
-        }
-//</editor-fold>
-
-        //<editor-fold defaultstate="collapsed" desc="View Menu">
-        aMenu = addMenuToMenuBar("View", KeyEvent.VK_U);
-        addMenuItem(aMenu, "View orders", KeyEvent.VK_D);
-        addMenuItem(aMenu, "View flights", KeyEvent.VK_D);
-        addMenuItem(aMenu, "View tickets", KeyEvent.VK_P);
-
-        if (!selectedUserType.equals("Customer")) {
-            aMenu = addMenuToMenuBar("Queries", KeyEvent.VK_U);
-
-            submenu = addMenuToMenuBar("Flights", KeyEvent.VK_C);
-            addMenuItem(submenu, "Get Flights Sorted By Occupancy", KeyEvent.VK_X);
-            addMenuItem(submenu, "Get The Top X Popular Flights", KeyEvent.VK_X);
-            addMenuItem(submenu, "Get All Summer Flights Sorted By Number Of Stops", KeyEvent.VK_X);
-            addMenuItem(submenu, "Get All This Summer Flights By Location", KeyEvent.VK_X);
-            addMenuItem(submenu, "Find The Best Flight Back", KeyEvent.VK_X);
-
-            aMenu.add(submenu);
-
-            submenu = addMenuToMenuBar("Orders", KeyEvent.VK_C);
-            addMenuItem(submenu, "Get All Orders Of Most Profitable Customer", KeyEvent.VK_X);
-            addMenuItem(submenu, "Get The Most Profitable Order", KeyEvent.VK_X);
-            aMenu.add(submenu);
-
-            if (!selectedUserType.equals("Agent")) {
-
-                submenu = addMenuToMenuBar("Agents", KeyEvent.VK_C);
-                addMenuItem(submenu, "Get All Super Agents", KeyEvent.VK_X);
-                addMenuItem(submenu, "Get Potential Customers For Agents", KeyEvent.VK_X);
-
-                aMenu.add(submenu);
-                submenu = addMenuToMenuBar("Branches", KeyEvent.VK_C);
-
-                addMenuItem(submenu, "Get Potential Customers For Branch", KeyEvent.VK_X);
-                addMenuItem(submenu, "Get Branches Agents Sorted By Rating", KeyEvent.VK_X);
-                addMenuItem(submenu, "Get All This Summer Work Employees Sorted By Seniority", KeyEvent.VK_X);
-                addMenuItem(submenu, "Employee Of The Month", KeyEvent.VK_X);
-
-                aMenu.add(submenu);
+                aMenu = addMenuToMenuBar("System", KeyEvent.VK_O);
+                addMenuItem(aMenu, "Add User", KeyEvent.VK_U);
+                addMenuItem(aMenu, "Add Role", KeyEvent.VK_U);
+                addMenuItem(aMenu, "Add Deposit", KeyEvent.VK_D);
+                addMenuItem(aMenu, "Add Card Length", KeyEvent.VK_B);
 
             }
 
+            //</editor-fold>
+            //<editor-fold defaultstate="collapsed" desc=" Admin + Manger">
+            //</editor-fold>
         }
 
-//</editor-fold>
+        //<editor-fold defaultstate="collapsed" desc="All Workers">
+        aMenu = addMenuToMenuBar("management", KeyEvent.VK_O);
+        addMenuItem(aMenu, "Add Station", KeyEvent.VK_A);
+        addMenuItem(aMenu, "Add Line", KeyEvent.VK_F);
+        addMenuItem(aMenu, "Add Site", KeyEvent.VK_P);
+        addMenuItem(aMenu, "Add Activity", KeyEvent.VK_B);
+        addMenuItem(aMenu, "Add Card", KeyEvent.VK_B);
+        addMenuItem(aMenu, "Export/Import CSV", KeyEvent.VK_B);
+
+        //</editor-fold>
     }
 
     /**
@@ -236,14 +180,20 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
                 ifram = new Activity(e.getActionCommand(), selectedUserType, 1, new Date(1951, 03, 14), new Date(1951, 03, 14));
 
                 break;
-            case "Add Agent To Branch":
-                ifram = new AddAgentToBranch(e.getActionCommand(), selectedUserType);
+            case "Add Role":
+                ifram = new AddRole(e.getActionCommand(), selectedUserType);
 
                 break;
             case "Add Station":
                 ifram = new Station(e.getActionCommand(), selectedUserType, 9);
                 break;
-            //case "Add Flight Attendant":
+            //Add Card "Add Card Length"
+            case "Add Card":
+                ifram = new Card(e.getActionCommand(), selectedUserType);
+                break;
+            case "Add Card Length":
+                ifram = new CardLengths(e.getActionCommand(), selectedUserType);
+                break;
             case "Add User":
                 ifram = new Users(e.getActionCommand(), selectedUserType);
                 break;
@@ -267,8 +217,8 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 
                 break;
 
-            case "Add Flight":
-                ifram = new AddFlight(e.getActionCommand(), selectedUserType);
+            case "Export/Import CSV":
+                ifram = new ExportImportCsv(e.getActionCommand(), selectedUserType);
                 break;
             case "Add Stop To Flight":
                 ifram = new AddStop(e.getActionCommand(), selectedUserType);

@@ -9,22 +9,19 @@ package utils;
  *
  * @author Matan
  */
-public enum  InputType {
+public enum operationState {
     
-    
-    TEXT("Text"),
-    PASSWOORD("Password"),
-    NUMBER("Number"),
-    DATE("Date"),
-    EMAIL("Email"),
-    ROLE("ROLE");
+    Edit("Edit"),
+    Delete("Delete"),
+    Add("Add"),
+    None("None");
 
     private final String Type;
 
     /**
      * @param text
      */
-    private InputType(final String text) {
+    private operationState(final String text) {
         this.Type = text;
     }
 
@@ -39,6 +36,4 @@ public enum  InputType {
     public String getType() {
         return Type;
     }
-    
-   
 }

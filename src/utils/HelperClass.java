@@ -90,7 +90,8 @@ public class HelperClass {
         //^(?=.*[a-zA-Z])(?=[-' '_]+)(?=.*\d)(?=.*(_|[^\w])).+$
         //\b(?:\w+\W+){1}(?=[-' '_]+(?:\w+\W+))\b.
         //
-        Pattern pattern = Pattern.compile("[a-zA-Z]+([' '-_]?)[a-zA-Z]+");
+        //Pattern pattern = Pattern.compile("[a-zA-Z]+([' '-_]?)[a-zA-Z]+");
+        Pattern pattern = Pattern.compile("[a-zA-Z0-9_-]{1,10}");
         boolean result;
 
         result = pattern.matcher(s).matches();
@@ -191,6 +192,13 @@ public class HelperClass {
                             return null;
                         } else {
                             s = "Minimum 4 characters";
+                        }
+                        break;
+                        case "ROLE":
+                        if (isRole(text)) {
+                            return null;
+                        } else {
+                            s = "Role is incorrect";
                         }
                         break;
                 }
@@ -723,6 +731,13 @@ public class HelperClass {
         }
         return null;
     }
+
+    private static boolean isRole(String text) {
+       Pattern pattern = Pattern.compile("[a-zA-Z]+([' '-_]?)([a-zA-Z]+)");
+        boolean result;
+
+        result = pattern.matcher(text).matches();
+        return result;
     
     public static void setSelectedValue(JComboBox comboBox, String label)
     {

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+  <persistence-unit name="BonusProjPU" transaction-type="RESOURCE_LOCAL">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <class>Entity.TblZone</class>
+    <class>Entity.TblLine</class>
+    <class>Entity.TblOysterCard</class>
+    <class>Entity.TblSiteType</class>
+    <class>Entity.TblCard</class>
+    <class>Entity.TblCardLengths</class>
+    <class>Entity.TblSiteFromSite</class>
+    <class>Entity.TblStation</class>
+    <class>Entity.TblOysterCardAreas</class>
+    <class>Entity.TblLineColor</class>
+    <class>Entity.TblRole</class>
+    <class>Entity.TblGeneralParameters</class>
+    <class>Entity.TblUser</class>
+    <class>Entity.TblSite</class>
+    <class>Entity.TblActivity</class>
+    <class>Entity.TblStationInLine</class>
+    <class>Entity.TblPaperCard</class>
+    <class>Entity.TblPaperCardAreas</class>
+    <class>Entity.TblSiteFromExit</class>
+    <properties>
+      <property name="javax.persistence.jdbc.url" value="jdbc:sqlserver://localhost:1433;databaseName=LondonU2"/>
+      <property name="javax.persistence.jdbc.user" value="tom"/>
+      <property name="javax.persistence.jdbc.driver" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
+      <property name="javax.persistence.jdbc.password" value="1234"/>
+    </properties>
+  </persistence-unit>
+</persistence>
