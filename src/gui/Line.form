@@ -33,7 +33,7 @@
                           <Group type="102" alignment="1" attributes="0">
                               <Component id="lblAddStations" min="-2" max="-2" attributes="0"/>
                               <EmptySpace pref="17" max="32767" attributes="0"/>
-                              <Component id="cmbStations" min="-2" pref="85" max="-2" attributes="0"/>
+                              <Component id="cmbStation" min="-2" pref="85" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
@@ -129,7 +129,7 @@
                       <Component id="btnViewStation" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="cmbStations" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="cmbStation" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="lblAddStations" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -251,14 +251,14 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cmbColorActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JComboBox" name="cmbStations">
+    <Component class="javax.swing.JComboBox" name="cmbStation">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
           <Connection code="new javax.swing.DefaultComboBoxModel(new String[] { &quot;Underground&quot;, &quot;Overground&quot; })" type="code"/>
         </Property>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cmbStationsActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cmbStationActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="lblAddStations">

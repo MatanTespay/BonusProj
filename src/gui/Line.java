@@ -38,12 +38,10 @@ public class Line extends MyInternalFrame {
     private double length;
     private String color;
 
-    private final String[] LineColumns = {
-        "ID",
-        "Name",
-        "Platforms",
-        "Kiosk",
-        "Zone"};
+    private QueryComboBox qcbColor;
+    private QueryComboBox qcbStation;
+
+    private final String[] LineColumns = {"ID", "Name", "Platforms", "Kiosk", "Zone"};
 
     /**
      * Creates new form Line
@@ -74,9 +72,15 @@ public class Line extends MyInternalFrame {
 
     private void buildForm() {
         initComponents();
-        fillCmbColor();
-        fillStations();
+        
+        this.qcbColor = new QueryComboBox(cmbColor, "Select * From tblLineColor",
+                String.class, "name", "name");
+//        this.qcbStation = new QueryComboBox(cmbStation, "Select * From tblStation",
+//                Integer.class, "ID", "name");
+        
         fillCmbStations();
+        
+        fillStations();
         setTableProperties(tblStations);
         setActiveness();
         super.validators = new ArrayList<InputValidator>() {
@@ -111,7 +115,7 @@ public class Line extends MyInternalFrame {
         btnViewStation = new javax.swing.JButton();
         btnRemoveStation = new javax.swing.JButton();
         cmbColor = new javax.swing.JComboBox();
-        cmbStations = new javax.swing.JComboBox();
+        cmbStation = new javax.swing.JComboBox();
         lblAddStations = new javax.swing.JLabel();
         ychFoundationYear = new com.toedter.calendar.JYearChooser();
         btnSave = new javax.swing.JButton();
@@ -187,10 +191,10 @@ public class Line extends MyInternalFrame {
             }
         });
 
-        cmbStations.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Underground", "Overground" }));
-        cmbStations.addActionListener(new java.awt.event.ActionListener() {
+        cmbStation.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Underground", "Overground" }));
+        cmbStation.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbStationsActionPerformed(evt);
+                cmbStationActionPerformed(evt);
             }
         });
 
@@ -223,7 +227,7 @@ public class Line extends MyInternalFrame {
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addComponent(lblAddStations)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
-                                .addComponent(cmbStations, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(cmbStation, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lblStations)
                         .addGap(0, 0, Short.MAX_VALUE)))
@@ -295,7 +299,7 @@ public class Line extends MyInternalFrame {
                         .addComponent(btnViewStation)
                         .addGap(10, 10, 10)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(cmbStations, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cmbStation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lblAddStations))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnRemoveStation)))
@@ -343,7 +347,7 @@ public class Line extends MyInternalFrame {
         }
     }//GEN-LAST:event_btnRemoveStationActionPerformed
 
-    private void cmbStationsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbStationsActionPerformed
+    private void cmbStationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbStationActionPerformed
         PreparedStatement st;
         DefaultComboBoxModel model;
         ComboItem item;
@@ -352,7 +356,7 @@ public class Line extends MyInternalFrame {
 
         try {
 
-            model = (DefaultComboBoxModel) cmbStations.getModel();
+            model = (DefaultComboBoxModel) cmbStation.getModel();
             item = (ComboItem) model.getSelectedItem();
             value = (String) item.getKey();
             stationID = Integer.parseInt(value);
@@ -363,12 +367,12 @@ public class Line extends MyInternalFrame {
             st.executeUpdate();
             fillStations();
 
-            int chosenRow = cmbStations.getSelectedIndex();
-            ((DefaultComboBoxModel) cmbStations.getModel()).removeElementAt(chosenRow);
+            int chosenRow = cmbStation.getSelectedIndex();
+            ((DefaultComboBoxModel) cmbStation.getModel()).removeElementAt(chosenRow);
         } catch (SQLException | NullPointerException ex) {
 //            Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_cmbStationsActionPerformed
+    }//GEN-LAST:event_cmbStationActionPerformed
 
     private void tfNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfNameActionPerformed
         this.lineName = tfName.getText();
@@ -399,7 +403,7 @@ public class Line extends MyInternalFrame {
     private javax.swing.JButton btnSave;
     private javax.swing.JButton btnViewStation;
     private javax.swing.JComboBox cmbColor;
-    private javax.swing.JComboBox cmbStations;
+    private javax.swing.JComboBox cmbStation;
     private javax.swing.JComboBox cmbType;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lbName;
@@ -439,6 +443,7 @@ public class Line extends MyInternalFrame {
     }
 
     private void fillCmbStations() {
+
         Statement s;
         ResultSet rs;
 
@@ -458,7 +463,7 @@ public class Line extends MyInternalFrame {
             }
             Collections.sort(items);
             items.add(0, null);
-            cmbStations.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
+            cmbStation.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
         } catch (SQLException ex) {
             Logger.getLogger(Line.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -486,6 +491,7 @@ public class Line extends MyInternalFrame {
     }
 
     private void fillCmbColor() {
+        
         Statement s;
         ResultSet rs;
         try {
@@ -509,7 +515,7 @@ public class Line extends MyInternalFrame {
         ychFoundationYear.setYear(this.foundedYear);
         setSelectedValue(cmbType, (this.type == OVERGROUND) ? "Overground" : "Underground");
         tfLength.setText(String.valueOf(this.length));
-        cmbStations.setSelectedIndex(0);
+        cmbStation.setSelectedIndex(0);
     }
 
     private void setActiveness() {

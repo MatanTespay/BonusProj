@@ -13,9 +13,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -40,6 +38,11 @@ public class Card extends MyInternalFrame {
     private JFileChooser picFileChooser;
     private boolean isTourist;
     private final String[] programColumns = {"#", "Zone", "Length"};
+
+    private QueryComboBox qcbCard;
+    private QueryComboBox qcbPurchaseDate;
+    private QueryComboBox qcbZone;
+    private QueryComboBox qcbLength;
 
     ;
     
@@ -70,9 +73,21 @@ public class Card extends MyInternalFrame {
 
     private void buildForm() {
         initComponents();
-        fillCmbCard();
-        fillCmbZone();
-        fillCmbLength();
+        this.qcbCard = new QueryComboBox(cmbCard, "SELECT number FROM tblCard",
+                Integer.class, "number", "number");
+        this.qcbLength = new QueryComboBox(cmbLength, "SELECT * FROM tblCardLengths",
+                Integer.class, "cardLength", "lengthDescription");
+        this.qcbPurchaseDate = new QueryComboBox(cmbPurchaseDate, "SELECT * FROM tblCard "
+                + "WHERE number = ?", Date.class, "purchaseDate", "purchaseDate", cardNumber);
+        this.qcbZone = new QueryComboBox(cmbZone, "SELECT * FROM tblZone",
+                Integer.class, "number", "number");
+
+        qcbCard.fill();
+        qcbLength.fill();
+        qcbZone.fill();
+        int defaultCard = Integer.valueOf(((ComboItem)cmbCard.getSelectedItem()).getKey().toString());
+        qcbPurchaseDate.fill(defaultCard);
+        
         setTableProperties(tblPrograms);
         setActiveness();
     }
@@ -205,51 +220,47 @@ public class Card extends MyInternalFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 308, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addComponent(btnRemove)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(btnAdd))
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                    .addComponent(lblLength)
-                                                    .addComponent(lblZone))
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                    .addComponent(cmbLength, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                    .addComponent(cmbZone, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addComponent(btnCreate, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                            .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(lblCardNumber)
                                             .addComponent(lblPurchaseDate)
                                             .addComponent(lblType))
-                                        .addGap(18, 18, Short.MAX_VALUE)
+                                        .addGap(18, 18, 18)
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(cmbType, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(cmbCard, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(cmbPurchaseDate, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGap(117, 117, 117))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(chbIsTourist)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                            .addComponent(cmbCard, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(cmbPurchaseDate, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(cmbType, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(chbIsTourist))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(btnBrowse, javax.swing.GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE)
-                                    .addComponent(lblPicture, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                                    .addComponent(lblPicture, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(btnCreate, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(btnRemove)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(btnAdd))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(lblLength)
+                                            .addComponent(lblZone))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(cmbLength, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(cmbZone, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                         .addGap(16, 16, 16))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lblPrograms)
@@ -280,8 +291,8 @@ public class Card extends MyInternalFrame {
                         .addComponent(chbIsTourist)))
                 .addGap(12, 12, 12)
                 .addComponent(lblPrograms)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(cmbZone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -290,12 +301,12 @@ public class Card extends MyInternalFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(cmbLength, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lblLength))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(38, 38, 38)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnAdd)
                             .addComponent(btnRemove)))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 99, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 109, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCreate)
                     .addComponent(btnUpdate)
@@ -312,7 +323,9 @@ public class Card extends MyInternalFrame {
             ComboItem cardItem = (ComboItem) cmbCard.getSelectedItem();
             this.cardNumber = Integer.parseInt(cardItem.getKey().toString());
             cmbPurchaseDate.setEnabled(true);
-            fillCmbPurchaseDate(cardNumber);
+
+            qcbPurchaseDate.fill(cardNumber);
+
         } catch (NullPointerException ex) {
             // no item is chosen
             cmbPurchaseDate.setEnabled(false);
@@ -425,44 +438,6 @@ public class Card extends MyInternalFrame {
     private javax.swing.JTable tblPrograms;
     // End of variables declaration//GEN-END:variables
 
-    private void fillCmbCard() {
-        Statement s;
-        ResultSet rs;
-        try {
-            s = con.createStatement();
-            rs = s.executeQuery("SELECT C.number FROM tblCard As C");
-            ArrayList<ComboItem> items = new ArrayList<>();
-            while (rs.next()) {
-                items.add(new ComboItem(rs.getInt("number"), rs.getString("number")));
-            }
-            Collections.sort(items);
-            items.add(0, null);
-            cmbCard.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
-        } catch (SQLException ex) {
-            Logger.getLogger(Card.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    private void fillCmbPurchaseDate(int cardNumber) {
-        PreparedStatement st;
-        ResultSet rs;
-        try {
-            st = con.prepareStatement("SELECT C.purchaseDate FROM tblCard As C WHERE C.number = ?");
-            st.setInt(1, cardNumber);
-            rs = st.executeQuery();
-
-            ArrayList<ComboItem> items = new ArrayList<>();
-            while (rs.next()) {
-                items.add(new ComboItem(rs.getDate("purchaseDate"), rs.getString("purchaseDate")));
-            }
-            Collections.sort(items);
-            items.add(0, null);
-            cmbPurchaseDate.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
-        } catch (SQLException ex) {
-            Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
     private void fillPrograms() {
         PreparedStatement st;
         ResultSet rs;
@@ -488,42 +463,6 @@ public class Card extends MyInternalFrame {
         } catch (SQLException ex) {
             Logger.getLogger(Card.class
                     .getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    private void fillCmbZone() {
-        Statement s;
-        ResultSet rs;
-        try {
-            s = con.createStatement();
-            rs = s.executeQuery("SELECT * FROM tblZone");
-            ArrayList<ComboItem> items = new ArrayList<>();
-            while (rs.next()) {
-                items.add(new ComboItem(rs.getInt("number"), rs.getString("number")));
-            }
-            Collections.sort(items);
-            items.add(0, null);
-            cmbCard.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
-        } catch (SQLException ex) {
-            Logger.getLogger(Card.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    private void fillCmbLength() {
-        Statement s;
-        ResultSet rs;
-        try {
-            s = con.createStatement();
-            rs = s.executeQuery("SELECT * FROM tblCardLengths");
-            ArrayList<ComboItem> items = new ArrayList<>();
-            while (rs.next()) {
-                items.add(new ComboItem(rs.getDouble("cardLength"), rs.getString("lengthDescription")));
-            }
-            Collections.sort(items);
-            items.add(0, null);
-            cmbCard.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
-        } catch (SQLException ex) {
-            Logger.getLogger(Card.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
