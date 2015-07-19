@@ -293,9 +293,7 @@ public class CsvHandler {
     public void exportTableDataToCsv(String table, String name) {
         //usual database connection part
         Connection con = null;
-        if (1 == 1) {
-            return;
-        }
+
         String driver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
 
         FileWriter fw;

@@ -63,8 +63,8 @@ public class QueryComboBox {
                     case "String":
                         st.setString(1, (String) variable);
                         break;
-                    case "Date":
-                        st.setDate(1, (java.sql.Date) variable);
+                    case "Timestamp":
+                        st.setString(1, variable.toString());
                         break;
                     default:
                         System.out.println("add another class type");
@@ -78,7 +78,9 @@ public class QueryComboBox {
 
             while (rs.next()) {
                 Object key;
-                String value = rs.getString(valueColumn);
+                String value ;
+                 value = rs.getObject(valueColumn).toString();
+                
                 switch (keyClass.getSimpleName()) {
                     case "Integer":
                         key = rs.getInt(keyColumn);
@@ -90,7 +92,7 @@ public class QueryComboBox {
                         key = rs.getInt(keyColumn);
                         break;
                     case "Date":
-                        key = rs.getDate(keyColumn);
+                        key = rs.getString(keyColumn);
                         break;
                     default:
                         key = null;

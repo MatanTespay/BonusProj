@@ -231,16 +231,30 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
                 c.getTime();
                 //</editor-fold>
                 JComboBox d1 = new JComboBox();
+                QueryComboBox q1 = new QueryComboBox(d1, "Select number from tblCard", Integer.class, "number", "number");
+                q1.fill();
                 JComboBox d2 = new JComboBox();
-                
+                QueryComboBox q2 = new QueryComboBox(d2, "Select * from tblCard where  number = ?",
+                        Date.class, "purchaseDate", "purchaseDate", ((ComboItem) d1.getSelectedItem()).getKey());
+                q2.fill();
                 final JComponent[] inputs = new JComponent[]{
                     new JLabel("Card"),
                     d1,
                     new JLabel("Date"),
                     d2
                 };
-                JOptionPane.showMessageDialog(null, inputs, "My custom dialog", JOptionPane.YES_NO_OPTION);
-                ifram = new Activity(e.getActionCommand(), selectedUserType, 15, c.getTime(), c.getTime());
+                d1.addActionListener(new ActionListener() {
+
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                         q2.fill(((ComboItem) d1.getSelectedItem()).getKey());
+                    
+                    }
+                });
+                JOptionPane.showMessageDialog(null, inputs, "My custom dialog", JOptionPane.OK_CANCEL_OPTION);
+                
+                
+                ifram = new Activity(e.getActionCommand(), selectedUserType, 15, new java.sql.Date(c.getTimeInMillis()), new java.sql.Date(c.getTimeInMillis()));
 
                 break;
 
