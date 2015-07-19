@@ -738,6 +738,7 @@ public class HelperClass {
 
         result = pattern.matcher(text).matches();
         return result;
+    }
     
     public static void setSelectedValue(JComboBox comboBox, String label)
     {

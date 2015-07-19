@@ -5,8 +5,6 @@
  */
 package gui;
 
-import exceptions.YearRangeException;
-import init.ActivityKey;
 import init.CloseAction;
 import init.MainClass;
 
@@ -115,32 +113,33 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
                 aMenu.add(submenu);
                 aMenu.addSeparator();
 
-            //<editor-fold defaultstate="collapsed" desc="Only Admin">
-            if (!selectedUserType.equals("Manager")) {
+                //<editor-fold defaultstate="collapsed" desc="Only Admin">
+                if (!selectedUserType.equals("Manager")) {
 
-                aMenu = addMenuToMenuBar("System", KeyEvent.VK_O);
-                addMenuItem(aMenu, "Add User", KeyEvent.VK_U);
-                addMenuItem(aMenu, "Add Role", KeyEvent.VK_U);
-                addMenuItem(aMenu, "Add Deposit", KeyEvent.VK_D);
-                addMenuItem(aMenu, "Add Card Length", KeyEvent.VK_B);
+                    aMenu = addMenuToMenuBar("System", KeyEvent.VK_O);
+                    addMenuItem(aMenu, "Add User", KeyEvent.VK_U);
+                    addMenuItem(aMenu, "Add Role", KeyEvent.VK_U);
+                    addMenuItem(aMenu, "Add Deposit", KeyEvent.VK_D);
+                    addMenuItem(aMenu, "Add Card Length", KeyEvent.VK_B);
 
+                }
+
+            //</editor-fold>
+                //<editor-fold defaultstate="collapsed" desc=" Admin + Manger">
+                //</editor-fold>
             }
 
-            //</editor-fold>
-            //<editor-fold defaultstate="collapsed" desc=" Admin + Manger">
+            //<editor-fold defaultstate="collapsed" desc="All Workers">
+            aMenu = addMenuToMenuBar("management", KeyEvent.VK_O);
+            addMenuItem(aMenu, "Add Station", KeyEvent.VK_A);
+            addMenuItem(aMenu, "Add Line", KeyEvent.VK_F);
+            addMenuItem(aMenu, "Add Site", KeyEvent.VK_P);
+            addMenuItem(aMenu, "Add Activity", KeyEvent.VK_B);
+            addMenuItem(aMenu, "Add Card", KeyEvent.VK_B);
+            addMenuItem(aMenu, "Export/Import CSV", KeyEvent.VK_B);
+
             //</editor-fold>
         }
-
-        //<editor-fold defaultstate="collapsed" desc="All Workers">
-        aMenu = addMenuToMenuBar("management", KeyEvent.VK_O);
-        addMenuItem(aMenu, "Add Station", KeyEvent.VK_A);
-        addMenuItem(aMenu, "Add Line", KeyEvent.VK_F);
-        addMenuItem(aMenu, "Add Site", KeyEvent.VK_P);
-        addMenuItem(aMenu, "Add Activity", KeyEvent.VK_B);
-        addMenuItem(aMenu, "Add Card", KeyEvent.VK_B);
-        addMenuItem(aMenu, "Export/Import CSV", KeyEvent.VK_B);
-
-        //</editor-fold>
     }
 
     /**
