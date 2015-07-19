@@ -209,7 +209,6 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
             }
             case "Update customer Details":
                 ifram = new UpdateCustomerDetails(e.getActionCommand(), selectedUserType);
-
                 break;
             case "Update Paying Customer":
                 ifram = new UpdatePayingCustomer(e.getActionCommand(), selectedUserType);

@@ -446,7 +446,7 @@ public class Site extends MyInternalFrame {
 
         try {
             stationItem = (ComboItem) cmbStation.getSelectedItem();
-            stationNumber = (Integer) stationItem.getKey();
+            stationNumber = Integer.parseInt(stationItem.getKey().toString());
             lineItem = (ComboItem) cmbLine.getSelectedItem();
             lineName = (String) lineItem.getKey();
             distance = Double.parseDouble(tfDistToExit.getText());
@@ -472,7 +472,7 @@ public class Site extends MyInternalFrame {
 
         try {
             siteItem = (ComboItem) cmbSite.getSelectedItem();
-            otherSiteNumber = (Integer) siteItem.getKey();
+            otherSiteNumber = Integer.parseInt(siteItem.getKey().toString());
             distance = Double.parseDouble(tfDistToExit.getText());
 
             st = con.prepareStatement("INSERT INTO tblSiteFromSite VALUES (?,?,?)");

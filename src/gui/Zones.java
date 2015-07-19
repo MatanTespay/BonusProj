@@ -146,7 +146,7 @@ public class Zones extends MyInternalFrame {
         PreparedStatement st;
         int zoneNumber;
         try {
-            zoneNumber = (Integer) spnZoneNumber.getModel().getValue();
+            zoneNumber = Integer.parseInt(spnZoneNumber.getModel().getValue().toString());
 
             st = con.prepareStatement("INSERT INTO tblZone VALUES (?)");
             st.setInt(1, zoneNumber);
@@ -164,7 +164,7 @@ public class Zones extends MyInternalFrame {
         int zoneNumber;
         try {
             zoneItem = (ComboItem)(lstZones.getSelectedValue());
-            zoneNumber = (Integer)zoneItem.getKey();
+            zoneNumber = Integer.parseInt(zoneItem.getKey().toString());
             st = con.prepareStatement("DELETE FROM tblZone WHERE "
                     + "number = ?");
             st.setInt(1, zoneNumber);

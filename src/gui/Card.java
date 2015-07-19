@@ -6,7 +6,6 @@
 package gui;
 
 import init.ComboItem;
-import init.InputValidator;
 import static init.MainClass.con;
 import init.MyTableModel;
 import java.io.File;
@@ -311,7 +310,7 @@ public class Card extends MyInternalFrame {
     private void cmbCardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbCardActionPerformed
         try {
             ComboItem cardItem = (ComboItem) cmbCard.getSelectedItem();
-            this.cardNumber = (int) cardItem.getKey();
+            this.cardNumber = Integer.parseInt(cardItem.getKey().toString());
             cmbPurchaseDate.setEnabled(true);
             fillCmbPurchaseDate(cardNumber);
         } catch (NullPointerException ex) {
@@ -347,8 +346,8 @@ public class Card extends MyInternalFrame {
         try {
             zoneItem = (ComboItem) cmbZone.getSelectedItem();
             lengthItem = (ComboItem) cmbLength.getSelectedItem();
-            zone = (int) zoneItem.getKey();
-            length = (double) lengthItem.getKey();
+            zone = Integer.parseInt(zoneItem.getKey().toString());
+            length = Double.valueOf(lengthItem.getKey().toString());
 
             st = con.prepareStatement("INSERT INTO " + tableName + " VALUES (?,?,?,?)");
             st.setInt(1, this.cardNumber);
@@ -379,8 +378,8 @@ public class Card extends MyInternalFrame {
         try {
             zoneItem = (ComboItem) cmbZone.getSelectedItem();
             lengthItem = (ComboItem) cmbLength.getSelectedItem();
-            zone = (int) zoneItem.getKey();
-            length = (double) lengthItem.getKey();
+            zone = Integer.parseInt(zoneItem.getKey().toString());
+            length = Double.valueOf(lengthItem.getKey().toString());
 
             st = con.prepareStatement("DELETE FROM " + tableName + " WHERE cardNumber = ? "
                     + "and cardPurchaseDate = ? and zoneNumber = ? and cardLength = ?");
@@ -577,6 +576,9 @@ public class Card extends MyInternalFrame {
             cmbCard.setEnabled(true);
             cmbPurchaseDate.setEnabled(true);
             cmbType.setEnabled(true);
+            cmbCard.setEditable(true);
+            cmbPurchaseDate.setEditable(true);
+            cmbType.setEditable(true);
 
             // control buttons
             btnCreate.setVisible(true);
@@ -588,6 +590,9 @@ public class Card extends MyInternalFrame {
             cmbCard.setEnabled(false);
             cmbPurchaseDate.setEnabled(false);
             cmbType.setEnabled(false);
+            cmbCard.setEditable(false);
+            cmbPurchaseDate.setEditable(false);
+            cmbType.setEditable(false);
 
             // control buttons
             btnCreate.setVisible(false);

@@ -92,7 +92,7 @@ public class Station extends MyInternalFrame {
 //                btnRemoveLine.setEnabled(true);
 //            }
 //        });
-        
+
     }
 
     /**
@@ -370,11 +370,11 @@ public class Station extends MyInternalFrame {
 
     private void cmbZoneNumActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbZoneNumActionPerformed
         ComboItem zoneItem = (ComboItem) cmbZoneNum.getSelectedItem();
-        this.zoneNum = (int) zoneItem.getKey();
+        this.zoneNum = Integer.parseInt(zoneItem.getKey().toString());
     }//GEN-LAST:event_cmbZoneNumActionPerformed
 
     private void spnPlatformsPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_spnPlatformsPropertyChange
-        this.platformNum = (int) spnPlatforms.getValue();
+        this.platformNum = Integer.parseInt(spnPlatforms.getValue().toString());
     }//GEN-LAST:event_spnPlatformsPropertyChange
 
 

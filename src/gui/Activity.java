@@ -60,6 +60,7 @@ public class Activity extends MyInternalFrame {
         super(title, type);
         setMode(ADD_MODE);
         buildForm();
+        dchActivityDate.setDate(new java.util.Date());
     }
 
     private void buildForm() {
