@@ -247,20 +247,24 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                         q2.fill(((ComboItem) d1.getSelectedItem()).getKey());
-                    
+                        q2.fill(((ComboItem) d1.getSelectedItem()).getKey());
+
                     }
                 });
                 JOptionPane.showMessageDialog(null, inputs, "My custom dialog", JOptionPane.OK_CANCEL_OPTION);
-                
-                
+
                 ifram = new Activity(e.getActionCommand(), selectedUserType, 15, new java.sql.Date(c.getTimeInMillis()), new java.sql.Date(c.getTimeInMillis()));
 
                 break;
-
+            case "Edit Card":
+                java.util.Date utilDate = new java.util.Date (1951,03,14,0,0,0);
+                java.util.Date date1970 = new java.util.Date (1970,01,01,0,0,0);
+                java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime()-date1970.getTime());
+                
+                ifram = new Card(e.getActionCommand(), selectedUserType,1,sqlDate);
+                break;
             case "Add Role":
                 ifram = new AddRole(e.getActionCommand(), selectedUserType);
-
                 break;
             case "Add Station":
                 ifram = new Station(e.getActionCommand(), selectedUserType, 9);
@@ -333,7 +337,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
             case "Get All This Summer Flights By Location":
             case "Get Potential Customers For Branch":
             case "Get Potential Customers For Agents":
-            case "Get Flights Sorted By Occupancy":
+            case "Get Fligedithts Sorted By Occupancy":
             case "Find The Best Flight Back":
                 ifram = new ViewQueries(e.getActionCommand(), selectedUserType);
                 break;
