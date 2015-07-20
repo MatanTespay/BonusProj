@@ -11,10 +11,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComboBox;
+import javax.swing.JTable;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.TableModel;
 import utils.HelperClass;
 
 /**
@@ -29,6 +35,11 @@ public class QueryComboBox {
     private final String keyColumn;
     private final String valueColumn;
     private Object variable;
+    private TreeSet<ComboItem> items;
+    
+    private JTable table;
+    private int tableKeyColumn;
+    private int tableValueColumn;
 
     public QueryComboBox(JComboBox cmb, String sqlQuery, Class keyClass,
             String keyColumn, String valueColumn, Object variable) {
@@ -38,6 +49,8 @@ public class QueryComboBox {
         this.keyColumn = keyColumn;
         this.valueColumn = valueColumn;
         this.variable = variable;
+        
+        this.items = new TreeSet<>();
     }
 
     public QueryComboBox(JComboBox cmb, String sqlQuery, Class keyClass,
@@ -47,7 +60,7 @@ public class QueryComboBox {
 
     public void fill() {
         ResultSet rs;
-        TreeSet<ComboItem> items = new TreeSet<>();
+        
         try {
             if (variable != null) {
                 // there is a variable
@@ -96,7 +109,7 @@ public class QueryComboBox {
                         key = null;
                         System.out.println("add another class type");
                 }
-                items.add(new ComboItem(key, value));
+                this.items.add(new ComboItem(key, value));
             }
             cmb.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
 
@@ -111,6 +124,39 @@ public class QueryComboBox {
     public void fill(Object variable) {
         this.variable = variable;
         QueryComboBox.this.fill();
+    }
+
+    public void removeTableItems(){
+        HashSet<ComboItem> tableItems = new HashSet<>();
+        TableModel model = table.getModel();
+
+        for (int row = 0; row < model.getRowCount(); row++) {
+            Object key = model.getValueAt(row, tableKeyColumn);
+            String value = model.getValueAt(row, tableValueColumn).toString();
+            tableItems.add(new ComboItem(key, value));
+        }
+        this.items.removeAll(tableItems);
+        cmb.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
+    }
+    
+    public void setTable(JTable table, int keyColumn, int valueColumn){
+        this.table=table;
+        this.tableKeyColumn=keyColumn;
+        this.tableValueColumn=valueColumn;
+        
+        this.table.getModel().addTableModelListener(new TableModelListener() {
+
+            @Override
+            public void tableChanged(TableModelEvent e) {
+                Object obj = e.getSource();
+            }
+        });
+        
+        removeTableItems();
+    }
+    
+    public JTable getTable(){
+        return table;
     }
 
     /**

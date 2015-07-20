@@ -13,6 +13,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -69,6 +70,7 @@ public class Card extends MyInternalFrame {
         setMode(ADD_MODE);
         this.purchaseDate = null;
         buildForm();
+        setNewCard();
     }
 
     private void buildForm() {
@@ -82,12 +84,9 @@ public class Card extends MyInternalFrame {
         this.qcbZone = new QueryComboBox(cmbZone, "SELECT * FROM tblZone",
                 Integer.class, "number", "number");
 
-        qcbCard.fill();
         qcbLength.fill();
         qcbZone.fill();
-        int defaultCard = Integer.valueOf(((ComboItem)cmbCard.getSelectedItem()).getKey().toString());
-        qcbPurchaseDate.fill(defaultCard);
-        
+
         setTableProperties(tblPrograms);
         setActiveness();
     }
@@ -306,7 +305,7 @@ public class Card extends MyInternalFrame {
                             .addComponent(btnAdd)
                             .addComponent(btnRemove)))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 109, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCreate)
                     .addComponent(btnUpdate)
@@ -467,6 +466,11 @@ public class Card extends MyInternalFrame {
     }
 
     private void setDefaults() {
+        qcbCard.fill();
+        int defaultCard = Integer.valueOf(((ComboItem) cmbCard.getSelectedItem())
+                .getKey().toString());
+        qcbPurchaseDate.fill(defaultCard);
+
         setSelectedValue(cmbCard, String.valueOf(this.cardNumber));
         setSelectedValue(cmbPurchaseDate, String.valueOf(this.purchaseDate));
         setSelectedValue(cmbType, (this.type == PAPER) ? "Paper" : "Oyster");
@@ -510,30 +514,21 @@ public class Card extends MyInternalFrame {
     }
 
     private void setActiveness() {
+        cmbCard.setEnabled(false);
+        cmbPurchaseDate.setEnabled(false);
+        
         if (getMode() == ADD_MODE) {
-            // key fields
-            cmbCard.setEnabled(true);
-            cmbPurchaseDate.setEnabled(true);
             cmbType.setEnabled(true);
-            cmbCard.setEditable(true);
-            cmbPurchaseDate.setEditable(true);
-            cmbType.setEditable(true);
 
-            // control buttons
             btnCreate.setVisible(true);
             btnDelete.setVisible(false);
             btnUpdate.setVisible(false);
 
-        } else { // edit mode
-            // key fields
-            cmbCard.setEnabled(false);
-            cmbPurchaseDate.setEnabled(false);
-            cmbType.setEnabled(false);
-            cmbCard.setEditable(false);
-            cmbPurchaseDate.setEditable(false);
-            cmbType.setEditable(false);
+        } else {
+            // edit mode
 
-            // control buttons
+            cmbType.setEnabled(false);
+            
             btnCreate.setVisible(false);
             btnDelete.setVisible(true);
             btnUpdate.setVisible(true);
@@ -555,4 +550,20 @@ public class Card extends MyInternalFrame {
         fillPrograms();
     }
 
+    private void setNewCard() {
+        Statement st;
+        ResultSet rs;
+
+        try {
+            st = con.createStatement();
+            rs = st.executeQuery("SELECT number FROM tblCard");
+
+            rs.last();
+            this.cardNumber = rs.getInt("number") + 1;
+            this.purchaseDate = new Date(new java.util.Date().getTime());
+
+        } catch (SQLException ex) {
+            Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }

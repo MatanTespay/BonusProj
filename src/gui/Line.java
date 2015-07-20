@@ -15,10 +15,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JInternalFrame;
+import javax.swing.table.TableModel;
 import static utils.Constants.ADD_MODE;
 import static utils.Constants.EDIT_MODE;
 import static utils.Constants.OVERGROUND;
@@ -72,15 +74,29 @@ public class Line extends MyInternalFrame {
 
     private void buildForm() {
         initComponents();
-        
+
         this.qcbColor = new QueryComboBox(cmbColor, "Select * From tblLineColor",
                 String.class, "name", "name");
-//        this.qcbStation = new QueryComboBox(cmbStation, "Select * From tblStation",
-//                Integer.class, "ID", "name");
-        
-        fillCmbStations();
-        
+        this.qcbStation = new QueryComboBox(cmbStation, "Select * From tblStation",
+                Integer.class, "ID", "name");
+
+        qcbColor.fill();
+        qcbStation.fill();
+
         fillStations();
+        qcbStation.setTable(tblStations, 0, 1);
+//        HashSet<ComboItem> tableItems = new HashSet<>();
+//        TableModel model = tblStations.getModel();
+//        int keyColumn = 0;
+//        int valueColumn = 1;
+//        for (int row = 0; row < model.getRowCount(); row++) {
+//            Object key = model.getValueAt(row, keyColumn);
+//            String value = model.getValueAt(row, valueColumn).toString();
+//            tableItems.add(new ComboItem(key, value));
+//        }
+        
+//        qcbStation.removeCollection(tableItems);
+
         setTableProperties(tblStations);
         setActiveness();
         super.validators = new ArrayList<InputValidator>() {
@@ -442,33 +458,6 @@ public class Line extends MyInternalFrame {
         }
     }
 
-    private void fillCmbStations() {
-
-        Statement s;
-        ResultSet rs;
-
-        ArrayList<String> tableItems = new ArrayList<>();
-        for (int row = 0; row < tblStations.getModel().getRowCount(); row++) {
-            tableItems.add((String) tblStations.getModel().getValueAt(row, 0));
-        }
-
-        try {
-            s = con.createStatement();
-            rs = s.executeQuery("Select * From tblStation");
-            ArrayList<ComboItem> items = new ArrayList<>();
-            while (rs.next()) {
-                if (!tableItems.contains(rs.getString("ID"))) {
-                    items.add(new ComboItem(rs.getString("ID"), rs.getString("name")));
-                }
-            }
-            Collections.sort(items);
-            items.add(0, null);
-            cmbStation.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
-        } catch (SQLException ex) {
-            Logger.getLogger(Line.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
     private void setVariables() {
         PreparedStatement st;
         ResultSet rs;
@@ -485,25 +474,6 @@ public class Line extends MyInternalFrame {
             this.lineName = rs.getString("name");
             this.type = (rs.getString("lineType").equals("O")) ? OVERGROUND : UNDERGROUND;
 
-        } catch (SQLException ex) {
-            Logger.getLogger(Line.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    private void fillCmbColor() {
-        
-        Statement s;
-        ResultSet rs;
-        try {
-            s = con.createStatement();
-            rs = s.executeQuery("Select * From tblLineColor");
-            ArrayList<ComboItem> items = new ArrayList<>();
-            while (rs.next()) {
-                items.add(new ComboItem(rs.getString("name"), rs.getString("name")));
-            }
-            Collections.sort(items);
-            cmbColor.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
-            cmbColor.setEditable(true);
         } catch (SQLException ex) {
             Logger.getLogger(Line.class.getName()).log(Level.SEVERE, null, ex);
         }
