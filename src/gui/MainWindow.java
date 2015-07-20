@@ -5,8 +5,11 @@
  */
 package gui;
 
+import com.toedter.calendar.JDateChooser;
 import init.CloseAction;
+import init.ComboItem;
 import init.MainClass;
+import static init.MainClass.con;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -14,11 +17,23 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
 
 import javax.swing.JDesktopPane;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 
 /**
  *
@@ -94,24 +109,24 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 
         //<editor-fold defaultstate="collapsed" desc="Operations Menu">
         if (!selectedUserType.equals("Customer")) {
-            aMenu = addMenuToMenuBar("Operations", KeyEvent.VK_O);
+            //aMenu = addMenuToMenuBar("Operations", KeyEvent.VK_O);
 
             if (!selectedUserType.equals("Agent")) {
 //branch
-                submenu = addMenuToMenuBar("Branch  ", KeyEvent.VK_B);
-                addMenuItem(submenu, "Add Activity", KeyEvent.VK_B);
-                addMenuItem(submenu, "Add Agent To Branch", KeyEvent.VK_A);
-                aMenu.add(submenu);
-                aMenu.addSeparator();
-                //Agents
-                submenu = addMenuToMenuBar("Employees   ", KeyEvent.VK_F);
-                addMenuItem(submenu, "Add Station", KeyEvent.VK_A);
-                //addMenuItem(submenu, "Add Flight Attendant", KeyEvent.VK_F);
-                addMenuItem(submenu, "Add User", KeyEvent.VK_F);
-                addMenuItem(submenu, "Add Line", KeyEvent.VK_F);
-                addMenuItem(submenu, "Add Site", KeyEvent.VK_P);
-                aMenu.add(submenu);
-                aMenu.addSeparator();
+//                submenu = addMenuToMenuBar("Activity", KeyEvent.VK_A);
+//                addMenuItem(submenu, "Add Activity", KeyEvent.VK_B);
+//                addMenuItem(submenu, "Edit Activity", KeyEvent.VK_A);
+//                aMenu.add(submenu);
+//                aMenu.addSeparator();
+//                //Agents
+//                submenu = addMenuToMenuBar("Employees   ", KeyEvent.VK_F);
+//                addMenuItem(submenu, "Add Station", KeyEvent.VK_A);
+//                //addMenuItem(submenu, "Add Flight Attendant", KeyEvent.VK_F);
+//                addMenuItem(submenu, "Add User", KeyEvent.VK_F);
+//                addMenuItem(submenu, "Add Line", KeyEvent.VK_F);
+//                addMenuItem(submenu, "Add Site", KeyEvent.VK_P);
+//                aMenu.add(submenu);
+//                aMenu.addSeparator();
 
                 //<editor-fold defaultstate="collapsed" desc="Only Admin">
                 if (!selectedUserType.equals("Manager")) {
@@ -124,20 +139,49 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 
                 }
 
-            //</editor-fold>
+                //</editor-fold>
                 //<editor-fold defaultstate="collapsed" desc=" Admin + Manger">
                 //</editor-fold>
             }
 
             //<editor-fold defaultstate="collapsed" desc="All Workers">
             aMenu = addMenuToMenuBar("management", KeyEvent.VK_O);
-            addMenuItem(aMenu, "Add Station", KeyEvent.VK_A);
-            addMenuItem(aMenu, "Add Line", KeyEvent.VK_F);
-            addMenuItem(aMenu, "Add Site", KeyEvent.VK_P);
-            addMenuItem(aMenu, "Add Activity", KeyEvent.VK_B);
-            addMenuItem(aMenu, "Add Card", KeyEvent.VK_B);
-            addMenuItem(aMenu, "Export/Import CSV", KeyEvent.VK_B);
+            //addMenuItem(aMenu, "Add Station", KeyEvent.VK_A);
+            //addMenuItem(aMenu, "Add Line", KeyEvent.VK_F);
+            //addMenuItem(aMenu, "Add Site", KeyEvent.VK_P);
+            //addMenuItem(aMenu, "Add Activity", KeyEvent.VK_B);
+            //addMenuItem(aMenu, "Add Card", KeyEvent.VK_B);
 
+            submenu = addMenuToMenuBar("Activity", KeyEvent.VK_A);
+            addMenuItem(submenu, "Add Activity", KeyEvent.VK_B);
+            addMenuItem(submenu, "Edit Activity", KeyEvent.VK_A);
+            aMenu.add(submenu);
+            aMenu.addSeparator();
+
+            submenu = addMenuToMenuBar("Card", KeyEvent.VK_A);
+            addMenuItem(submenu, "Add Card", KeyEvent.VK_B);
+            addMenuItem(submenu, "Edit Card", KeyEvent.VK_A);
+            aMenu.add(submenu);
+            aMenu.addSeparator();
+
+            submenu = addMenuToMenuBar("Line", KeyEvent.VK_A);
+            addMenuItem(submenu, "Add Line", KeyEvent.VK_B);
+            addMenuItem(submenu, "Edit Line", KeyEvent.VK_A);
+            aMenu.add(submenu);
+            aMenu.addSeparator();
+
+            submenu = addMenuToMenuBar("Site", KeyEvent.VK_A);
+            addMenuItem(submenu, "Add Site", KeyEvent.VK_B);
+            addMenuItem(submenu, "Edit Site", KeyEvent.VK_A);
+            aMenu.add(submenu);
+            aMenu.addSeparator();
+
+            submenu = addMenuToMenuBar("Station", KeyEvent.VK_A);
+            addMenuItem(submenu, "Add Station", KeyEvent.VK_B);
+            addMenuItem(submenu, "Edit Station", KeyEvent.VK_A);
+            aMenu.add(submenu);
+            aMenu.addSeparator();
+            addMenuItem(aMenu, "Export/Import CSV", KeyEvent.VK_B);
             //</editor-fold>
         }
     }
@@ -176,9 +220,44 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
                 saveIfly();
                 break;
             case "Add Activity":
-                ifram = new Activity(e.getActionCommand(), selectedUserType, 1, new Date(1951, 03, 14), new Date(1951, 03, 14));
+
+                ifram = new Activity(e.getActionCommand(), selectedUserType);
 
                 break;
+            case "Edit Activity":
+                //<editor-fold defaultstate="collapsed" desc="for testing">
+                Calendar c = Calendar.getInstance();
+                c.set(1951, 02, 14, 0, 0, 0);
+                c.getTime();
+                //</editor-fold>
+                JComboBox d1 = new JComboBox();
+                QueryComboBox q1 = new QueryComboBox(d1, "Select number from tblCard", Integer.class, "number", "number");
+                q1.fill();
+                JComboBox d2 = new JComboBox();
+                QueryComboBox q2 = new QueryComboBox(d2, "Select * from tblCard where  number = ?",
+                        Date.class, "purchaseDate", "purchaseDate", ((ComboItem) d1.getSelectedItem()).getKey());
+                q2.fill();
+                final JComponent[] inputs = new JComponent[]{
+                    new JLabel("Card"),
+                    d1,
+                    new JLabel("Date"),
+                    d2
+                };
+                d1.addActionListener(new ActionListener() {
+
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                         q2.fill(((ComboItem) d1.getSelectedItem()).getKey());
+                    
+                    }
+                });
+                JOptionPane.showMessageDialog(null, inputs, "My custom dialog", JOptionPane.OK_CANCEL_OPTION);
+                
+                
+                ifram = new Activity(e.getActionCommand(), selectedUserType, 15, new java.sql.Date(c.getTimeInMillis()), new java.sql.Date(c.getTimeInMillis()));
+
+                break;
+
             case "Add Role":
                 ifram = new AddRole(e.getActionCommand(), selectedUserType);
 
