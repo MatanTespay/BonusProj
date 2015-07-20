@@ -53,7 +53,7 @@ public class QueryComboBox {
                 // there is a variable
                 PreparedStatement st;
                 st = con.prepareStatement(sqlQuery);
-                switch (variable.getClass().getSimpleName()) {
+                    switch (variable.getClass().getSimpleName()) {
                     case "Integer":
                         st.setInt(1, (Integer) variable);
                         break;

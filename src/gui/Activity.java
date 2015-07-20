@@ -5,18 +5,29 @@
  */
 package gui;
 
+import com.sun.javafx.scene.control.skin.VirtualFlow;
+import com.sun.jmx.remote.internal.ArrayQueue;
+import com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type;
 import init.ComboItem;
+import init.KeyMembersInterface;
 import static init.MainClass.con;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import static utils.Constants.ADD_MODE;
 import static utils.Constants.EDIT_MODE;
 import static utils.Constants.INGOING;
@@ -46,7 +57,7 @@ public class Activity extends MyInternalFrame {
      * @param purchaseDate
      * @param activityDate
      */
-    public Activity(String title, String type, int cardNumber, Date purchaseDate, Date activityDate) {
+    public Activity(String title, String type, Integer cardNumber, Date purchaseDate, Date activityDate) {
         super(title, type);
         setMode(EDIT_MODE);
         this.cardNumber = cardNumber;
@@ -56,6 +67,7 @@ public class Activity extends MyInternalFrame {
         buildForm();
         fillCmbActType();
         setDefaults();
+        cmbPurchaseDate.setEnabled(false);
 
     }
 
@@ -71,6 +83,7 @@ public class Activity extends MyInternalFrame {
         fillCmbCard();
         fillCmbStation();
         setActiveness();
+        fillCmbActType();
     }
 
     /**
@@ -81,6 +94,7 @@ public class Activity extends MyInternalFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
         dchActivityDate = new com.toedter.calendar.JDateChooser();
         cmbActivityType = new javax.swing.JComboBox();
@@ -144,6 +158,9 @@ public class Activity extends MyInternalFrame {
             }
         });
 
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, lblCardNumber, org.jdesktop.beansbinding.ELProperty.create("${name}"), cmbCard, org.jdesktop.beansbinding.BeanProperty.create("name"));
+        bindingGroup.addBinding(binding);
+
         cmbCard.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cmbCardActionPerformed(evt);
@@ -151,12 +168,27 @@ public class Activity extends MyInternalFrame {
         });
 
         btnCreate.setText("Create");
+        btnCreate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCreateActionPerformed(evt);
+            }
+        });
 
         btnCancel.setText("Cancel");
 
         btnUpdate.setText("Update");
+        btnUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUpdateActionPerformed(evt);
+            }
+        });
 
         btnDelete.setText("Delete");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -230,6 +262,8 @@ public class Activity extends MyInternalFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        bindingGroup.bind();
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -239,6 +273,7 @@ public class Activity extends MyInternalFrame {
             this.cardNumber = Integer.parseInt(cardItem.getKey().toString());
             cmbPurchaseDate.setEnabled(true);
             fillCmbPurchaseDate(cardNumber);
+            cmbPurchaseDate.setSelectedIndex(0);
         } catch (NullPointerException ex) {
             // no item is chosen
             cmbPurchaseDate.setEnabled(false);
@@ -276,7 +311,10 @@ public class Activity extends MyInternalFrame {
         if (cmbActivityType.getSelectedItem() == null) {
             return;
         }
-        this.activityType = (cmbActivityType.getSelectedItem().equals("Ingoing") ? INGOING : OUTGOING);
+        //this.activityType = (cmbActivityType.getSelectedItem().equals("Ingoing") ? INGOING : OUTGOING);
+        ComboItem actType = (ComboItem) cmbActivityType.getSelectedItem(); 
+        
+        this.activityType = (Boolean)actType.getKey();
     }//GEN-LAST:event_cmbActivityTypeActionPerformed
 
     private void cmbLineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbLineActionPerformed
@@ -286,6 +324,100 @@ public class Activity extends MyInternalFrame {
         ComboItem lineItem = (ComboItem) cmbLine.getSelectedItem();
         this.lineName = (String) lineItem.getKey();
     }//GEN-LAST:event_cmbLineActionPerformed
+
+    private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
+        try {
+            // TODO add your handling code here:
+            PreparedStatement st;
+            ResultSet rs;
+            String s = "INSERT INTO [LondonU2].[dbo].[tblActivity]"
+                    + "  ([cardNumber]"
+                    + "  ,[cardPurchaseDate]"
+                    + "  ,[activityDate]"
+                    + "  ,[activityType]"
+                    + "  ,[stationID]"
+                    + "  ,[lineName])"
+                    + "     VALUES (? ,? ,? ,? ,?,?)";
+            st = con.prepareStatement(s);
+            st.setInt(1, cardNumber);
+            st.setString(2, new Timestamp(this.purchaseDate.getTime()).toString());
+            st.setString(3, new Timestamp(this.activityDate.getTime()).toString());
+            st.setString(4, (activityType) ? "O" : "I");
+            st.setInt(5, stationID);
+            st.setString(6, lineName);
+
+            int result = st.executeUpdate();
+
+            JOptionPane.showMessageDialog(this,
+                    "Changes Saved",
+                    "INFORMATION MESSAGE",
+                    JOptionPane.INFORMATION_MESSAGE);
+            fillCmbStation();
+            cmbStation.setSelectedIndex(0);
+
+        } catch (SQLException ex) {
+            String msg = "There was an error in the action";
+                if(ex.getErrorCode() == 2627){ // 2627 is unique constraint (includes primary key), 2601 is unique index
+                    msg = "Error cant insert dupliate keys!";
+                }
+                JOptionPane.showInternalConfirmDialog(this, msg ,
+						"Error", JOptionPane.PLAIN_MESSAGE,
+						JOptionPane.ERROR_MESSAGE);
+                
+            Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+
+    }//GEN-LAST:event_btnCreateActionPerformed
+
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        // TODO add your handling code here:
+           try {
+            // TODO add your handling code here:
+            PreparedStatement st;
+            ResultSet rs;
+            String s = "INSERT INTO [LondonU2].[dbo].[tblActivity]"
+                    + "  ([cardNumber]"
+                    + "  ,[cardPurchaseDate]"
+                    + "  ,[activityDate]"
+                    + "  ,[activityType]"
+                    + "  ,[stationID]"
+                    + "  ,[lineName])"
+                    + "     VALUES (? ,? ,? ,? ,?,?)";
+            st = con.prepareStatement(s);
+            st.setInt(1, cardNumber);
+            st.setString(2, new Timestamp(this.purchaseDate.getTime()).toString());
+            st.setString(3, new Timestamp(this.activityDate.getTime()).toString());
+            st.setString(4, (activityType) ? "O" : "I");
+            st.setInt(5, stationID);
+            st.setString(6, lineName);
+
+            int result = st.executeUpdate();
+
+            JOptionPane.showMessageDialog(this,
+                    "Changes Saved",
+                    "INFORMATION MESSAGE",
+                    JOptionPane.INFORMATION_MESSAGE);
+            fillCmbStation();
+            cmbStation.setSelectedIndex(0);
+
+        } catch (SQLException ex) {
+            String msg = "There was an error in the action";
+                if(ex.getErrorCode() == 2627){ // 2627 is unique constraint (includes primary key), 2601 is unique index
+                    msg = "Error cant insert dupliate keys!";
+                }
+                JOptionPane.showInternalConfirmDialog(this, msg ,
+						"Error", JOptionPane.PLAIN_MESSAGE,
+						JOptionPane.ERROR_MESSAGE);
+                
+            Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
+        }
+           
+    }//GEN-LAST:event_btnDeleteActionPerformed
+
+    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnUpdateActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -305,22 +437,23 @@ public class Activity extends MyInternalFrame {
     private javax.swing.JLabel lblCardPurchaseDate;
     private javax.swing.JLabel lblLine;
     private javax.swing.JLabel lblStation;
+    private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 
     private void setVaribles() {
         PreparedStatement st;
         ResultSet rs;
         try {
-            
+
             String s;
-            s =     "SELECT A.*, S.name FROM tblActivity As A "
+            s = "SELECT A.*, S.name FROM tblActivity As A "
                     + "join tblStation As S on A.stationID = S.ID "
                     + "WHERE "
                     + "A.cardNumber = ? and A.cardPurchaseDate = ? and A.activityDate = ?";
             st = con.prepareStatement(s);
-            
+
             st.setInt(1, this.cardNumber);
-           
+
             //for some reason i had to cast timestemp to string , dont ask me why !!!
             st.setString(2, new Timestamp(this.purchaseDate.getTime()).toString());
             st.setString(3, new Timestamp(this.activityDate.getTime()).toString());
@@ -380,6 +513,7 @@ public class Activity extends MyInternalFrame {
                 Collections.sort(items);
 
                 cmbCard.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
+                cmbCard.setSelectedIndex(0);
             }
         } catch (SQLException ex) {
             Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
@@ -422,6 +556,9 @@ public class Activity extends MyInternalFrame {
                 Collections.sort(items);
 
                 cmbStation.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
+                ComboItem Item = (ComboItem) cmbStation.getSelectedItem();
+                this.stationID = (int) Item.getKey();
+                fillCmbLine(stationID);
             }
         } catch (SQLException ex) {
             Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
@@ -432,11 +569,11 @@ public class Activity extends MyInternalFrame {
 
         ArrayList<ComboItem> items = new ArrayList<>();
 
-        items.add(new ComboItem(0, "Ingoing"));
-        items.add(new ComboItem(0, "Outgoing"));
+        items.add(new ComboItem(utils.Constants.INGOING, "Ingoing"));
+        items.add(new ComboItem(utils.Constants.OUTGOING, "Outgoing"));
 
         cmbActivityType.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
-
+        cmbActivityType.setSelectedIndex(0);
     }
 
     private void fillCmbLine(int stationID) {
@@ -456,6 +593,9 @@ public class Activity extends MyInternalFrame {
                 Collections.sort(items);
 
                 cmbLine.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
+                cmbLine.setSelectedIndex(0);
+                
+                   
             }
         } catch (SQLException ex) {
             Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
@@ -487,4 +627,29 @@ public class Activity extends MyInternalFrame {
             btnUpdate.setVisible(true);
         }
     }
+
+//    @Override
+//    public List<Object[]> getKeyComponents() {
+//        super.keyComponents = new ArrayList<>();
+//        
+//        Object[] values = new Object[3]; 
+//        JComboBox comboMunber = new JComboBox();
+//        JComboBox ComboPurchaseDate = new JComboBox();
+//        comboMunber.putClientProperty("TableKey", "number");
+//        comboMunber.putClientProperty("MyText", "Card Number");
+//        comboMunber.putClientProperty("Query", "Select * from tblCard");        
+//        values[0] = comboMunber;
+//        
+//        ComboPurchaseDate = new JComboBox();
+//        ComboPurchaseDate.putClientProperty("TableKey", "cardNumber");
+//        ComboPurchaseDate.putClientProperty("MyText", "Purchase date");
+//        ComboPurchaseDate.putClientProperty("Query", "Select * from tblCard where number = ?");    
+//        ComboPurchaseDate.putClientProperty("Chnager", comboMunber);
+//   
+//        values[0] = ComboPurchaseDate;  
+//        
+//        super.keyComponents.add(values);
+//                
+//        return super.keyComponents;
+//    }
 }

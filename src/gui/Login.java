@@ -61,6 +61,7 @@ public class Login extends javax.swing.JFrame {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Login", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 11))); // NOI18N
 
+        usertxtPassword.setText("1234");
         usertxtPassword.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 usertxtPasswordKeyPressed(evt);
@@ -76,6 +77,7 @@ public class Login extends javax.swing.JFrame {
 
         userLblName.setText("User id:");
 
+        userTxtName.setText("tom");
         userTxtName.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 userTxtNameKeyPressed(evt);

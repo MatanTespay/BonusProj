@@ -7,11 +7,13 @@ package gui;
 
 import com.toedter.calendar.JDateChooser;
 import init.InputValidator;
+import init.KeyMembersInterface;
 import init.MainClass;
 import java.awt.Color;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
@@ -37,7 +39,7 @@ public class MyInternalFrame extends JInternalFrame {
     JInternalFrame child;
     protected ArrayList<InputValidator> validators;
     private boolean mode;
-
+    List<Object[]> keyComponents;
     /**
      *
      * @param title the value of title
@@ -91,6 +93,8 @@ public class MyInternalFrame extends JInternalFrame {
             public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
             }
         });
+                
+                
     }
 
     MyInternalFrame() {
@@ -248,4 +252,9 @@ public class MyInternalFrame extends JInternalFrame {
     public void setMode(boolean mode) {
         this.mode = mode;
     }
+
+//    @Override
+//    public List<Object[]> getKeyComponents() {
+//        return new ArrayList<>();
+//    }
 }
