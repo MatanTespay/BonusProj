@@ -133,7 +133,6 @@ public class MainClass {
                 deserializeIfly();
                 con = getDBConnection();
                 new Login().setVisible(true);
-
             }
         });
     }//END OF ~ main

@@ -16,13 +16,20 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComboBox;
@@ -53,7 +60,8 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     JDesktopPane desktop;
     DesktopScrollPane pane;
     Login login;
-
+    List params;
+    
     /**
      * Creates new form MainWindow
      *
@@ -78,7 +86,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 
         setContentPane(pane);
         desktop.setDragMode(JDesktopPane.OUTLINE_DRAG_MODE);
-
+       
         fillMenuBar();
 
     }
@@ -112,21 +120,6 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
             //aMenu = addMenuToMenuBar("Operations", KeyEvent.VK_O);
 
             if (!selectedUserType.equals("Agent")) {
-//branch
-//                submenu = addMenuToMenuBar("Activity", KeyEvent.VK_A);
-//                addMenuItem(submenu, "Add Activity", KeyEvent.VK_B);
-//                addMenuItem(submenu, "Edit Activity", KeyEvent.VK_A);
-//                aMenu.add(submenu);
-//                aMenu.addSeparator();
-//                //Agents
-//                submenu = addMenuToMenuBar("Employees   ", KeyEvent.VK_F);
-//                addMenuItem(submenu, "Add Station", KeyEvent.VK_A);
-//                //addMenuItem(submenu, "Add Flight Attendant", KeyEvent.VK_F);
-//                addMenuItem(submenu, "Add User", KeyEvent.VK_F);
-//                addMenuItem(submenu, "Add Line", KeyEvent.VK_F);
-//                addMenuItem(submenu, "Add Site", KeyEvent.VK_P);
-//                aMenu.add(submenu);
-//                aMenu.addSeparator();
 
                 //<editor-fold defaultstate="collapsed" desc="Only Admin">
                 if (!selectedUserType.equals("Manager")) {
@@ -146,11 +139,6 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 
             //<editor-fold defaultstate="collapsed" desc="All Workers">
             aMenu = addMenuToMenuBar("management", KeyEvent.VK_O);
-            //addMenuItem(aMenu, "Add Station", KeyEvent.VK_A);
-            //addMenuItem(aMenu, "Add Line", KeyEvent.VK_F);
-            //addMenuItem(aMenu, "Add Site", KeyEvent.VK_P);
-            //addMenuItem(aMenu, "Add Activity", KeyEvent.VK_B);
-            //addMenuItem(aMenu, "Add Card", KeyEvent.VK_B);
 
             submenu = addMenuToMenuBar("Activity", KeyEvent.VK_A);
             addMenuItem(submenu, "Add Activity", KeyEvent.VK_B);
@@ -210,10 +198,40 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         }
     }
 
+    private Object createInternalFrameClass(String className, List<Object> params) {
+        try {
+
+            Class<?> clazz = Class.forName(className);
+
+            List<Class<?>> argTypes = new ArrayList<>();
+            //set the list of arg types
+            for (Object arg : params) {
+                argTypes.add(arg.getClass());
+            }
+            //create the public constructor of the class that match the params types
+            Constructor constructor = clazz.getConstructor(
+                    argTypes.toArray(new Class<?>[argTypes.size()]));
+            //create the class with the constructor
+            Object object = constructor.newInstance(
+                    params.toArray(new Object[params.size()]));
+
+            return object;
+        } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+  
+
     @Override
     public void actionPerformed(ActionEvent e) {
         //JOptionPane.showInternalConfirmDialog(null, e.getSource().getClass().toString());
         MyInternalFrame ifram = new MyInternalFrame();
+        
+        params = new ArrayList<>();;
+        
+
         switch (e.getActionCommand()) {
 
             case "Save":
@@ -225,36 +243,9 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 
                 break;
             case "Edit Activity":
-//                //<editor-fold defaultstate="collapsed" desc="for testing">
-//                Calendar c = Calendar.getInstance();
-//                c.set(1951, 02, 14, 0, 0, 0);
-//                c.getTime();
-//                //</editor-fold>
-//                JComboBox d1 = new JComboBox();
-//                QueryCombobox q1 = new QueryCombobox(d1, "Select number from tblCard", Integer.class, "number", "number");
-//                q1.fill();
-//                JComboBox d2 = new JComboBox();
-//                QueryCombobox q2 = new QueryCombobox(d2, "Select * from tblCard where  number = ?",
-//                        Date.class, "purchaseDate", "purchaseDate", ((ComboItem) d1.getSelectedItem()).getKey());
-//                q2.fill();
-//                final JComponent[] inputs = new JComponent[]{
-//                    new JLabel("Card"),
-//                    d1,
-//                    new JLabel("Date"),
-//                    d2
-//                };
-//                d1.addActionListener(new ActionListener() {
-//
-//                    @Override
-//                    public void actionPerformed(ActionEvent e) {
-//                        q2.fill(((ComboItem) d1.getSelectedItem()).getKey());
-//
-//                    }
-//                });
-//                JOptionPane.showMessageDialog(null, inputs, "My custom dialog", JOptionPane.OK_CANCEL_OPTION);
-//
-//                ifram = new Activity(e.getActionCommand(), selectedUserType, 15, new java.sql.Date(c.getTimeInMillis()), new java.sql.Date(c.getTimeInMillis()));
 
+                ifram = new ActivityDialog(e.getActionCommand(), selectedUserType,this);
+               
                 break;
             case "Edit Card":
                 java.util.Date utilDate = new java.util.Date (1951,03,14,0,0,0);
@@ -269,7 +260,6 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
             case "Add Station":
                 ifram = new Station(e.getActionCommand(), selectedUserType, 9);
                 break;
-            //Add Card "Add Card Length"
             case "Add Card":
                 ifram = new Card(e.getActionCommand(), selectedUserType);
                 break;
@@ -279,7 +269,6 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
             case "Add User":
                 ifram = new Users(e.getActionCommand(), selectedUserType);
                 break;
-            //Add User
             case "Add Line":
                 ifram = new Line(e.getActionCommand(), selectedUserType);
                 break;
@@ -346,8 +335,8 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
                 break;
 
         }
+        
         createFrame(ifram);
-
     }
 
     /**
@@ -375,9 +364,20 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
      * @param theMenu
      * @param itemTitle
      * @param key
-     * @return return the menu item
+     * @param param the value of param
+     * @return the javax.swing.JMenuItem
      */
+    private JMenuItem addMenuItem(JMenu theMenu, String itemTitle, int key, java.lang.String param) {
+        String[] values = param.split(",");
+        menuItem = new JMenuItem(values[0] + " " + values[1], key);
+        menuItem.setActionCommand(param);
+        theMenu.add(menuItem);
+        menuItem.addActionListener(this);
+        return menuItem;
+    }
+    
     private JMenuItem addMenuItem(JMenu theMenu, String itemTitle, int key) {
+        
         menuItem = new JMenuItem(itemTitle, key);
         menuItem.setActionCommand(itemTitle);
         theMenu.add(menuItem);
@@ -472,4 +472,14 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     private javax.swing.JMenuBar MainMenuBar;
     // End of variables declaration//GEN-END:variables
 
+    public List getParams() {
+        return params;
+    }
+
+    public void setParams(List params) {
+        this.params = params;
+    }
+
+
+    
 }
