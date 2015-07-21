@@ -7,6 +7,7 @@
 package init;
 
 import java.sql.Date;
+import java.util.Objects;
 
 /**
  *The class represents a single item {includes value and name} in a drop down list.
@@ -54,5 +55,24 @@ public class ComboItem implements Comparable<ComboItem>{
             }
         }
  
-    } 
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null)
+            return false;
+        if (obj.getClass().equals(ComboItem.class)){
+            return getKey().equals(((ComboItem)obj).getKey());
+        } else if(obj instanceof String){
+            return this.key.toString().equalsIgnoreCase(obj.toString());
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 29 * hash + Objects.hashCode(this.key);
+        return hash;
+    }
 }

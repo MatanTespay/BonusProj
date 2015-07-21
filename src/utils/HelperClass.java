@@ -37,7 +37,7 @@ import core.FlightAttendant;
 import core.Order;
 import core.Pilot;
 import gui.Activity;
-import gui.QueryComboBox;
+import gui.QueryCombobox;
 import static init.MainClass.con;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

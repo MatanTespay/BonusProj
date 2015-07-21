@@ -38,14 +38,7 @@ public class Card extends MyInternalFrame {
     private JFileChooser picFileChooser;
     private boolean isTourist;
     private final String[] programColumns = {"#", "Zone", "Length"};
-
-    private QueryComboBox qcbCard;
-    private QueryComboBox qcbPurchaseDate;
-    private QueryComboBox qcbZone;
-    private QueryComboBox qcbLength;
-
-    ;
-    
+      
     /**
      * Creates new form Card
      *
@@ -74,29 +67,34 @@ public class Card extends MyInternalFrame {
 
     private void buildForm() {
         initComponents();
-        if (getMode() == EDIT_MODE) {
-            this.qcbCard = new QueryComboBox(cmbCard, "SELECT number FROM tblCard",
-                    Integer.class, "number", "number");
-            this.qcbPurchaseDate = new QueryComboBox(cmbPurchaseDate, "SELECT * FROM tblCard "
-                    + "WHERE number = ?", Date.class, "purchaseDate", "purchaseDate", cardNumber);
-        } else {
-            // add mode
-            setNewCard();
-            cmbCard.setModel(new javax.swing.DefaultComboBoxModel(new ComboItem[]{
-                new ComboItem(cardNumber, String.valueOf(cardNumber))}));
-            cmbPurchaseDate.setModel(new javax.swing.DefaultComboBoxModel(new ComboItem[]{
-                new ComboItem(purchaseDate.toString(), purchaseDate.toString())}));
+        try {
+            PreparedStatement getAllCards = con.prepareStatement("SELECT number FROM tblCard");
+            PreparedStatement getPurchaseDate = con.prepareStatement("SELECT purchaseDate FROM tblCard "
+                    + "WHERE number = ?");
+            PreparedStatement getAllCardLengths = con.prepareStatement("SELECT * FROM tblCardLengths");
+            PreparedStatement getAllZones = con.prepareStatement("SELECT * FROM tblZone");
+
+            if (getMode() == EDIT_MODE) {
+                cmbCard.setModel(new QueryCombobox(cmbCard, Integer.class, getAllCards));
+                cmbPurchaseDate.setModel(new QueryCombobox(cmbPurchaseDate, cmbCard, getPurchaseDate, Date.class));                
+            } else {
+                // add mode
+                setNewCard();
+                cmbCard.setModel(new javax.swing.DefaultComboBoxModel(new ComboItem[]{
+                    new ComboItem(cardNumber, String.valueOf(cardNumber))}));
+                cmbPurchaseDate.setModel(new javax.swing.DefaultComboBoxModel(new ComboItem[]{
+                    new ComboItem(purchaseDate.toString(), purchaseDate.toString())}));
+            }
+
+            cmbLength.setModel(new QueryCombobox(cmbLength, Integer.class, getAllCardLengths));
+            cmbZone.setModel(new QueryCombobox(cmbZone, Integer.class, getAllZones));
+
+            setTableProperties(tblPrograms);
+            picFileChooser = new JFileChooser();
+            setActiveness();
+        } catch (SQLException ex) {
+
         }
-
-        this.qcbLength = new QueryComboBox(cmbLength, "SELECT * FROM tblCardLengths",
-                Integer.class, "cardLength", "lengthDescription");
-
-        this.qcbZone = new QueryComboBox(cmbZone, "SELECT * FROM tblZone",
-                Integer.class, "number", "number");
-
-        setTableProperties(tblPrograms);
-        picFileChooser = new JFileChooser();
-        setActiveness();
     }
 
     /**
@@ -331,7 +329,7 @@ public class Card extends MyInternalFrame {
             this.cardNumber = Integer.parseInt(cardItem.getKey().toString());
 //            cmbPurchaseDate.setEnabled(true);
 
-            qcbPurchaseDate.fill(cardNumber);
+//            ((QueryCombobox)cmbPurchaseDate.getModel()).fill(cardNumber);
 
         } catch (NullPointerException ex) {
             // no item is chosen
@@ -474,13 +472,12 @@ public class Card extends MyInternalFrame {
     }
 
     private void setDefaults() {
-        qcbCard.fill();
         int defaultCard = Integer.valueOf(((ComboItem) cmbCard.getSelectedItem())
                 .getKey().toString());
-        qcbPurchaseDate.fill(defaultCard);
+//        ((QueryCombobox)cmbPurchaseDate.getModel()).fill(defaultCard);
+//        ((QueryCombobox)cmbCard.getModel()).fill(cardNumber);
 
-        qcbCard.setSelectedValue(cardNumber);
-        qcbPurchaseDate.setSelectedValue(String.valueOf(this.purchaseDate));
+        cmbPurchaseDate.setSelectedItem(String.valueOf(this.purchaseDate));
 
         cmbType.setSelectedItem((this.type == PAPER) ? "Paper" : "Oyster");
         // TODO: get picture from DB

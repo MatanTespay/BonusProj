@@ -8,24 +8,17 @@ package gui;
 import init.ComboItem;
 import init.InputValidator;
 import static init.MainClass.con;
-import init.MyTableModel;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JInternalFrame;
-import javax.swing.table.TableModel;
 import static utils.Constants.ADD_MODE;
 import static utils.Constants.EDIT_MODE;
 import static utils.Constants.OVERGROUND;
 import static utils.Constants.UNDERGROUND;
-import static utils.HelperClass.setSelectedValue;
 import static utils.HelperClass.setTableProperties;
 
 /**
@@ -39,11 +32,7 @@ public class Line extends MyInternalFrame {
     private boolean type;
     private double length;
     private String color;
-
-    private QueryComboBox qcbColor;
-    private QueryComboBox qcbStation;
-
-    private final String[] LineColumns = {"ID", "Name", "Platforms", "Kiosk", "Zone"};
+    private PreparedStatement userStatement;
 
     /**
      * Creates new form Line
@@ -73,38 +62,29 @@ public class Line extends MyInternalFrame {
     }
 
     private void buildForm() {
-        initComponents();
+        try {
+            initComponents();
+            PreparedStatement getAllColors = con.prepareStatement("SELECT name FROM tblLineColor");
+            PreparedStatement getAllStations = con.prepareStatement("SELECT ID, name FROM tblStation");
 
-        this.qcbColor = new QueryComboBox(cmbColor, "Select * From tblLineColor",
-                String.class, "name", "name");
-        this.qcbStation = new QueryComboBox(cmbStation, "Select * From tblStation",
-                Integer.class, "ID", "name");
+            setStationTblModel(); /*must do this BEFORE setting the comboBoxModel*/
 
-        qcbColor.fill();
-        qcbStation.fill();
+            setTableProperties(tblStations);
 
-        fillStations();
-        qcbStation.setTable(tblStations, 0, 1);
-//        HashSet<ComboItem> tableItems = new HashSet<>();
-//        TableModel model = tblStations.getModel();
-//        int keyColumn = 0;
-//        int valueColumn = 1;
-//        for (int row = 0; row < model.getRowCount(); row++) {
-//            Object key = model.getValueAt(row, keyColumn);
-//            String value = model.getValueAt(row, valueColumn).toString();
-//            tableItems.add(new ComboItem(key, value));
-//        }
-        
-//        qcbStation.removeCollection(tableItems);
+            cmbColor.setModel(new QueryCombobox(cmbColor, String.class, getAllColors));
+            cmbStation.setModel(new QueryCombobox(cmbStation, Integer.class, getAllStations, (TomTableModel) tblStations.getModel(), 0, 1));
 
-        setTableProperties(tblStations);
-        setActiveness();
-        super.validators = new ArrayList<InputValidator>() {
-            {
-                add(new InputValidator(tfLength, utils.InputType.DOUBLE, null, null));
-                add(new InputValidator(tfName, utils.InputType.TEXT, null, null));
-            }
-        };
+            setActiveness();
+
+            super.validators = new ArrayList<InputValidator>() {
+                {
+                    add(new InputValidator(tfLength, utils.InputType.DOUBLE, null, null));
+                    add(new InputValidator(tfName, utils.InputType.TEXT, null, null));
+                }
+            };
+        } catch (SQLException ex) {
+
+        }
     }
 
     /**
@@ -208,6 +188,7 @@ public class Line extends MyInternalFrame {
         });
 
         cmbStation.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Underground", "Overground" }));
+        cmbStation.setName(""); // NOI18N
         cmbStation.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cmbStationActionPerformed(evt);
@@ -330,64 +311,35 @@ public class Line extends MyInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnViewStationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewStationActionPerformed
-        int stationID = Integer.parseInt((String) (tblStations.getModel().getValueAt(tblStations.getSelectedRow(), 0)));
+        int stationID = Integer.parseInt(tblStations.getModel().getValueAt(tblStations.getSelectedRow(), 0).toString());
         Station newFrame = new Station(evt.getActionCommand(), selectedUserType, stationID, this);
         openChildFrame(newFrame);
-        //JDesktopPane desk = this.getDesktopPane();
-//        Station newFrame = new Station(evt.getActionCommand(), selectedUserType, stationID);
-//        newFrame.setVisible(true);
-//        child = newFrame;
-//        try {
-//            desk.add(child);
-//            child.setSelected(true);
-//
-//        } catch (java.beans.PropertyVetoException ex) {
-//        }
     }//GEN-LAST:event_btnViewStationActionPerformed
 
     private void btnRemoveStationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveStationActionPerformed
-        PreparedStatement st;
         int stationId;
 
         try {
-            stationId = Integer.parseInt((String) (tblStations.getModel().getValueAt(tblStations.getSelectedRow(), 0)));
-            st = con.prepareStatement("DELETE FROM tblStationInLine WHERE "
-                    + "stationID = ? AND  lineName = ?");
-            st.setInt(1, stationId);
-            st.setString(2, lineName);
-            st.executeUpdate();
+            Object value = tblStations.getModel().getValueAt(tblStations.getSelectedRow(), 0);
+            if (value != null) {
+                stationId = Integer.parseInt(value.toString());
+            userStatement = con.prepareStatement("DELETE FROM tblStationInLine WHERE "
+                        + "stationID = ? AND  lineName = ?");
+                userStatement.setInt(1, stationId);
+                userStatement.setString(2, lineName);
+                userStatement.addBatch();
 
-            fillStations();
+                ((TomTableModel) tblStations.getModel()).removeRow(stationId);
+            }
         } catch (SQLException ex) {
             Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnRemoveStationActionPerformed
 
     private void cmbStationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbStationActionPerformed
-        PreparedStatement st;
-        DefaultComboBoxModel model;
-        ComboItem item;
-        String value;
-        int stationID;
-
-        try {
-
-            model = (DefaultComboBoxModel) cmbStation.getModel();
-            item = (ComboItem) model.getSelectedItem();
-            value = (String) item.getKey();
-            stationID = Integer.parseInt(value);
-
-            st = con.prepareStatement("INSERT INTO tblStationInLine VALUES (?,?)");
-            st.setInt(1, stationID);
-            st.setString(2, lineName);
-            st.executeUpdate();
-            fillStations();
-
-            int chosenRow = cmbStation.getSelectedIndex();
-            ((DefaultComboBoxModel) cmbStation.getModel()).removeElementAt(chosenRow);
-        } catch (SQLException | NullPointerException ex) {
-//            Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        ComboItem selectedStation = (ComboItem) ((QueryCombobox) cmbStation.getModel()).getSelectedItem();
+        Integer stationID = Integer.valueOf(selectedStation.getKey().toString());
+        ((TomTableModel) tblStations.getModel()).addRow(stationID);
     }//GEN-LAST:event_cmbStationActionPerformed
 
     private void tfNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfNameActionPerformed
@@ -395,7 +347,7 @@ public class Line extends MyInternalFrame {
     }//GEN-LAST:event_tfNameActionPerformed
 
     private void cmbColorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbColorActionPerformed
-        ComboItem colorItem = (ComboItem) cmbColor.getSelectedItem();
+        ComboItem colorItem = (ComboItem) cmbColor.getModel().getSelectedItem();
         this.color = (String) colorItem.getKey();
     }//GEN-LAST:event_cmbColorActionPerformed
 
@@ -404,7 +356,7 @@ public class Line extends MyInternalFrame {
     }//GEN-LAST:event_ychFoundationYearPropertyChange
 
     private void cmbTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbTypeActionPerformed
-        String strType = (String) cmbType.getSelectedItem();
+        String strType = (String) cmbType.getModel().getSelectedItem();
         this.type = (strType.equals("Overground")) ? OVERGROUND : UNDERGROUND;
     }//GEN-LAST:event_cmbTypeActionPerformed
 
@@ -436,25 +388,23 @@ public class Line extends MyInternalFrame {
     private com.toedter.calendar.JYearChooser ychFoundationYear;
     // End of variables declaration//GEN-END:variables
 
-    private void fillStations() {
-        PreparedStatement st;
-        ResultSet rs;
+    private void setStationTblModel() {
+        ArrayList<Column> cols = new ArrayList<>();
+        cols.add(new Column("ID", "ID", Integer.class));
+        cols.add(new Column("Name", "Name", String.class));
+        cols.add(new Column("Platforms", "platformNum", Integer.class));
+        cols.add(new Column("Kiosk", "Kiosk", Boolean.class));
+        cols.add(new Column("Zone", "zoneNumber", Integer.class));
         try {
-            st = con.prepareStatement("Select * From tblStationInLine As SIL join tblStation"
-                    + " As S on SIL.stationID = S.ID WHERE SIL.lineName = ? ");
-            st.setString(1, lineName);
-            rs = st.executeQuery();
+            PreparedStatement getAllStations = con.prepareCall("Select * From tblStationInLine "
+                    + "As SIL join tblStation As S on SIL.stationID = S.ID WHERE SIL.lineName = ?");
+            getAllStations.setString(1, lineName);
+            PreparedStatement addStation = con.prepareCall("Select * From tblStation WHERE ID = ?");
 
-            ArrayList<Object[]> rows = new ArrayList();
-            while (rs.next()) {
-                Object[] row = {rs.getString("ID"), rs.getString("name"),
-                    rs.getString("platformNum"), rs.getString("kiosk"), rs.getString("zoneNumber")};
-                rows.add(row);
-            }
-            MyTableModel tableModel = new MyTableModel(LineColumns, rows, null);
-            tblStations.setModel(tableModel);
+            gui.TomTableModel stationTblModel = new gui.TomTableModel(cols, addStation, getAllStations);
+            tblStations.setModel(stationTblModel);
         } catch (SQLException ex) {
-            Logger.getLogger(Line.class.getName()).log(Level.SEVERE, null, ex);
+
         }
     }
 
@@ -481,11 +431,10 @@ public class Line extends MyInternalFrame {
 
     private void setDefaults() {
         tfName.setText(this.lineName);
-        setSelectedValue(cmbColor, this.color);
+        cmbColor.getModel().setSelectedItem(color);
         ychFoundationYear.setYear(this.foundedYear);
-        setSelectedValue(cmbType, (this.type == OVERGROUND) ? "Overground" : "Underground");
+        cmbType.setSelectedItem((this.type == OVERGROUND) ? "Overground" : "Underground");
         tfLength.setText(String.valueOf(this.length));
-        cmbStation.setSelectedIndex(0);
     }
 
     private void setActiveness() {

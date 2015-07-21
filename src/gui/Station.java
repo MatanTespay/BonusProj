@@ -19,8 +19,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JInternalFrame;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionEvent;
 import static utils.Constants.ADD_MODE;
 import static utils.Constants.EDIT_MODE;
 import static utils.HelperClass.setSelectedValue;
@@ -478,7 +476,7 @@ public class Station extends MyInternalFrame {
             rs.next();
             this.name = rs.getString("name");
             this.platformNum = rs.getInt("platformNum");
-            this.isKiosk = rs.getBoolean("isKiosk");
+            this.isKiosk = rs.getBoolean("Kiosk");
             this.zoneNum = rs.getInt("zoneNumber");
 
         } catch (SQLException ex) {
