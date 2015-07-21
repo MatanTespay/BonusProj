@@ -247,10 +247,15 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
                 ifram = new ActivityDialog(e.getActionCommand(), selectedUserType,this);
                
                 break;
-
+            case "Edit Card":
+                java.util.Date utilDate = new java.util.Date (1951,03,14,0,0,0);
+                java.util.Date date1970 = new java.util.Date (1970,01,01,0,0,0);
+                java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime()-date1970.getTime());
+                
+                ifram = new Card(e.getActionCommand(), selectedUserType,1,sqlDate);
+                break;
             case "Add Role":
                 ifram = new AddRole(e.getActionCommand(), selectedUserType);
-
                 break;
             case "Add Station":
                 ifram = new Station(e.getActionCommand(), selectedUserType, 9);
@@ -321,7 +326,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
             case "Get All This Summer Flights By Location":
             case "Get Potential Customers For Branch":
             case "Get Potential Customers For Agents":
-            case "Get Flights Sorted By Occupancy":
+            case "Get Fligedithts Sorted By Occupancy":
             case "Find The Best Flight Back":
                 ifram = new ViewQueries(e.getActionCommand(), selectedUserType);
                 break;

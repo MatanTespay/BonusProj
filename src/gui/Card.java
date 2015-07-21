@@ -13,6 +13,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,7 +23,6 @@ import static utils.Constants.ADD_MODE;
 import static utils.Constants.EDIT_MODE;
 import static utils.Constants.OYSTER;
 import static utils.Constants.PAPER;
-import static utils.HelperClass.setSelectedValue;
 import static utils.HelperClass.setTableProperties;
 
 /**
@@ -69,26 +69,33 @@ public class Card extends MyInternalFrame {
         setMode(ADD_MODE);
         this.purchaseDate = null;
         buildForm();
+
     }
 
     private void buildForm() {
         initComponents();
-        this.qcbCard = new QueryComboBox(cmbCard, "SELECT number FROM tblCard",
-                Integer.class, "number", "number");
+        if (getMode() == EDIT_MODE) {
+            this.qcbCard = new QueryComboBox(cmbCard, "SELECT number FROM tblCard",
+                    Integer.class, "number", "number");
+            this.qcbPurchaseDate = new QueryComboBox(cmbPurchaseDate, "SELECT * FROM tblCard "
+                    + "WHERE number = ?", Date.class, "purchaseDate", "purchaseDate", cardNumber);
+        } else {
+            // add mode
+            setNewCard();
+            cmbCard.setModel(new javax.swing.DefaultComboBoxModel(new ComboItem[]{
+                new ComboItem(cardNumber, String.valueOf(cardNumber))}));
+            cmbPurchaseDate.setModel(new javax.swing.DefaultComboBoxModel(new ComboItem[]{
+                new ComboItem(purchaseDate.toString(), purchaseDate.toString())}));
+        }
+
         this.qcbLength = new QueryComboBox(cmbLength, "SELECT * FROM tblCardLengths",
                 Integer.class, "cardLength", "lengthDescription");
-        this.qcbPurchaseDate = new QueryComboBox(cmbPurchaseDate, "SELECT * FROM tblCard "
-                + "WHERE number = ?", Date.class, "purchaseDate", "purchaseDate", cardNumber);
+
         this.qcbZone = new QueryComboBox(cmbZone, "SELECT * FROM tblZone",
                 Integer.class, "number", "number");
 
-        qcbCard.fill();
-        qcbLength.fill();
-        qcbZone.fill();
-        int defaultCard = Integer.valueOf(((ComboItem)cmbCard.getSelectedItem()).getKey().toString());
-        qcbPurchaseDate.fill(defaultCard);
-        
         setTableProperties(tblPrograms);
+        picFileChooser = new JFileChooser();
         setActiveness();
     }
 
@@ -306,7 +313,7 @@ public class Card extends MyInternalFrame {
                             .addComponent(btnAdd)
                             .addComponent(btnRemove)))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 109, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCreate)
                     .addComponent(btnUpdate)
@@ -322,13 +329,13 @@ public class Card extends MyInternalFrame {
         try {
             ComboItem cardItem = (ComboItem) cmbCard.getSelectedItem();
             this.cardNumber = Integer.parseInt(cardItem.getKey().toString());
-            cmbPurchaseDate.setEnabled(true);
+//            cmbPurchaseDate.setEnabled(true);
 
             qcbPurchaseDate.fill(cardNumber);
 
         } catch (NullPointerException ex) {
             // no item is chosen
-            cmbPurchaseDate.setEnabled(false);
+//            cmbPurchaseDate.setEnabled(false);
         }
     }//GEN-LAST:event_cmbCardActionPerformed
 
@@ -467,9 +474,15 @@ public class Card extends MyInternalFrame {
     }
 
     private void setDefaults() {
-        setSelectedValue(cmbCard, String.valueOf(this.cardNumber));
-        setSelectedValue(cmbPurchaseDate, String.valueOf(this.purchaseDate));
-        setSelectedValue(cmbType, (this.type == PAPER) ? "Paper" : "Oyster");
+        qcbCard.fill();
+        int defaultCard = Integer.valueOf(((ComboItem) cmbCard.getSelectedItem())
+                .getKey().toString());
+        qcbPurchaseDate.fill(defaultCard);
+
+        qcbCard.setSelectedValue(cardNumber);
+        qcbPurchaseDate.setSelectedValue(String.valueOf(this.purchaseDate));
+
+        cmbType.setSelectedItem((this.type == PAPER) ? "Paper" : "Oyster");
         // TODO: get picture from DB
 
         if (this.type == OYSTER) {
@@ -484,10 +497,10 @@ public class Card extends MyInternalFrame {
         PreparedStatement st;
         ResultSet rs;
         try {
-            st = con.prepareStatement("Select * From tblOysterCard WHERE"
+            st = con.prepareStatement("SELECT * FROM tblOysterCard WHERE "
                     + "number = ? and purchaseDate = ?");
             st.setInt(1, cardNumber);
-            st.setDate(1, purchaseDate);
+            st.setString(2, this.purchaseDate.toString());
 
             rs = st.executeQuery();
 
@@ -499,6 +512,13 @@ public class Card extends MyInternalFrame {
 
             } else {
                 // result set is empty - the card is Paper
+                st = con.prepareStatement("SELECT isTourist FROM tblPaperCard WHERE "
+                        + "number = ? and purchaseDate = ?");
+                st.setInt(1, cardNumber);
+                st.setString(2, this.purchaseDate.toString());
+
+                rs = st.executeQuery();
+
                 this.type = PAPER;
                 rs.next();
                 this.isTourist = rs.getBoolean("isTourist"); // //TODO: CHECK IF CORRECT
@@ -510,30 +530,21 @@ public class Card extends MyInternalFrame {
     }
 
     private void setActiveness() {
-        if (getMode() == ADD_MODE) {
-            // key fields
-            cmbCard.setEnabled(true);
-            cmbPurchaseDate.setEnabled(true);
-            cmbType.setEnabled(true);
-            cmbCard.setEditable(true);
-            cmbPurchaseDate.setEditable(true);
-            cmbType.setEditable(true);
+        cmbCard.setEnabled(false);
+        cmbPurchaseDate.setEnabled(false);
 
-            // control buttons
+        if (getMode() == ADD_MODE) {
+            cmbType.setEnabled(true);
+
             btnCreate.setVisible(true);
             btnDelete.setVisible(false);
             btnUpdate.setVisible(false);
 
-        } else { // edit mode
-            // key fields
-            cmbCard.setEnabled(false);
-            cmbPurchaseDate.setEnabled(false);
-            cmbType.setEnabled(false);
-            cmbCard.setEditable(false);
-            cmbPurchaseDate.setEditable(false);
-            cmbType.setEditable(false);
+        } else {
+            // edit mode
 
-            // control buttons
+            cmbType.setEnabled(false);
+
             btnCreate.setVisible(false);
             btnDelete.setVisible(true);
             btnUpdate.setVisible(true);
@@ -550,9 +561,27 @@ public class Card extends MyInternalFrame {
             // paper
             lblPicture.setVisible(false);
             btnBrowse.setVisible(false);
-            chbIsTourist.setVisible(false);
+            chbIsTourist.setVisible(true);
         }
         fillPrograms();
     }
 
+    private void setNewCard() {
+        Statement st;
+        ResultSet rs;
+
+        try {
+            st = con.createStatement(
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
+            rs = st.executeQuery("SELECT number FROM tblCard");
+
+            rs.last();
+            this.cardNumber = rs.getInt("number") + 1;
+            this.purchaseDate = new Date(new java.util.Date().getTime());
+
+        } catch (SQLException ex) {
+            Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }
