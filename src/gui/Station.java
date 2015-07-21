@@ -318,7 +318,7 @@ public class Station extends MyInternalFrame {
 
     private void btnViewLineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewLineActionPerformed
         String lineName = (String) (tblLines.getModel().getValueAt(tblLines.getSelectedRow(), 0));
-        Line newFrame = new Line(evt.getActionCommand(), selectedUserType, lineName, this);
+        Line newFrame = new Line(evt.getActionCommand(), getSelectedUserType(), lineName, this);
         this.openChildFrame(newFrame);
 
     }//GEN-LAST:event_btnViewLineActionPerformed

@@ -5,11 +5,10 @@
  */
 package gui;
 
-import com.toedter.calendar.JDateChooser;
+import utils.DesktopScrollPane;
+import utils.ExportImportCsv;
 import init.CloseAction;
-import init.ComboItem;
 import init.MainClass;
-import static init.MainClass.con;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -17,30 +16,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.sql.Date;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
 
 import javax.swing.JDesktopPane;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JTextField;
 
 /**
  *
@@ -61,7 +46,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     DesktopScrollPane pane;
     Login login;
     List params;
-    
+
     /**
      * Creates new form MainWindow
      *
@@ -86,7 +71,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 
         setContentPane(pane);
         desktop.setDragMode(JDesktopPane.OUTLINE_DRAG_MODE);
-       
+
         fillMenuBar();
 
     }
@@ -198,39 +183,36 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         }
     }
 
-    private Object createInternalFrameClass(String className, List<Object> params) {
-        try {
-
-            Class<?> clazz = Class.forName(className);
-
-            List<Class<?>> argTypes = new ArrayList<>();
-            //set the list of arg types
-            for (Object arg : params) {
-                argTypes.add(arg.getClass());
-            }
-            //create the public constructor of the class that match the params types
-            Constructor constructor = clazz.getConstructor(
-                    argTypes.toArray(new Class<?>[argTypes.size()]));
-            //create the class with the constructor
-            Object object = constructor.newInstance(
-                    params.toArray(new Object[params.size()]));
-
-            return object;
-        } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
-
-  
+//    private Object createInternalFrameClass(String className, List<Object> params) {
+//        try {
+//
+//            Class<?> clazz = Class.forName(className);
+//
+//            List<Class<?>> argTypes = new ArrayList<>();
+//            //set the list of arg types
+//            for (Object arg : params) {
+//                argTypes.add(arg.getClass());
+//            }
+//            //create the public constructor of the class that match the params types
+//            Constructor constructor = clazz.getConstructor(
+//                    argTypes.toArray(new Class<?>[argTypes.size()]));
+//            //create the class with the constructor
+//            Object object = constructor.newInstance(
+//                    params.toArray(new Object[params.size()]));
+//
+//            return object;
+//        } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+//            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return null;
+//    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         //JOptionPane.showInternalConfirmDialog(null, e.getSource().getClass().toString());
         MyInternalFrame ifram = new MyInternalFrame();
-        
+
         params = new ArrayList<>();;
-        
 
         switch (e.getActionCommand()) {
 
@@ -244,15 +226,15 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
                 break;
             case "Edit Activity":
 
-                ifram = new ActivityDialog(e.getActionCommand(), selectedUserType,this);
-               
+                ifram = new ActivityDialog(e.getActionCommand(), selectedUserType, this);
+
                 break;
             case "Edit Card":
-                java.util.Date utilDate = new java.util.Date (1951,03,14,0,0,0);
-                java.util.Date date1970 = new java.util.Date (1970,01,01,0,0,0);
-                java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime()-date1970.getTime());
-                
-                ifram = new Card(e.getActionCommand(), selectedUserType,1,sqlDate);
+                java.util.Date utilDate = new java.util.Date(1951, 03, 14, 0, 0, 0);
+                java.util.Date date1970 = new java.util.Date(1970, 01, 01, 0, 0, 0);
+                java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime() - date1970.getTime());
+
+                ifram = new Card(e.getActionCommand(), selectedUserType, 1, sqlDate);
                 break;
             case "Add Role":
                 ifram = new AddRole(e.getActionCommand(), selectedUserType);
@@ -272,70 +254,66 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
             case "Add Line":
                 ifram = new Line(e.getActionCommand(), selectedUserType);
                 break;
-             case "Edit Line":
+            case "Edit Line":
                 ifram = new Line(e.getActionCommand(), selectedUserType, "Bakerloo");
                 break;
             case "Add Site":
                 ifram = new Site(e.getActionCommand(), selectedUserType, 2);
                 break;
-            case "Add Deposit": {
+            case "Add Deposit":
                 ifram = new Deposits(e.getActionCommand(), selectedUserType);
                 break;
-            }
-            case "Update customer Details":
-                ifram = new UpdateCustomerDetails(e.getActionCommand(), selectedUserType);
-                break;
-            case "Update Paying Customer":
-                ifram = new UpdatePayingCustomer(e.getActionCommand(), selectedUserType);
-
-                break;
-
             case "Export/Import CSV":
                 ifram = new ExportImportCsv(e.getActionCommand(), selectedUserType);
                 break;
-            case "Add Stop To Flight":
-                ifram = new AddStop(e.getActionCommand(), selectedUserType);
-                break;
-            case "Add Pilot To Flight":
-            case "Add FlightAttendant To Flight":
-                ifram = new addPilotOrFlightAttendantToFlight(e.getActionCommand(), selectedUserType);
-                break;
-            case "Add Flight Order":
-                ifram = new AddFlightOrder(e.getActionCommand(), selectedUserType);
-                break;
-            case "Remove Order":
-                ifram = new RemoveOrder(e.getActionCommand(), selectedUserType);
-                break;
-            case "Add Flight Ticket":
-                ifram = new addViewFlightTicket(e.getActionCommand(), selectedUserType);
-                break;
-            case "View orders":
-                ifram = new ViewOrders(e.getActionCommand(), selectedUserType);
-                break;
-            case "View flights":
-                ifram = new ViewFlights(e.getActionCommand(), selectedUserType);
-                break;
-            case "View tickets":
-                ifram = new ViewTickets(e.getActionCommand(), selectedUserType);
-                break;
-            case "Get All Super Agents":
-            case "Employee Of The Month":
-            case "Get All This Summer Work Employees Sorted By Seniority":
-            case "Get Branches Agents Sorted By Rating":
-            case "Get The Top X Popular Flights":
-            case "Get The Most Profitable Order":
-            case "Get All Orders Of Most Profitable Customer":
-            case "Get All Summer Flights Sorted By Number Of Stops":
-            case "Get All This Summer Flights By Location":
-            case "Get Potential Customers For Branch":
-            case "Get Potential Customers For Agents":
-            case "Get Fligedithts Sorted By Occupancy":
-            case "Find The Best Flight Back":
-                ifram = new ViewQueries(e.getActionCommand(), selectedUserType);
-                break;
-
+//            case "Update customer Details":
+//                ifram = new UpdateCustomerDetails(e.getActionCommand(), selectedUserType);
+//                break;
+//            case "Update Paying Customer":
+//                ifram = new UpdatePayingCustomer(e.getActionCommand(), selectedUserType);
+//                break;
+//            case "Add Stop To Flight":
+//                ifram = new AddStop(e.getActionCommand(), selectedUserType);
+//                break;
+//            case "Add Pilot To Flight":
+//            case "Add FlightAttendant To Flight":
+//                ifram = new addPilotOrFlightAttendantToFlight(e.getActionCommand(), selectedUserType);
+//                break;
+//            case "Add Flight Order":
+//                ifram = new AddFlightOrder(e.getActionCommand(), selectedUserType);
+//                break;
+//            case "Remove Order":
+//                ifram = new RemoveOrder(e.getActionCommand(), selectedUserType);
+//                break;
+//            case "Add Flight Ticket":
+//                ifram = new addViewFlightTicket(e.getActionCommand(), selectedUserType);
+//                break;
+//            case "View orders":
+//                ifram = new ViewOrders(e.getActionCommand(), selectedUserType);
+//                break;
+//            case "View flights":
+//                ifram = new ViewFlights(e.getActionCommand(), selectedUserType);
+//                break;
+//            case "View tickets":
+//                ifram = new ViewTickets(e.getActionCommand(), selectedUserType);
+//                break;
+//            case "Get All Super Agents":
+//            case "Employee Of The Month":
+//            case "Get All This Summer Work Employees Sorted By Seniority":
+//            case "Get Branches Agents Sorted By Rating":
+//            case "Get The Top X Popular Flights":
+//            case "Get The Most Profitable Order":
+//            case "Get All Orders Of Most Profitable Customer":
+//            case "Get All Summer Flights Sorted By Number Of Stops":
+//            case "Get All This Summer Flights By Location":
+//            case "Get Potential Customers For Branch":
+//            case "Get Potential Customers For Agents":
+//            case "Get Fligedithts Sorted By Occupancy":
+//            case "Find The Best Flight Back":
+//                ifram = new ViewQueries(e.getActionCommand(), selectedUserType);
+//                break;
         }
-        
+
         createFrame(ifram);
     }
 
@@ -375,9 +353,9 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         menuItem.addActionListener(this);
         return menuItem;
     }
-    
+
     private JMenuItem addMenuItem(JMenu theMenu, String itemTitle, int key) {
-        
+
         menuItem = new JMenuItem(itemTitle, key);
         menuItem.setActionCommand(itemTitle);
         theMenu.add(menuItem);
@@ -480,6 +458,4 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         this.params = params;
     }
 
-
-    
 }

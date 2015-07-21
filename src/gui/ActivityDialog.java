@@ -244,7 +244,7 @@ public class ActivityDialog extends MyInternalFrame {
             
             this.setVisible(false);
             mainWindow.desktop.remove(this);
-            Activity act = new Activity(title, selectedUserType, this.cardNumber
+            Activity act = new Activity(title, getSelectedUserType(), this.cardNumber
                     , this.purchaseDate,this.activityDate);
             mainWindow.createFrame(act);
         }

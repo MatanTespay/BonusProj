@@ -5,6 +5,9 @@
  */
 package gui;
 
+import utils.QueryCombobox;
+import utils.Column;
+import utils.CostumeTableModel;
 import init.ComboItem;
 import init.InputValidator;
 import static init.MainClass.con;
@@ -72,7 +75,7 @@ public class Line extends MyInternalFrame {
             setTableProperties(tblStations);
 
             cmbColor.setModel(new QueryCombobox(cmbColor, String.class, getAllColors));
-            cmbStation.setModel(new QueryCombobox(cmbStation, Integer.class, getAllStations, (TomTableModel) tblStations.getModel(), 0, 1));
+            cmbStation.setModel(new QueryCombobox(cmbStation, Integer.class, getAllStations, (CostumeTableModel) tblStations.getModel(), 0, 1));
 
             setActiveness();
 
@@ -312,7 +315,7 @@ public class Line extends MyInternalFrame {
 
     private void btnViewStationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewStationActionPerformed
         int stationID = Integer.parseInt(tblStations.getModel().getValueAt(tblStations.getSelectedRow(), 0).toString());
-        Station newFrame = new Station(evt.getActionCommand(), selectedUserType, stationID, this);
+        Station newFrame = new Station(evt.getActionCommand(), getSelectedUserType(), stationID, this);
         openChildFrame(newFrame);
     }//GEN-LAST:event_btnViewStationActionPerformed
 
@@ -329,7 +332,7 @@ public class Line extends MyInternalFrame {
                 userStatement.setString(2, lineName);
                 userStatement.addBatch();
 
-                ((TomTableModel) tblStations.getModel()).removeRow(stationId);
+                ((CostumeTableModel) tblStations.getModel()).removeRow(stationId);
             }
         } catch (SQLException ex) {
             Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
@@ -339,7 +342,7 @@ public class Line extends MyInternalFrame {
     private void cmbStationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbStationActionPerformed
         ComboItem selectedStation = (ComboItem) ((QueryCombobox) cmbStation.getModel()).getSelectedItem();
         Integer stationID = Integer.valueOf(selectedStation.getKey().toString());
-        ((TomTableModel) tblStations.getModel()).addRow(stationID);
+        ((CostumeTableModel) tblStations.getModel()).addRow(stationID);
     }//GEN-LAST:event_cmbStationActionPerformed
 
     private void tfNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfNameActionPerformed
@@ -396,12 +399,12 @@ public class Line extends MyInternalFrame {
         cols.add(new Column("Kiosk", "Kiosk", Boolean.class));
         cols.add(new Column("Zone", "zoneNumber", Integer.class));
         try {
-            PreparedStatement getAllStations = con.prepareCall("Select * From tblStationInLine "
+            PreparedStatement getAllStations = con.prepareStatement("Select * From tblStationInLine "
                     + "As SIL join tblStation As S on SIL.stationID = S.ID WHERE SIL.lineName = ?");
             getAllStations.setString(1, lineName);
-            PreparedStatement addStation = con.prepareCall("Select * From tblStation WHERE ID = ?");
+            PreparedStatement addStation = con.prepareStatement("Select * From tblStation WHERE ID = ?");
 
-            gui.TomTableModel stationTblModel = new gui.TomTableModel(cols, addStation, getAllStations);
+            utils.CostumeTableModel stationTblModel = new utils.CostumeTableModel(cols, addStation, getAllStations);
             tblStations.setModel(stationTblModel);
         } catch (SQLException ex) {
 

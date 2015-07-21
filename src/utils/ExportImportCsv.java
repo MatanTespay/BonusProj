@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gui;
+package utils;
 
+import gui.MyInternalFrame;
 import javax.swing.JFileChooser;
 //import utils.CsvHandler;
 import javax.swing.JOptionPane;

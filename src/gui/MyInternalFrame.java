@@ -5,9 +5,9 @@
  */
 package gui;
 
+import utils.DisabledGlassPane;
 import com.toedter.calendar.JDateChooser;
 import init.InputValidator;
-import init.KeyMembersInterface;
 import init.MainClass;
 import java.awt.Color;
 
@@ -32,11 +32,11 @@ public class MyInternalFrame extends JInternalFrame {
 
     static int openFrameCount = 0;
     static int xOffset = 0, yOffset = 0;
-    String selectedUserType;
+    private String selectedUserType;
     AbstractMap.SimpleEntry selectedCustomer;
     DisabledGlassPane glassPane;
     JInternalFrame parent;
-    JInternalFrame child;
+    public JInternalFrame child;
     protected ArrayList<InputValidator> validators;
     private boolean mode;
     List<Object[]> keyComponents;
@@ -257,4 +257,18 @@ public class MyInternalFrame extends JInternalFrame {
 //    public List<Object[]> getKeyComponents() {
 //        return new ArrayList<>();
 //    }
+
+    /**
+     * @return the selectedUserType
+     */
+    public String getSelectedUserType() {
+        return selectedUserType;
+    }
+
+    /**
+     * @param selectedUserType the selectedUserType to set
+     */
+    public void setSelectedUserType(String selectedUserType) {
+        this.selectedUserType = selectedUserType;
+    }
 }

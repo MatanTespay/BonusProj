@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gui;
+package utils;
 
+import java.awt.Color;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,7 +19,7 @@ import utils.HelperClass;
  *
  * @author asus
  */
-public class TomTableModel extends AbstractTableModel {
+public class CostumeTableModel extends AbstractTableModel {
 
     private final ArrayList<Column> columns;
     private final PreparedStatement addStatement;
@@ -33,7 +34,7 @@ public class TomTableModel extends AbstractTableModel {
      * @param addStatement
      * @param fillStatement
      */
-    public TomTableModel(ArrayList<Column> columns, PreparedStatement addStatement, PreparedStatement fillStatement) {
+    public CostumeTableModel(ArrayList<Column> columns, PreparedStatement addStatement, PreparedStatement fillStatement) {
         this.columns = columns;
         this.fillStatement = fillStatement;
         this.addStatement = addStatement;
@@ -44,7 +45,7 @@ public class TomTableModel extends AbstractTableModel {
     /*
     used when table starts empty
     */
-    public TomTableModel(ArrayList<Column> columns, PreparedStatement addStatement) {
+    public CostumeTableModel(ArrayList<Column> columns, PreparedStatement addStatement) {
         this(columns, addStatement, null);
     }
 

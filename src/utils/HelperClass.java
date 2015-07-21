@@ -36,17 +36,6 @@ import core.Flight;
 import core.FlightAttendant;
 import core.Order;
 import core.Pilot;
-import gui.Activity;
-import gui.QueryCombobox;
-import static init.MainClass.con;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Collections;
-import java.util.TreeSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ListSelectionModel;
 
 /**

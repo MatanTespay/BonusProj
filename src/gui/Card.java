@@ -5,6 +5,7 @@
  */
 package gui;
 
+import utils.QueryCombobox;
 import init.ComboItem;
 import static init.MainClass.con;
 import init.MyTableModel;
@@ -76,7 +77,7 @@ public class Card extends MyInternalFrame {
 
             if (getMode() == EDIT_MODE) {
                 cmbCard.setModel(new QueryCombobox(cmbCard, Integer.class, getAllCards));
-                cmbPurchaseDate.setModel(new QueryCombobox(cmbPurchaseDate, cmbCard, getPurchaseDate, Date.class));                
+                cmbPurchaseDate.setModel(new QueryCombobox(cmbPurchaseDate, cmbCard, Date.class, getPurchaseDate));                
             } else {
                 // add mode
                 setNewCard();
