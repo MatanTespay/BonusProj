@@ -12,6 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,6 +20,7 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
+import javax.swing.JTextField;
 import utils.DateUtil;
 
 /**
@@ -28,8 +30,8 @@ import utils.DateUtil;
 public class ActivityDialog extends MyInternalFrame {
 
     int cardNumber;
-    Date purchaseDate;
-    Date activityDate;
+    Timestamp purchaseDate;
+    Timestamp activityDate;
     MainWindow mainWindow;
 
     /**
@@ -78,7 +80,7 @@ public class ActivityDialog extends MyInternalFrame {
 
             ArrayList<ComboItem> items = new ArrayList<>();
             while (rs.next()) {
-                items.add(new ComboItem(rs.getDate("purchaseDate"), rs.getString("purchaseDate")));
+                items.add(new ComboItem(rs.getTimestamp("purchaseDate"), rs.getTimestamp("purchaseDate").toString()));
             }
             if (!items.isEmpty()) {
                 Collections.sort(items);
@@ -86,7 +88,7 @@ public class ActivityDialog extends MyInternalFrame {
                 cmbPDate.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
 
                 ComboItem purchaseDateItem = (ComboItem) cmbPDate.getSelectedItem();
-                this.purchaseDate = (Date) purchaseDateItem.getKey();
+                this.purchaseDate = (Timestamp) purchaseDateItem.getKey();
                 cmbPDate.setSelectedIndex(0);
             }
         } catch (SQLException ex) {
@@ -100,16 +102,14 @@ public class ActivityDialog extends MyInternalFrame {
         try {
             s = con.prepareCall("SELECT [activityDate] FROM [LondonU2].[dbo].[tblActivity] "
                     + "where cardNumber = ? and cardPurchaseDate = ?");
-           
-            
+
             s.setInt(1, cardNumber);
             s.setString(2, new Timestamp(this.purchaseDate.getTime()).toString());
-            
-            
-             rs = s.executeQuery();
+
+            rs = s.executeQuery();
             ArrayList<ComboItem> items = new ArrayList<>();
             while (rs.next()) {
-                items.add(new ComboItem(rs.getString("activityDate"), rs.getString("activityDate")));
+                items.add(new ComboItem(rs.getTimestamp("activityDate"), rs.getTimestamp("activityDate").toString()));
             }
             if (!items.isEmpty()) {
                 Collections.sort(items);
@@ -118,7 +118,7 @@ public class ActivityDialog extends MyInternalFrame {
                 cmbActDate.setSelectedIndex(0);
 
                 ComboItem act = (ComboItem) cmbActDate.getSelectedItem();
-                this.activityDate = DateUtil.convertToDate(act.getKey().toString());
+                this.activityDate = (Timestamp)act.getKey();
             }
         } catch (SQLException ex) {
             Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
@@ -170,6 +170,12 @@ public class ActivityDialog extends MyInternalFrame {
         btnCancel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCancelActionPerformed(evt);
+            }
+        });
+
+        cmbActDate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbActDateActionPerformed(evt);
             }
         });
 
@@ -241,11 +247,10 @@ public class ActivityDialog extends MyInternalFrame {
     private void bntOKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bntOKActionPerformed
         // TODO add your handling code here:
         if (this.purchaseDate != null && this.activityDate != null && this.cardNumber > 0) {
-            
+
             this.setVisible(false);
             mainWindow.desktop.remove(this);
-            Activity act = new Activity(title, getSelectedUserType(), this.cardNumber
-                    , this.purchaseDate,this.activityDate);
+            Activity act = new Activity(title, getSelectedUserType(), this.cardNumber, this.purchaseDate, this.activityDate);
             mainWindow.createFrame(act);
         }
     }//GEN-LAST:event_bntOKActionPerformed
@@ -256,7 +261,7 @@ public class ActivityDialog extends MyInternalFrame {
             return;
         }
         ComboItem purchaseDateItem = (ComboItem) cmbPDate.getSelectedItem();
-        this.purchaseDate = (Date) purchaseDateItem.getKey();
+        this.purchaseDate = (Timestamp) purchaseDateItem.getKey();
         fillCmbAct();
     }//GEN-LAST:event_cmbPDateActionPerformed
 
@@ -267,6 +272,13 @@ public class ActivityDialog extends MyInternalFrame {
         mainWindow.desktop.remove(this);
 
     }//GEN-LAST:event_btnCancelActionPerformed
+
+    private void cmbActDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbActDateActionPerformed
+        // TODO add your handling code here:
+        ComboItem cardItem = (ComboItem) cmbActDate.getSelectedItem();
+        this.activityDate = (Timestamp)cardItem.getKey();
+        
+    }//GEN-LAST:event_cmbActDateActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

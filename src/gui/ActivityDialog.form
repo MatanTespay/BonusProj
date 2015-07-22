@@ -114,6 +114,9 @@
       </Events>
     </Component>
     <Component class="javax.swing.JComboBox" name="cmbActDate">
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cmbActDateActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="lblActivity">
       <Properties>

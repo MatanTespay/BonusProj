@@ -750,6 +750,17 @@ public class HelperClass {
             }
         }
     }
+    
+        public static void setSelectedValue(JComboBox comboBox, Object key) {
+        ComboItem item;
+        for (int i = 0; i < comboBox.getItemCount(); i++) {
+            item = (ComboItem) comboBox.getItemAt(i);
+            if (item.getKey().equals(key)) {
+                comboBox.setSelectedIndex(i);
+                break;
+            }
+        }
+    }
 
     public static void setTableProperties(JTable table) {
         table.setRowSelectionAllowed(true);
