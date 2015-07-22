@@ -49,7 +49,7 @@ public class ActivityDialog extends MyInternalFrame {
         ResultSet rs;
         try {
             s = con.createStatement();
-            rs = s.executeQuery("SELECT C.number FROM tblCard As C");
+            rs = s.executeQuery("SELECT distinct C.number FROM tblCard As C join tblActivity t on c.number = t.cardNumber");
             ArrayList<ComboItem> items = new ArrayList<>();
             while (rs.next()) {
                 items.add(new ComboItem(rs.getString("number"), rs.getString("number")));
