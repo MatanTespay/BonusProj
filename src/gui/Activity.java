@@ -13,6 +13,7 @@ import init.KeyMembersInterface;
 import static init.MainClass.con;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyVetoException;
 import java.util.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -28,6 +29,7 @@ import java.util.logging.Logger;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import org.jdesktop.beansbinding.Validator;
 import static utils.Constants.ADD_MODE;
 import static utils.Constants.EDIT_MODE;
 import static utils.Constants.INGOING;
@@ -39,7 +41,7 @@ import static utils.HelperClass.setSelectedValue;
  * @author asus
  */
 public class Activity extends MyInternalFrame {
-
+    
     int cardNumber;
     Date purchaseDate;
     Date activityDate;
@@ -63,23 +65,25 @@ public class Activity extends MyInternalFrame {
         this.cardNumber = cardNumber;
         this.purchaseDate = purchaseDate;
         this.activityDate = activityDate;
+        initComponents();
         setVaribles();
         buildForm();
         fillCmbActType();
         setDefaults();
         cmbPurchaseDate.setEnabled(false);
-
+        
     }
-
+    
     public Activity(String title, String type) {
         super(title, type);
+        initComponents();
         setMode(ADD_MODE);
         buildForm();
         dchActivityDate.setDate(new java.util.Date());
     }
-
+    
     private void buildForm() {
-        initComponents();
+        
         fillCmbCard();
         fillCmbStation();
         setActiveness();
@@ -197,32 +201,31 @@ public class Activity extends MyInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lblCardNumber)
+                    .addComponent(lblCardPurchaseDate)
+                    .addComponent(lblActivityDate)
+                    .addComponent(lblActivityType)
+                    .addComponent(lblStation)
+                    .addComponent(lblLine)
+                    .addComponent(btnCreate, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(btnCreate, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(cmbStation, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(cmbActivityType, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(dchActivityDate, javax.swing.GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE)
+                            .addComponent(cmbPurchaseDate, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(cmbCard, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(cmbLine, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(11, 11, 11))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblCardNumber)
-                            .addComponent(lblCardPurchaseDate)
-                            .addComponent(lblActivityDate)
-                            .addComponent(lblActivityType)
-                            .addComponent(lblStation)
-                            .addComponent(lblLine))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cmbLine, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(cmbStation, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(cmbActivityType, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(dchActivityDate, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(cmbPurchaseDate, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(cmbCard, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap())
+                        .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -235,11 +238,11 @@ public class Activity extends MyInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblCardPurchaseDate)
                     .addComponent(cmbPurchaseDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(21, 21, 21)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(dchActivityDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblActivityDate))
-                .addGap(18, 18, 18)
+                .addGap(15, 15, 15)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(lblActivityDate)
+                    .addComponent(dchActivityDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(24, 24, 24)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cmbActivityType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblActivityType))
@@ -254,11 +257,11 @@ public class Activity extends MyInternalFrame {
                 .addGap(24, 24, 24)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCreate)
-                    .addComponent(btnDelete))
+                    .addComponent(btnCancel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnUpdate)
-                    .addComponent(btnCancel))
+                    .addComponent(btnDelete))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -312,9 +315,9 @@ public class Activity extends MyInternalFrame {
             return;
         }
         //this.activityType = (cmbActivityType.getSelectedItem().equals("Ingoing") ? INGOING : OUTGOING);
-        ComboItem actType = (ComboItem) cmbActivityType.getSelectedItem(); 
+        ComboItem actType = (ComboItem) cmbActivityType.getSelectedItem();
         
-        this.activityType = (Boolean)actType.getKey();
+        this.activityType = (Boolean) actType.getKey();
     }//GEN-LAST:event_cmbActivityTypeActionPerformed
 
     private void cmbLineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbLineActionPerformed
@@ -345,74 +348,99 @@ public class Activity extends MyInternalFrame {
             st.setString(4, (activityType) ? "O" : "I");
             st.setInt(5, stationID);
             st.setString(6, lineName);
-
+            
             int result = st.executeUpdate();
-
+            
             JOptionPane.showMessageDialog(this,
                     "Changes Saved",
                     "INFORMATION MESSAGE",
                     JOptionPane.INFORMATION_MESSAGE);
             fillCmbStation();
             cmbStation.setSelectedIndex(0);
-
+            
         } catch (SQLException ex) {
             String msg = "There was an error in the action";
-                if(ex.getErrorCode() == 2627){ // 2627 is unique constraint (includes primary key), 2601 is unique index
-                    msg = "Error cant insert dupliate keys!";
-                }
-                JOptionPane.showInternalConfirmDialog(this, msg ,
-						"Error", JOptionPane.PLAIN_MESSAGE,
-						JOptionPane.ERROR_MESSAGE);
-                
+            if (ex.getErrorCode() == 2627) { // 2627 is unique constraint (includes primary key), 2601 is unique index
+                msg = "Error cant insert dupliate keys!";
+            }
+            JOptionPane.showInternalConfirmDialog(this, msg,
+                    "Error", JOptionPane.PLAIN_MESSAGE,
+                    JOptionPane.ERROR_MESSAGE);
+            
             Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        
 
     }//GEN-LAST:event_btnCreateActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         // TODO add your handling code here:
-           try {
+        try {
             // TODO add your handling code here:
             PreparedStatement st;
             ResultSet rs;
-            String s = "INSERT INTO [LondonU2].[dbo].[tblActivity]"
-                    + "  ([cardNumber]"
-                    + "  ,[cardPurchaseDate]"
-                    + "  ,[activityDate]"
-                    + "  ,[activityType]"
-                    + "  ,[stationID]"
-                    + "  ,[lineName])"
-                    + "     VALUES (? ,? ,? ,? ,?,?)";
+            String s = "DELETE FROM [LondonU2].[dbo].[tblActivity]"
+                    + "   WHERE [cardNumber] = ? and "
+                    + "   [cardPurchaseDate]= ? and "
+                    + "   [activityDate] = ?";
+            
             st = con.prepareStatement(s);
             st.setInt(1, cardNumber);
-            st.setString(2, new Timestamp(this.purchaseDate.getTime()).toString());
-            st.setString(3, new Timestamp(this.activityDate.getTime()).toString());
-            st.setString(4, (activityType) ? "O" : "I");
-            st.setInt(5, stationID);
-            st.setString(6, lineName);
-
+            st.setTimestamp(2, new Timestamp(this.purchaseDate.getTime()));
+            st.setTimestamp(3, new Timestamp(this.activityDate.getTime()));
+            
             int result = st.executeUpdate();
-
-            JOptionPane.showMessageDialog(this,
-                    "Changes Saved",
-                    "INFORMATION MESSAGE",
-                    JOptionPane.INFORMATION_MESSAGE);
-            fillCmbStation();
-            cmbStation.setSelectedIndex(0);
-
-        } catch (SQLException ex) {
-            String msg = "There was an error in the action";
-                if(ex.getErrorCode() == 2627){ // 2627 is unique constraint (includes primary key), 2601 is unique index
-                    msg = "Error cant insert dupliate keys!";
+            
+            if (result == 1) {
+                JOptionPane.showInternalMessageDialog(this,
+                        "Activity was deledted",
+                        "INFORMATION MESSAGE",
+                        JOptionPane.INFORMATION_MESSAGE);
+                try {
+                    this.setClosed(true);
+                } catch (PropertyVetoException ex) {
+                    Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                JOptionPane.showInternalConfirmDialog(this, msg ,
-						"Error", JOptionPane.PLAIN_MESSAGE,
-						JOptionPane.ERROR_MESSAGE);
+
+                //close the frame if there  are now activites for the ticket
+//                if (checkForOtherAct() == null) {
+//                    try {
+//                        JOptionPane.showInternalMessageDialog(this,
+//                        "No other activities for this card, closing window",
+//                        "INFORMATION MESSAGE",
+//                        JOptionPane.INFORMATION_MESSAGE);
+//                        this.setClosed(true);
+//                        
+//                    } catch (PropertyVetoException ex) {
+//                        Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
+//                    }
+//                } else {
+//                    //get other activites for the ticket and set data
+//                    buildForm();
+//                    fillCmbActType();
+//                    setDefaults();
+//                }
+            } else {
+                JOptionPane.showInternalMessageDialog(this,
+                        "Erro, couldnt delete Activity",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
                 
+            }
+
+            //fillCmbStation();
+            //cmbStation.setSelectedIndex(0);
+        } catch (SQLException ex) {
+            String msg = ex.getMessage();
+            
+            JOptionPane.showInternalMessageDialog(this,
+                    msg,
+                    "Error",
+                    JOptionPane.PLAIN_MESSAGE);
+            
             Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
         }
-           
+
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
@@ -440,65 +468,99 @@ public class Activity extends MyInternalFrame {
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 
+    private ResultSet checkForOtherAct() {
+        ResultSet rs;
+        PreparedStatement st;
+        try {
+            
+            String s;
+            s = "SELECT TOP(1) A.* FROM tblActivity As A WHERE "
+                    + "A.cardNumber = ? and A.cardPurchaseDate = ? ";
+            st = con.prepareStatement(s);
+            
+            st.setInt(1, this.cardNumber);
+
+            //for some reason i had to cast timestemp to string , dont ask me why !!!
+            st.setString(2, new Timestamp(this.purchaseDate.getTime()).toString());
+            
+            rs = st.executeQuery();
+            
+            if (rs.next()) {
+                this.activityDate = rs.getDate("activityDate");
+                return rs;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Activity.class
+                    .getName()).log(Level.SEVERE, null, ex);
+            return null;
+            
+        }
+        
+        return null;
+    }
+
     private void setVaribles() {
         PreparedStatement st;
         ResultSet rs;
+        
         try {
-
+            
             String s;
             s = "SELECT A.*, S.name FROM tblActivity As A "
                     + "join tblStation As S on A.stationID = S.ID "
                     + "WHERE "
                     + "A.cardNumber = ? and A.cardPurchaseDate = ? and A.activityDate = ?";
             st = con.prepareStatement(s);
-
+            
             st.setInt(1, this.cardNumber);
 
             //for some reason i had to cast timestemp to string , dont ask me why !!!
             st.setString(2, new Timestamp(this.purchaseDate.getTime()).toString());
             st.setString(3, new Timestamp(this.activityDate.getTime()).toString());
             rs = st.executeQuery();
-
+            
             if (rs.next()) {
-
+                
                 this.activityType = (rs.getString("activityType").equals("I")) ? INGOING : OUTGOING;
                 this.stationID = rs.getInt("stationID");
                 this.lineName = rs.getString("lineName");
-
+                
                 PreparedStatement st2;
                 ResultSet rs2;
                 String stationName;
-
+                
                 st = con.prepareStatement("SELECT S.ID,S.name FROM tblStation S WHERE "
                         + "S.ID = ?");
                 st.setInt(1, this.stationID);
                 rs = st.executeQuery();
-
+                
                 if (rs.next()) {
                     this.stationName = rs.getString("name");
                 }
-
+                
             }
         } catch (SQLException ex) {
             Logger.getLogger(Activity.class
                     .getName()).log(Level.SEVERE, null, ex);
+            
         }
+        
     }
-
+    
     private void setDefaults() {
         if (this.cardNumber > 0 && this.purchaseDate != null && this.activityDate != null
                 && this.stationName != null && this.lineName != null) {
-
+            
             setSelectedValue(cmbCard, String.valueOf(this.cardNumber));
             setSelectedValue(cmbPurchaseDate, this.purchaseDate.toString());
             dchActivityDate.setDate(this.activityDate);
-
+            
             setSelectedValue(cmbActivityType, (this.activityType == INGOING) ? "Ingoing" : "Outgoing");
             setSelectedValue(cmbStation, this.stationName);
             setSelectedValue(cmbLine, this.lineName);
         }
     }
-
+    
     private void fillCmbCard() {
         Statement s;
         ResultSet rs;
@@ -511,15 +573,17 @@ public class Activity extends MyInternalFrame {
             }
             if (!items.isEmpty()) {
                 Collections.sort(items);
-
+                
                 cmbCard.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
-                cmbCard.setSelectedIndex(0);
+                if (super.getMode() == utils.Constants.ADD_MODE) {
+                    cmbCard.setSelectedIndex(0);
+                }
             }
         } catch (SQLException ex) {
             Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
     private void fillCmbPurchaseDate(int cardNumber) {
         PreparedStatement st;
         ResultSet rs;
@@ -527,21 +591,24 @@ public class Activity extends MyInternalFrame {
             st = con.prepareStatement("SELECT C.purchaseDate FROM tblCard As C WHERE C.number = ?");
             st.setInt(1, cardNumber);
             rs = st.executeQuery();
-
+            
             ArrayList<ComboItem> items = new ArrayList<>();
             while (rs.next()) {
                 items.add(new ComboItem(rs.getDate("purchaseDate"), rs.getString("purchaseDate")));
             }
             if (!items.isEmpty()) {
                 Collections.sort(items);
-
+                
                 cmbPurchaseDate.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
+                if (super.getMode() == utils.Constants.ADD_MODE) {
+                    cmbPurchaseDate.setSelectedIndex(0);
+                }
             }
         } catch (SQLException ex) {
             Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
     private void fillCmbStation() {
         Statement s;
         ResultSet rs;
@@ -554,7 +621,7 @@ public class Activity extends MyInternalFrame {
             }
             if (!items.isEmpty()) {
                 Collections.sort(items);
-
+                
                 cmbStation.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
                 ComboItem Item = (ComboItem) cmbStation.getSelectedItem();
                 this.stationID = (int) Item.getKey();
@@ -564,18 +631,18 @@ public class Activity extends MyInternalFrame {
             Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
     private void fillCmbActType() {
-
+        
         ArrayList<ComboItem> items = new ArrayList<>();
-
+        
         items.add(new ComboItem(utils.Constants.INGOING, "Ingoing"));
         items.add(new ComboItem(utils.Constants.OUTGOING, "Outgoing"));
-
+        
         cmbActivityType.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
         cmbActivityType.setSelectedIndex(0);
     }
-
+    
     private void fillCmbLine(int stationID) {
         PreparedStatement st;
         ResultSet rs;
@@ -584,24 +651,23 @@ public class Activity extends MyInternalFrame {
                     + "As SIL WHERE SIL.stationID = ?");
             st.setInt(1, stationID);
             rs = st.executeQuery();
-
+            
             ArrayList<ComboItem> items = new ArrayList<>();
             while (rs.next()) {
                 items.add(new ComboItem(rs.getString("lineName"), rs.getString("lineName")));
             }
             if (!items.isEmpty()) {
                 Collections.sort(items);
-
+                
                 cmbLine.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
                 cmbLine.setSelectedIndex(0);
                 
-                   
             }
         } catch (SQLException ex) {
             Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
     private void setActiveness() {
         dchActivityDate.getDateEditor().setEnabled(false);
         if (getMode() == ADD_MODE) {
@@ -614,7 +680,7 @@ public class Activity extends MyInternalFrame {
             btnCreate.setVisible(true);
             btnDelete.setVisible(false);
             btnDelete.setVisible(false);
-
+            
         } else { // edit mode
             // key fields
             cmbCard.setEnabled(false);
