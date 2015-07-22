@@ -8,7 +8,6 @@ package gui;
 import utils.QueryCombobox;
 import init.ComboItem;
 import static init.MainClass.con;
-import init.MyTableModel;
 import java.io.File;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -20,10 +19,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import utils.Column;
 import static utils.Constants.ADD_MODE;
 import static utils.Constants.EDIT_MODE;
 import static utils.Constants.OYSTER;
 import static utils.Constants.PAPER;
+import utils.CustomTableModel;
 import static utils.HelperClass.setTableProperties;
 
 /**
@@ -38,8 +39,7 @@ public class Card extends MyInternalFrame {
     private ImageIcon picture;
     private JFileChooser picFileChooser;
     private boolean isTourist;
-    private final String[] programColumns = {"#", "Zone", "Length"};
-      
+
     /**
      * Creates new form Card
      *
@@ -328,13 +328,7 @@ public class Card extends MyInternalFrame {
         try {
             ComboItem cardItem = (ComboItem) cmbCard.getSelectedItem();
             this.cardNumber = Integer.parseInt(cardItem.getKey().toString());
-//            cmbPurchaseDate.setEnabled(true);
-
-//            ((QueryCombobox)cmbPurchaseDate.getModel()).fill(cardNumber);
-
         } catch (NullPointerException ex) {
-            // no item is chosen
-//            cmbPurchaseDate.setEnabled(false);
         }
     }//GEN-LAST:event_cmbCardActionPerformed
 
@@ -373,11 +367,12 @@ public class Card extends MyInternalFrame {
             st.setDate(2, this.purchaseDate);
             st.setInt(3, zone);
             st.setDouble(4, length);
-            st.executeUpdate();
-            fillPrograms();
+//            st.executeUpdate();
+            
+            ((CustomTableModel) tblPrograms.getModel()).addRow(new Object[]{zone,length});
 
         } catch (SQLException | NullPointerException ex) {
-//            Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
+//            Logger.getLogger(Card.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnAddActionPerformed
 
@@ -407,10 +402,11 @@ public class Card extends MyInternalFrame {
             st.setInt(3, zone);
             st.setDouble(4, length);
             st.executeUpdate();
-            fillPrograms();
+            
+            ((CustomTableModel) tblPrograms.getModel()).removeRow(tblPrograms.getSelectedRow());
 
         } catch (SQLException | NullPointerException ex) {
-//            Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
+//            Logger.getLogger(Card.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnRemoveActionPerformed
 
@@ -447,30 +443,50 @@ public class Card extends MyInternalFrame {
     private void fillPrograms() {
         PreparedStatement st;
         ResultSet rs;
+         
+        ArrayList<Column> cols = new ArrayList<>();
+        cols.add(new Column("#", "#", Integer.class)); //*UNBOUND to DB - displays row num*/
+        cols.add(new Column("Zone", "zoneNumber", Integer.class));
+        cols.add(new Column("Length", "cardLength", Double.class));
 
         try {
-            String tableName = this.type == PAPER ? "tblPaperCardAreas" : "tblOysterCardAreas";
-            st = con.prepareStatement("SELECT * FROM " + tableName + " As PCA "
-                    + "JOIN tblCardLengths As CL on PCA.cardLength = CL.lengthDescription "
-                    + "WHERE PCA.cardNumber = ? and PCA.cardPurchaseDate = ?");
-            st.setInt(1, this.cardNumber);
-            st.setDate(2, this.purchaseDate);
-            rs = st.executeQuery();
-            ArrayList<Object[]> rows = new ArrayList();
-            int i = 0;
-            while (rs.next()) {
-                Object[] row = {i, rs.getInt("zoneNumber"), rs.getString("lengthDescription")};
-                rows.add(row);
-                i++;
-            }
-            MyTableModel tableModel = new MyTableModel(programColumns, rows, null);
-            tblPrograms.setModel(tableModel);
+        String tableName = this.type == PAPER ? "tblPaperCardAreas" : "tblOysterCardAreas";
+            PreparedStatement getAllPrograms = con.prepareStatement("SELECT * FROM " + tableName + " As CA "
+                    + "JOIN tblCardLengths As CL on CA.cardLength = CL.lengthDescription "
+                    + "WHERE CA.cardNumber = ? and CA.cardPurchaseDate = ?");
+            getAllPrograms.setInt(1, this.cardNumber);
+            getAllPrograms.setDate(2, this.purchaseDate);
 
+            CustomTableModel programTableModel = new CustomTableModel(tblPrograms, cols, null/*no add statement*/, getAllPrograms);
+            tblPrograms.setModel(programTableModel);
         } catch (SQLException ex) {
-            Logger.getLogger(Card.class
-                    .getName()).log(Level.SEVERE, null, ex);
+
         }
     }
+//        try {
+//            String tableName = this.type == PAPER ? "tblPaperCardAreas" : "tblOysterCardAreas";
+//            st = con.prepareStatement("SELECT * FROM " + tableName + " As CA "
+//                    + "JOIN tblCardLengths As CL on CA.cardLength = CL.lengthDescription "
+//                    + "WHERE CA.cardNumber = ? and CA.cardPurchaseDate = ?");
+//            st.setInt(1, this.cardNumber);
+//            st.setDate(2, this.purchaseDate);
+//            rs = st.executeQuery();
+//            ArrayList<Object[]> rows = new ArrayList();
+//            
+//            int i = 0;
+//            while (rs.next()) {
+//                Object[] row = {i, rs.getInt("zoneNumber"), rs.getString("lengthDescription")};
+//                rows.add(row);
+//                i++;
+//            }
+//            MyTableModel tableModel = new MyTableModel(programColumns, rows, null);
+//            tblPrograms.setModel(tableModel);
+//
+//        } catch (SQLException ex) {
+//            Logger.getLogger(Card.class
+//                    .getName()).log(Level.SEVERE, null, ex);
+//        }
+//    }
 
     private void setDefaults() {
         int defaultCard = Integer.valueOf(((ComboItem) cmbCard.getSelectedItem())

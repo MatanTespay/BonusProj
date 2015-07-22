@@ -7,7 +7,7 @@ package gui;
 
 import utils.QueryCombobox;
 import utils.Column;
-import utils.CostumeTableModel;
+import utils.CustomTableModel;
 import init.ComboItem;
 import init.InputValidator;
 import static init.MainClass.con;
@@ -15,6 +15,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JInternalFrame;
@@ -35,7 +36,6 @@ public class Line extends MyInternalFrame {
     private boolean type;
     private double length;
     private String color;
-    private PreparedStatement userStatement;
 
     /**
      * Creates new form Line
@@ -67,15 +67,15 @@ public class Line extends MyInternalFrame {
     private void buildForm() {
         try {
             initComponents();
+            
             PreparedStatement getAllColors = con.prepareStatement("SELECT name FROM tblLineColor");
             PreparedStatement getAllStations = con.prepareStatement("SELECT ID, name FROM tblStation");
-
-            setStationTblModel(); /*must do this BEFORE setting the comboBoxModel*/
 
             setTableProperties(tblStations);
 
             cmbColor.setModel(new QueryCombobox(cmbColor, String.class, getAllColors));
-            cmbStation.setModel(new QueryCombobox(cmbStation, Integer.class, getAllStations, (CostumeTableModel) tblStations.getModel(), 0, 1));
+            cmbStation.setModel(new QueryCombobox(cmbStation, Integer.class, getAllStations));
+            setStationTblModel();
 
             setActiveness();
 
@@ -115,10 +115,10 @@ public class Line extends MyInternalFrame {
         btnRemoveStation = new javax.swing.JButton();
         cmbColor = new javax.swing.JComboBox();
         cmbStation = new javax.swing.JComboBox();
-        lblAddStations = new javax.swing.JLabel();
         ychFoundationYear = new com.toedter.calendar.JYearChooser();
         btnSave = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
+        btnAddStation = new javax.swing.JButton();
 
         tfLength.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -198,8 +198,6 @@ public class Line extends MyInternalFrame {
             }
         });
 
-        lblAddStations.setText("Add");
-
         ychFoundationYear.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 ychFoundationYearPropertyChange(evt);
@@ -207,8 +205,25 @@ public class Line extends MyInternalFrame {
         });
 
         btnSave.setText("Save");
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveActionPerformed(evt);
+            }
+        });
 
         btnCancel.setText("Cancel");
+        btnCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelActionPerformed(evt);
+            }
+        });
+
+        btnAddStation.setText("Add Station");
+        btnAddStation.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddStationActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -218,19 +233,20 @@ public class Line extends MyInternalFrame {
                 .addGap(12, 12, 12)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 406, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(btnViewStation, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnRemoveStation, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(lblAddStations)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
-                                .addComponent(cmbStation, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(layout.createSequentialGroup()
                         .addComponent(lblStations)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 406, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(btnViewStation, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnRemoveStation, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(cmbStation, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnAddStation, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -266,9 +282,7 @@ public class Line extends MyInternalFrame {
                         .addGap(184, 184, 184))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
+                        .addGap(129, 129, 129))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -290,18 +304,18 @@ public class Line extends MyInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(ychFoundationYear, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblFoundation))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
                 .addComponent(lblStations)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnViewStation)
                         .addGap(10, 10, 10)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(cmbStation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblAddStations))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cmbStation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnAddStation)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnRemoveStation)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -326,13 +340,14 @@ public class Line extends MyInternalFrame {
             Object value = tblStations.getModel().getValueAt(tblStations.getSelectedRow(), 0);
             if (value != null) {
                 stationId = Integer.parseInt(value.toString());
-            userStatement = con.prepareStatement("DELETE FROM tblStationInLine WHERE "
-                        + "stationID = ? AND  lineName = ?");
-                userStatement.setInt(1, stationId);
-                userStatement.setString(2, lineName);
-                userStatement.addBatch();
 
-                ((CostumeTableModel) tblStations.getModel()).removeRow(stationId);
+                PreparedStatement removeStation = con.prepareStatement("DELETE FROM tblStationInLine WHERE "
+                        + "stationID = ? AND  lineName = ?");
+                removeStation.setInt(1, stationId);
+                removeStation.setString(2, lineName);
+                getUserQueries().add(removeStation);
+
+                ((CustomTableModel) tblStations.getModel()).removeRow(tblStations.getSelectedRow());
             }
         } catch (SQLException ex) {
             Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
@@ -340,9 +355,7 @@ public class Line extends MyInternalFrame {
     }//GEN-LAST:event_btnRemoveStationActionPerformed
 
     private void cmbStationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbStationActionPerformed
-        ComboItem selectedStation = (ComboItem) ((QueryCombobox) cmbStation.getModel()).getSelectedItem();
-        Integer stationID = Integer.valueOf(selectedStation.getKey().toString());
-        ((CostumeTableModel) tblStations.getModel()).addRow(stationID);
+
     }//GEN-LAST:event_cmbStationActionPerformed
 
     private void tfNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfNameActionPerformed
@@ -367,8 +380,34 @@ public class Line extends MyInternalFrame {
         this.length = Double.valueOf(tfLength.getText());
     }//GEN-LAST:event_tfLengthActionPerformed
 
+    private void btnAddStationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddStationActionPerformed
+        ComboItem selectedStation = (ComboItem) ((QueryCombobox) cmbStation.getModel()).getSelectedItem();
+        Integer stationID = Integer.valueOf(selectedStation.getKey().toString());
+        ((CustomTableModel) tblStations.getModel()).addRow(stationID);
+
+        try {
+            PreparedStatement addStation = con.prepareStatement("INSERT INTO "
+                    + "tblStationInLine VALUES(?,?)");
+            addStation.setInt(1, stationID);
+            addStation.setString(2, lineName);
+            getUserQueries().add(addStation);
+
+        } catch (SQLException ex) {
+
+        }
+    }//GEN-LAST:event_btnAddStationActionPerformed
+
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        commitUpdates();
+    }//GEN-LAST:event_btnSaveActionPerformed
+
+    private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
+        cancel();
+    }//GEN-LAST:event_btnCancelActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAddStation;
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnRemoveStation;
     private javax.swing.JButton btnSave;
@@ -378,7 +417,6 @@ public class Line extends MyInternalFrame {
     private javax.swing.JComboBox cmbType;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lbName;
-    private javax.swing.JLabel lblAddStations;
     private javax.swing.JLabel lblColor;
     private javax.swing.JLabel lblFoundation;
     private javax.swing.JLabel lblKm;
@@ -404,7 +442,9 @@ public class Line extends MyInternalFrame {
             getAllStations.setString(1, lineName);
             PreparedStatement addStation = con.prepareStatement("Select * From tblStation WHERE ID = ?");
 
-            utils.CostumeTableModel stationTblModel = new utils.CostumeTableModel(cols, addStation, getAllStations);
+            CustomTableModel stationTblModel = new CustomTableModel(tblStations, cols, addStation, getAllStations);
+            stationTblModel.bindComboBox(cmbStation, 0, 1);
+            stationTblModel.fillTable();
             tblStations.setModel(stationTblModel);
         } catch (SQLException ex) {
 
