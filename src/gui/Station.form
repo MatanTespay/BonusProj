@@ -44,7 +44,7 @@
                                   <Group type="102" attributes="0">
                                       <Component id="lblZoneNum" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace type="separate" max="-2" attributes="0"/>
-                                      <Component id="cmbZoneNum" min="-2" max="-2" attributes="0"/>
+                                      <Component id="cmbZone" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" attributes="0">
                                       <Component id="lblPlatforms" min="-2" max="-2" attributes="0"/>
@@ -60,11 +60,8 @@
                           <Component id="chbKiosk" min="-2" max="-2" attributes="0"/>
                           <Component id="btnViewLine" alignment="1" max="32767" attributes="0"/>
                           <Component id="btnRemoveLine" alignment="1" max="32767" attributes="0"/>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="lblAddLine" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="cmbLines" max="32767" attributes="0"/>
-                          </Group>
+                          <Component id="cmbLine" alignment="0" max="32767" attributes="0"/>
+                          <Component id="btnAddLine" alignment="0" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
@@ -92,7 +89,7 @@
                           <Component id="tfStationID" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="lblStationID" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="lblZoneNum" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="cmbZoneNum" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="cmbZone" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
@@ -112,20 +109,19 @@
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="lblLines" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
                   <Component id="jScrollPane1" min="-2" pref="131" max="-2" attributes="0"/>
-                  <Group type="102" alignment="0" attributes="0">
+                  <Group type="102" attributes="0">
                       <Component id="btnViewLine" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="cmbLines" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="lblAddLine" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
+                      <EmptySpace max="32767" attributes="0"/>
+                      <Component id="cmbLine" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="13" max="-2" attributes="0"/>
+                      <Component id="btnAddLine" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="btnRemoveLine" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace pref="15" max="32767" attributes="0"/>
+              <EmptySpace pref="19" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="btnCreate" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="btnUpdate" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -223,7 +219,7 @@
         <Property name="text" type="java.lang.String" value="Zone Number"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JComboBox" name="cmbZoneNum">
+    <Component class="javax.swing.JComboBox" name="cmbZone">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
           <StringArray count="4">
@@ -235,10 +231,10 @@
         </Property>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cmbZoneNumActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cmbZoneActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JComboBox" name="cmbLines">
+    <Component class="javax.swing.JComboBox" name="cmbLine">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
           <StringArray count="4">
@@ -250,13 +246,8 @@
         </Property>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cmbLinesActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cmbLineActionPerformed"/>
       </Events>
-    </Component>
-    <Component class="javax.swing.JLabel" name="lblAddLine">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Add"/>
-      </Properties>
     </Component>
     <Component class="javax.swing.JSpinner" name="spnPlatforms">
       <Events>
@@ -282,6 +273,14 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Cancel"/>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnAddLine">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Add Line"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAddLineActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

@@ -5,7 +5,6 @@
  */
 package utils;
 
-import utils.CostumeTableModel;
 import init.ComboItem;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,11 +18,6 @@ import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.event.ListDataEvent;
-import javax.swing.event.TableModelEvent;
-import static javax.swing.event.TableModelEvent.DELETE;
-import static javax.swing.event.TableModelEvent.INSERT;
-import javax.swing.event.TableModelListener;
-import utils.HelperClass;
 
 /**
  *
@@ -54,18 +48,6 @@ public class QueryCombobox extends DefaultComboBoxModel {
      the items of the model
      */
     private ArrayList<ComboItem> items;
-    /*
-     the related table model (if exists)
-     */
-    private final CostumeTableModel model;
-    /*
-     the index of the key column in the related table (if exists)
-     */
-    private final int tableKeyColumn;
-    /*
-     the index of the value column in the related table (if exists)
-     */
-    private final int tableValueColumn;
 
     /*
      combobox that depends on another combobox
@@ -84,9 +66,6 @@ public class QueryCombobox extends DefaultComboBoxModel {
         this.fatherCmb = fatherCmb;
         this.st = stWhere;
         this.keyClass = keyClass;
-
-        this.model = null;
-        this.tableKeyColumn = tableValueColumn = 0;
         this.items = new ArrayList<>();
 
         this.fatherCmb.addActionListener(new ActionListener() {
@@ -139,52 +118,7 @@ public class QueryCombobox extends DefaultComboBoxModel {
         this.st = st;
 
         this.fatherCmb = null;
-        this.model = null;
-        this.tableKeyColumn = tableValueColumn = 0;
         this.items = new ArrayList<>();
-        fill();
-
-        if (items.size() > 0) {
-            selectedItem = items.get(0);
-        }
-    }
-
-    /*
-     combobox that depends on a Jtable
-     */
-    public QueryCombobox(JComboBox<ComboItem> cmb, Class keyClass, PreparedStatement st, CostumeTableModel model, int keyColumn, int valueColumn) {
-        this.myCmb = cmb;
-        this.keyClass = keyClass;
-        this.st = st;
-        this.model = model;
-        this.tableKeyColumn = keyColumn;
-        this.tableValueColumn = valueColumn;
-
-        this.fatherCmb = null;
-        this.items = new ArrayList<>();
-
-        model.addTableModelListener(new TableModelListener() {
-
-            @Override
-            public void tableChanged(TableModelEvent e) {
-                Object key;
-                String value;
-                ComboItem item;
-
-                if (e.getType() == INSERT) {
-                    key = model.getValueAt(e.getFirstRow(), tableKeyColumn);
-                    value = model.getValueAt(e.getFirstRow(), tableValueColumn).toString();
-                    item = new ComboItem(key, value);
-                    removeElement(item);
-
-                } else if (e.getType() == DELETE) {
-                    key = model.getLastRowRemoved()[tableKeyColumn];
-                    value = model.getLastRowRemoved()[tableValueColumn].toString();
-                    item = new ComboItem(key, value);
-                    addElement(item);
-                }
-            }
-        });
         fill();
 
         if (items.size() > 0) {
@@ -199,26 +133,25 @@ public class QueryCombobox extends DefaultComboBoxModel {
                 return;
             }
             rs = st.executeQuery();
-            int valueColumn;
-
+            int keyColumn = 1;
+            int valueColumn = (rs.getMetaData().getColumnCount() == 1) ? 1 : 2;
+            
             while (rs.next()) {
                 Object key;
                 String value;
-                valueColumn = (rs.getMetaData().getColumnCount() == 1) ? 1 : 2;
                 value = rs.getObject(valueColumn).toString();
-
                 switch (getKeyClass().getSimpleName()) {
                     case "Integer":
-                        key = rs.getInt(1);
+                        key = rs.getInt(keyColumn);
                         break;
                     case "Double":
-                        key = rs.getDouble(1);
+                        key = rs.getDouble(keyColumn);
                         break;
                     case "String":
-                        key = rs.getString(1);
+                        key = rs.getString(keyColumn);
                         break;
                     case "Date":
-                        key = rs.getString(1);
+                        key = rs.getString(keyColumn);
                         break;
                     default:
                         key = null;
@@ -226,7 +159,6 @@ public class QueryCombobox extends DefaultComboBoxModel {
                 }
                 addElement(new ComboItem(key, value));
             }
-//            cmb.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
 
         } catch (SQLException ex) {
             Logger.getLogger(HelperClass.class.getName()).log(Level.SEVERE, null, ex);
@@ -273,7 +205,6 @@ public class QueryCombobox extends DefaultComboBoxModel {
         if (index != -1) {
             removeElementAt(index);
         }
-        fireIntervalRemoved(this, index, index);
         Collections.sort(items);
     }
 
