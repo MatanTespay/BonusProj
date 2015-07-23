@@ -15,12 +15,14 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
 import utils.Column;
 import static utils.Constants.ADD_MODE;
 import static utils.Constants.EDIT_MODE;
 import utils.CustomTableModel;
 import static utils.HelperClass.setSelectedValue;
 import static utils.HelperClass.setTableProperties;
+import utils.Queries;
 import utils.QueryCombobox;
 
 /**
@@ -30,10 +32,10 @@ import utils.QueryCombobox;
 public class Station extends MyInternalFrame {
 
     private int stationID;
-    private String name;
+    private String stationName;
     private int platformNum;
     private boolean isKiosk;
-    private int zoneNum;
+    private int zoneNumber;
 
     /**
      * Creates new form Station2
@@ -97,40 +99,32 @@ public class Station extends MyInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        btnViewLine = new javax.swing.JButton();
-        chbKiosk = new javax.swing.JCheckBox();
-        tfStationID = new javax.swing.JTextField();
+        pDetails = new javax.swing.JPanel();
         lblStationID = new javax.swing.JLabel();
         lblStationName = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tblLines = new javax.swing.JTable();
-        lblLines = new javax.swing.JLabel();
+        tfStationID = new javax.swing.JTextField();
         tfName = new javax.swing.JTextField();
-        btnRemoveLine = new javax.swing.JButton();
         lblPlatforms = new javax.swing.JLabel();
         lblZoneNum = new javax.swing.JLabel();
         cmbZone = new javax.swing.JComboBox();
-        cmbLine = new javax.swing.JComboBox();
         spnPlatforms = new javax.swing.JSpinner();
-        btnCreate = new javax.swing.JButton();
-        btnUpdate = new javax.swing.JButton();
-        btnDelete = new javax.swing.JButton();
+        chbKiosk = new javax.swing.JCheckBox();
         btnCancel = new javax.swing.JButton();
+        btnSave = new javax.swing.JButton();
+        btnDelete = new javax.swing.JButton();
+        pLines = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblLines = new javax.swing.JTable();
+        btnViewLine = new javax.swing.JButton();
+        cmbLine = new javax.swing.JComboBox();
         btnAddLine = new javax.swing.JButton();
+        btnRemoveLine = new javax.swing.JButton();
 
-        btnViewLine.setText("View Line");
-        btnViewLine.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnViewLineActionPerformed(evt);
-            }
-        });
+        pDetails.setBorder(javax.swing.BorderFactory.createTitledBorder("Details"));
 
-        chbKiosk.setText("Kiosk");
-        chbKiosk.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chbKioskActionPerformed(evt);
-            }
-        });
+        lblStationID.setText("Station ID");
+
+        lblStationName.setText("Name");
 
         tfStationID.setEnabled(false);
         tfStationID.addActionListener(new java.awt.event.ActionListener() {
@@ -139,35 +133,9 @@ public class Station extends MyInternalFrame {
             }
         });
 
-        lblStationID.setText("Station ID");
-
-        lblStationName.setText("Name");
-
-        tblLines.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-
-            }
-        ));
-        tblLines.setColumnSelectionAllowed(true);
-        tblLines.getTableHeader().setReorderingAllowed(false);
-        jScrollPane1.setViewportView(tblLines);
-        tblLines.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-
-        lblLines.setText("Lines:");
-
         tfName.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tfNameActionPerformed(evt);
-            }
-        });
-
-        btnRemoveLine.setText("Remove Line");
-        btnRemoveLine.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRemoveLineActionPerformed(evt);
             }
         });
 
@@ -182,6 +150,132 @@ public class Station extends MyInternalFrame {
             }
         });
 
+        spnPlatforms.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                spnPlatformsPropertyChange(evt);
+            }
+        });
+
+        chbKiosk.setText("Kiosk");
+        chbKiosk.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chbKioskActionPerformed(evt);
+            }
+        });
+
+        btnCancel.setText("Cancel");
+        btnCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelActionPerformed(evt);
+            }
+        });
+
+        btnSave.setText("Save");
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveActionPerformed(evt);
+            }
+        });
+
+        btnDelete.setText("Delete");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout pDetailsLayout = new javax.swing.GroupLayout(pDetails);
+        pDetails.setLayout(pDetailsLayout);
+        pDetailsLayout.setHorizontalGroup(
+            pDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pDetailsLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblStationID)
+                    .addComponent(lblStationName))
+                .addGap(41, 41, 41)
+                .addGroup(pDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(tfName)
+                    .addComponent(tfStationID, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(pDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(pDetailsLayout.createSequentialGroup()
+                        .addComponent(lblZoneNum)
+                        .addGap(18, 18, 18)
+                        .addComponent(cmbZone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(pDetailsLayout.createSequentialGroup()
+                        .addComponent(lblPlatforms)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(spnPlatforms, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(chbKiosk)
+                .addGap(24, 24, 24))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pDetailsLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(pDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(pDetailsLayout.createSequentialGroup()
+                        .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(99, 99, 99))
+                    .addGroup(pDetailsLayout.createSequentialGroup()
+                        .addGap(101, 101, 101)
+                        .addGap(97, 97, 97)
+                        .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
+        pDetailsLayout.setVerticalGroup(
+            pDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pDetailsLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pDetailsLayout.createSequentialGroup()
+                        .addGroup(pDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(tfStationID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblStationID)
+                            .addComponent(lblZoneNum)
+                            .addComponent(cmbZone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(pDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(tfName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblStationName)))
+                    .addGroup(pDetailsLayout.createSequentialGroup()
+                        .addGap(28, 28, 28)
+                        .addGroup(pDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblPlatforms)
+                            .addComponent(chbKiosk)
+                            .addComponent(spnPlatforms, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(18, 18, 18)
+                .addGroup(pDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnCancel)
+                    .addComponent(btnSave)
+                    .addComponent(btnDelete))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        pLines.setBorder(javax.swing.BorderFactory.createTitledBorder("Lines"));
+
+        tblLines.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
+        tblLines.setColumnSelectionAllowed(true);
+        tblLines.getTableHeader().setReorderingAllowed(false);
+        jScrollPane1.setViewportView(tblLines);
+        tblLines.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+
+        btnViewLine.setText("View");
+        btnViewLine.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnViewLineActionPerformed(evt);
+            }
+        });
+
         cmbLine.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         cmbLine.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -189,26 +283,51 @@ public class Station extends MyInternalFrame {
             }
         });
 
-        spnPlatforms.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                spnPlatformsPropertyChange(evt);
-            }
-        });
-
-        btnCreate.setText("Create");
-
-        btnUpdate.setText("Update");
-
-        btnDelete.setText("Delete");
-
-        btnCancel.setText("Cancel");
-
-        btnAddLine.setText("Add Line");
+        btnAddLine.setText("Add");
         btnAddLine.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAddLineActionPerformed(evt);
             }
         });
+
+        btnRemoveLine.setText("Remove");
+        btnRemoveLine.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoveLineActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout pLinesLayout = new javax.swing.GroupLayout(pLines);
+        pLines.setLayout(pLinesLayout);
+        pLinesLayout.setHorizontalGroup(
+            pLinesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pLinesLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 347, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pLinesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnViewLine, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnRemoveLine, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(cmbLine, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnAddLine, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+        pLinesLayout.setVerticalGroup(
+            pLinesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pLinesLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pLinesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(pLinesLayout.createSequentialGroup()
+                        .addComponent(btnViewLine)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(cmbLine, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(13, 13, 13)
+                        .addComponent(btnAddLine)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnRemoveLine)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -217,90 +336,18 @@ public class Station extends MyInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(lblLines)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lblStationID)
-                                    .addComponent(lblStationName))
-                                .addGap(41, 41, 41)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(tfName, javax.swing.GroupLayout.DEFAULT_SIZE, 64, Short.MAX_VALUE)
-                                    .addComponent(tfStationID))
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(lblZoneNum)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(cmbZone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(lblPlatforms)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(spnPlatforms)))
-                                .addGap(0, 20, Short.MAX_VALUE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(chbKiosk)
-                            .addComponent(btnViewLine, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnRemoveLine, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(cmbLine, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnAddLine, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnCreate, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(pLines, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(pDetails, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(tfStationID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblStationID)
-                            .addComponent(lblZoneNum)
-                            .addComponent(cmbZone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(tfName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblStationName)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(28, 28, 28)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(lblPlatforms)
-                            .addComponent(chbKiosk)
-                            .addComponent(spnPlatforms, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(18, 18, 18)
-                .addComponent(lblLines)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnViewLine)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(cmbLine, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(13, 13, 13)
-                        .addComponent(btnAddLine)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnRemoveLine)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnCreate)
-                    .addComponent(btnUpdate)
-                    .addComponent(btnDelete)
-                    .addComponent(btnCancel))
-                .addContainerGap())
+                .addComponent(pDetails, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(pLines, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -311,7 +358,7 @@ public class Station extends MyInternalFrame {
     }//GEN-LAST:event_chbKioskActionPerformed
 
     private void tfNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfNameActionPerformed
-        this.name = tfName.getText();
+        this.stationName = tfName.getText();
     }//GEN-LAST:event_tfNameActionPerformed
 
     private void btnViewLineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewLineActionPerformed
@@ -322,21 +369,22 @@ public class Station extends MyInternalFrame {
     }//GEN-LAST:event_btnViewLineActionPerformed
 
     private void btnRemoveLineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveLineActionPerformed
-        PreparedStatement st;
+        PreparedStatement deleteSIL;
+        Object value;
         String lineName;
 
         try {
-            lineName = (String) (tblLines.getModel().getValueAt(tblLines.getSelectedRow(), 0));
-            st = con.prepareStatement("DELETE FROM tblStationInLine WHERE "
-                    + "stationID = ? AND  lineName = ?");
-            st.setInt(1, stationID);
-            st.setString(2, lineName);
-            st.executeUpdate();
-
+            value = tblLines.getModel().getValueAt(tblLines.getSelectedRow(), 0);
+            lineName =value.toString();
             ((CustomTableModel) tblLines.getModel()).removeRow(tblLines.getSelectedRow());
-            
-        } catch (SQLException ex) {
-            Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
+
+            deleteSIL = con.prepareStatement(Queries.DELETE_STATION_IN_LINE);
+            deleteSIL.setInt(1, stationID);
+            deleteSIL.setString(1, lineName);
+            deleteSIL.executeUpdate();
+
+        } catch (SQLException e) {
+            System.err.println("Error code: " + e.getErrorCode() + "\nError Message: " + e.getMessage());
         }
     }//GEN-LAST:event_btnRemoveLineActionPerformed
 
@@ -350,7 +398,7 @@ public class Station extends MyInternalFrame {
 
     private void cmbZoneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbZoneActionPerformed
         ComboItem zoneItem = (ComboItem) cmbZone.getSelectedItem();
-        this.zoneNum = Integer.parseInt(zoneItem.getKey().toString());
+        this.zoneNumber = Integer.parseInt(zoneItem.getKey().toString());
     }//GEN-LAST:event_cmbZoneActionPerformed
 
     private void spnPlatformsPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_spnPlatformsPropertyChange
@@ -358,40 +406,102 @@ public class Station extends MyInternalFrame {
     }//GEN-LAST:event_spnPlatformsPropertyChange
 
     private void btnAddLineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddLineActionPerformed
+        ComboItem selectedStation;
+        String lineName;
+        PreparedStatement insertSIL;
+
         try {
-            PreparedStatement st;
-            ComboItem selectedStation = (ComboItem) ((QueryCombobox) cmbLine.getModel()).getSelectedItem();
-            String lineName = selectedStation.getKey().toString();
- 
-            st = con.prepareStatement("INSERT INTO tblStationInLine VALUES (?,?)");
-            st.setInt(1, stationID);
-            st.setString(2, lineName);
-            st.addBatch();
-            
+            selectedStation = (ComboItem) ((QueryCombobox) cmbLine.getModel()).getSelectedItem();
+            lineName = selectedStation.getKey().toString();
             ((CustomTableModel) tblLines.getModel()).addRow(lineName);
 
-        } catch (SQLException | NullPointerException ex) {
+            insertSIL = con.prepareStatement(Queries.INSERT_STATION_IN_LINE);
+            insertSIL.setInt(1, stationID);
+            insertSIL.setString(1, lineName);
+            insertSIL.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Error code: " + e.getErrorCode() + "\nError Message: " + e.getMessage());
         }
     }//GEN-LAST:event_btnAddLineActionPerformed
+
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        PreparedStatement insertStation;
+        PreparedStatement updateStation;
+
+        try {
+            if (getMode() == ADD_MODE) {
+                insertStation = con.prepareStatement(Queries.INSERT_STATION);
+                insertStation.setInt(1, stationID);
+                insertStation.setString(2, stationName);
+                insertStation.setInt(3, platformNum);
+                insertStation.setBoolean(4, isKiosk);
+                insertStation.setInt(5, zoneNumber);
+                insertStation.executeUpdate();
+            } else {
+                //edit mode
+                updateStation = con.prepareStatement(Queries.UPDATE_STATION);
+                updateStation.setString(1, stationName);
+                updateStation.setInt(2, platformNum);
+                updateStation.setBoolean(3, isKiosk);
+                updateStation.setInt(4, zoneNumber);
+                updateStation.setInt(5, stationID);
+                updateStation.executeUpdate();
+            }
+        } catch (SQLException e) {
+            System.err.println("Error code: " + e.getErrorCode() + "\nError Message: " + e.getMessage());
+        }
+    }//GEN-LAST:event_btnSaveActionPerformed
+
+    private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
+//        if (getUserQueries().isEmpty()) {
+//            this.dispose();
+//            return;
+//        }
+//
+//        int option = JOptionPane.showInternalOptionDialog(this, "You have unsaved data.\n"
+//                + "Are you sure you want to exit?", "Warning!", JOptionPane.YES_NO_OPTION,
+//                JOptionPane.WARNING_MESSAGE, null, null, null);
+//
+//        switch (option) {
+//            case JOptionPane.YES_OPTION:
+//                this.dispose();
+//            case JOptionPane.NO_OPTION:
+//                // do nothing
+//                break;
+//        }
+
+    }//GEN-LAST:event_btnCancelActionPerformed
+
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        PreparedStatement deleteStation;
+        try {
+            deleteStation = con.prepareStatement(Queries.DELETE_STATION);
+            deleteStation.setInt(1, stationID);
+            deleteStation.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Error code: " + e.getErrorCode() + "\nError Message: " + e.getMessage());
+        }
+
+    }//GEN-LAST:event_btnDeleteActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddLine;
     private javax.swing.JButton btnCancel;
-    private javax.swing.JButton btnCreate;
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnRemoveLine;
-    private javax.swing.JButton btnUpdate;
+    private javax.swing.JButton btnSave;
     private javax.swing.JButton btnViewLine;
     private javax.swing.JCheckBox chbKiosk;
     private javax.swing.JComboBox cmbLine;
     private javax.swing.JComboBox cmbZone;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel lblLines;
     private javax.swing.JLabel lblPlatforms;
     private javax.swing.JLabel lblStationID;
     private javax.swing.JLabel lblStationName;
     private javax.swing.JLabel lblZoneNum;
+    private javax.swing.JPanel pDetails;
+    private javax.swing.JPanel pLines;
     private javax.swing.JSpinner spnPlatforms;
     private javax.swing.JTable tblLines;
     private javax.swing.JTextField tfName;
@@ -434,10 +544,10 @@ public class Station extends MyInternalFrame {
             rs = st.executeQuery();
 
             rs.next();
-            this.name = rs.getString("name");
+            this.stationName = rs.getString("name");
             this.platformNum = rs.getInt("platformNum");
             this.isKiosk = rs.getBoolean("Kiosk");
-            this.zoneNum = rs.getInt("zoneNumber");
+            this.zoneNumber = rs.getInt("zoneNumber");
 
         } catch (SQLException ex) {
             Logger.getLogger(Station.class
@@ -447,8 +557,8 @@ public class Station extends MyInternalFrame {
 
     public void setDefaults() {
         tfStationID.setText(String.valueOf(this.stationID));
-        tfName.setText(this.name);
-        setSelectedValue(cmbZone, String.valueOf(this.zoneNum));
+        tfName.setText(this.stationName);
+        setSelectedValue(cmbZone, String.valueOf(this.zoneNumber));
         spnPlatforms.setValue(this.platformNum);
         chbKiosk.setSelected(this.isKiosk);
         cmbLine.setSelectedIndex(0);
@@ -460,18 +570,15 @@ public class Station extends MyInternalFrame {
             tfStationID.setEnabled(true);
 
             // control buttons
-            btnCreate.setVisible(true);
-            btnDelete.setVisible(false);
-            btnDelete.setVisible(false);
+            btnSave.setVisible(false);
+            btnSave.setVisible(false);
 
         } else { // edit mode
             // key fields
             tfStationID.setEnabled(false);
 
             // control buttons
-            btnCreate.setVisible(false);
-            btnDelete.setVisible(true);
-            btnUpdate.setVisible(true);
+            btnSave.setVisible(true);
         }
     }
 
