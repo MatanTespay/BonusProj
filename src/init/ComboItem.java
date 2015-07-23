@@ -63,7 +63,7 @@ public class ComboItem implements Comparable<ComboItem>{
             return false;
         if (obj.getClass().equals(ComboItem.class)){
             return getKey().equals(((ComboItem)obj).getKey());
-        } else if(obj instanceof String){
+        } else if(obj.getClass().equals(key.getClass())){
             return this.key.toString().equalsIgnoreCase(obj.toString());
         }
         return false;
