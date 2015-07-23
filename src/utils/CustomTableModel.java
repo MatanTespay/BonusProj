@@ -108,7 +108,7 @@ public class CustomTableModel extends AbstractTableModel {
             for (int col = 0; col < getColumnCount(); col++) {
                 colSqlName = columns.get(col).getSqlColumnName();
                 if (colSqlName.equals("#")) {
-                    fieldToAdd = rs.getRow();
+                    fieldToAdd = rs.getRow()+1;
                 } else {
                     switch (getColumnClass(col).getSimpleName()) {
                         case "Integer":
@@ -156,7 +156,7 @@ public class CustomTableModel extends AbstractTableModel {
             if (vars.length != columns.size() - 1) {
                 return null;
             }
-            newRow[0] = rows.size();
+            newRow[0] = rows.size()+1;
             colIndex = 1;
         } else {
             if (vars.length != columns.size()) {

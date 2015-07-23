@@ -5,14 +5,8 @@
  */
 package gui;
 
-import com.sun.javafx.scene.control.skin.VirtualFlow;
-import com.sun.jmx.remote.internal.ArrayQueue;
-import com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type;
 import init.ComboItem;
-import init.KeyMembersInterface;
 import static init.MainClass.con;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.beans.PropertyVetoException;
 import java.util.Date;
 import java.sql.PreparedStatement;
@@ -20,17 +14,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JTextField;
-import org.jdesktop.beansbinding.Validator;
 import static utils.Constants.ADD_MODE;
 import static utils.Constants.EDIT_MODE;
 import static utils.Constants.INGOING;

@@ -9,16 +9,11 @@ import utils.DisabledGlassPane;
 import com.toedter.calendar.JDateChooser;
 import init.InputValidator;
 import init.MainClass;
-import static init.MainClass.con;
 import java.awt.Color;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
@@ -45,7 +40,7 @@ public class MyInternalFrame extends JInternalFrame {
     protected ArrayList<InputValidator> validators;
     private boolean mode;
     List<Object[]> keyComponents;
-    private List<PreparedStatement> userQueries;
+
     /**
      *
      * @param title the value of title
@@ -58,8 +53,7 @@ public class MyInternalFrame extends JInternalFrame {
                 true, //closable
                 true, //maximizable
                 true);//iconifiable
-        
-        userQueries = new ArrayList<>();
+
         ++openFrameCount;
         selectedUserType = userType;
         //...Create the GUI and put it in the window..;
@@ -101,8 +95,7 @@ public class MyInternalFrame extends JInternalFrame {
             public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
             }
         });
-                
-                
+
     }
 
     MyInternalFrame() {
@@ -135,17 +128,16 @@ public class MyInternalFrame extends JInternalFrame {
         boolean result = true;
         for (InputValidator validator : validators) {
             //String e = new SimpleDateFormat("dd/MM/yy").format(((JDateChooser) c).getDate());
-            
+
             if (validator.getComponent() instanceof JTextField) {
                 JTextField field = (JTextField) validator.getComponent();
                 validator.setErrMsg(HelperClass.getErrMsg(field.getText(), validator.getInputType().getType()));
-            }
-            else if(validator.getComponent() instanceof JDateChooser){
+            } else if (validator.getComponent() instanceof JDateChooser) {
                 JDateChooser field = (JDateChooser) validator.getComponent();
-                String value = (field.getDate() == null) ? "" : field.getDate().toString() ;
+                String value = (field.getDate() == null) ? "" : field.getDate().toString();
                 //validator.setErrMsg(HelperClass.getErrMsg(value, validator.getInputType().getType()));
             }
-            
+
             if (validator.getErrMsg() != null) {
                 result = false;
                 validator.getErrLable().setText(validator.getErrMsg());
@@ -265,7 +257,6 @@ public class MyInternalFrame extends JInternalFrame {
 //    public List<Object[]> getKeyComponents() {
 //        return new ArrayList<>();
 //    }
-
     /**
      * @return the selectedUserType
      */
@@ -278,62 +269,5 @@ public class MyInternalFrame extends JInternalFrame {
      */
     public void setSelectedUserType(String selectedUserType) {
         this.selectedUserType = selectedUserType;
-    }
-    
-    public void commitUpdates(){
-        try {
-            con.setAutoCommit(false);
-            for (PreparedStatement st : getUserQueries()) {
-                st.executeUpdate();
-            }
-            con.commit();
-        } catch (SQLException e1) {
-            try {
-                System.err.print("Transaction is being rolled back");
-                System.err.printf(e1.getMessage());
-                con.rollback();
-            } catch (SQLException e2) {
-                System.err.print("Roll back has failed");
-            }
-        } finally {
-            try {
-                con.setAutoCommit(true);
-            } catch (SQLException ex) {
-                Logger.getLogger(Line.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }
-    
-    public void cancel(){
-        if (getUserQueries().isEmpty()){
-            this.dispose();
-            return;
-        }
-        
-        int option = JOptionPane.showInternalOptionDialog(this, "You have unsaved data.\n"
-                + "Are you sure you want to exit?", "Warning!", JOptionPane.YES_NO_OPTION,
-                JOptionPane.WARNING_MESSAGE, null, null, null);
-        
-        switch (option){
-            case JOptionPane.YES_OPTION:
-                this.dispose();
-            case JOptionPane.NO_OPTION:
-                // do nothing
-                break;
-        }
-    }
-
-    /**
-     * @return the userQueries
-     */
-    public List<PreparedStatement> getUserQueries() {
-        return userQueries;
-    }
-
-    /**
-     * @param userQueries the userQueries to set
-     */
-    public void setUserQueries(List<PreparedStatement> userQueries) {
-        this.userQueries = userQueries;
     }
 }
