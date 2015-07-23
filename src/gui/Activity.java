@@ -23,6 +23,7 @@ import static utils.Constants.ADD_MODE;
 import static utils.Constants.EDIT_MODE;
 import static utils.Constants.INGOING;
 import static utils.Constants.OUTGOING;
+import utils.HelperClass;
 import static utils.HelperClass.setSelectedValue;
 
 /**
@@ -30,14 +31,16 @@ import static utils.HelperClass.setSelectedValue;
  * @author asus
  */
 public class Activity extends MyInternalFrame {
-    
+
     int cardNumber;
-    Date purchaseDate;
-    Date activityDate;
+    Timestamp purchaseDate;
+    Timestamp activityDate;
     boolean activityType;
     int stationID;
     private String stationName;
     String lineName;
+    int stationEdit;
+    String lineEdit;
 
     /**
      * Creates new form Activity
@@ -48,7 +51,7 @@ public class Activity extends MyInternalFrame {
      * @param purchaseDate
      * @param activityDate
      */
-    public Activity(String title, String type, Integer cardNumber, Date purchaseDate, Date activityDate) {
+    public Activity(String title, String type, Integer cardNumber, Timestamp purchaseDate, Timestamp activityDate) {
         super(title, type);
         setMode(EDIT_MODE);
         this.cardNumber = cardNumber;
@@ -60,23 +63,29 @@ public class Activity extends MyInternalFrame {
         fillCmbActType();
         setDefaults();
         cmbPurchaseDate.setEnabled(false);
-        
+        dchActivityDate.setEnabled(false);
+        setSelectedValue(cmbStation, stationEdit);
+        setSelectedValue(cmbLine, lineEdit);
     }
-    
+
     public Activity(String title, String type) {
         super(title, type);
         initComponents();
         setMode(ADD_MODE);
         buildForm();
         dchActivityDate.setDate(new java.util.Date());
+        cmbCard.setSelectedIndex(0);
+        int station = Integer.parseInt(((ComboItem) cmbStation.getSelectedItem()).getKey().toString());
+        fillCmbLine(station);
     }
-    
+
     private void buildForm() {
-        
+
         fillCmbCard();
         fillCmbStation();
         setActiveness();
         fillCmbActType();
+
     }
 
     /**
@@ -278,6 +287,7 @@ public class Activity extends MyInternalFrame {
             this.stationID = (int) stationItem.getKey();
             cmbLine.setEnabled(true);
             fillCmbLine(stationID);
+            cmbLine.setSelectedIndex(0);
         } catch (NullPointerException ex) {
             // no item is chosen
             cmbLine.setEnabled(false);
@@ -289,14 +299,16 @@ public class Activity extends MyInternalFrame {
             return;
         }
         ComboItem purchaseDateItem = (ComboItem) cmbPurchaseDate.getSelectedItem();
-        this.purchaseDate = (Date) purchaseDateItem.getKey();
+        this.purchaseDate = (Timestamp) purchaseDateItem.getKey();
     }//GEN-LAST:event_cmbPurchaseDateActionPerformed
+
 
     private void dchActivityDatePropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_dchActivityDatePropertyChange
         if (dchActivityDate.getDate() == null) {
             return;
         }
-        this.activityDate = new Date(dchActivityDate.getDate().getTime());
+        this.activityDate = new Timestamp(dchActivityDate.getDate().getTime());
+        ((JTextField) dchActivityDate.getDateEditor().getUiComponent()).setEditable(false);
     }//GEN-LAST:event_dchActivityDatePropertyChange
 
     private void cmbActivityTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbActivityTypeActionPerformed
@@ -305,7 +317,7 @@ public class Activity extends MyInternalFrame {
         }
         //this.activityType = (cmbActivityType.getSelectedItem().equals("Ingoing") ? INGOING : OUTGOING);
         ComboItem actType = (ComboItem) cmbActivityType.getSelectedItem();
-        
+
         this.activityType = (Boolean) actType.getKey();
     }//GEN-LAST:event_cmbActivityTypeActionPerformed
 
@@ -332,21 +344,21 @@ public class Activity extends MyInternalFrame {
                     + "     VALUES (? ,? ,? ,? ,?,?)";
             st = con.prepareStatement(s);
             st.setInt(1, cardNumber);
-            st.setString(2, new Timestamp(this.purchaseDate.getTime()).toString());
-            st.setString(3, new Timestamp(this.activityDate.getTime()).toString());
+            st.setTimestamp(2, this.purchaseDate);
+            st.setTimestamp(3, this.activityDate);
             st.setString(4, (activityType) ? "O" : "I");
             st.setInt(5, stationID);
             st.setString(6, lineName);
-            
+
             int result = st.executeUpdate();
-            
+
             JOptionPane.showMessageDialog(this,
                     "Changes Saved",
                     "INFORMATION MESSAGE",
                     JOptionPane.INFORMATION_MESSAGE);
-            fillCmbStation();
-            cmbStation.setSelectedIndex(0);
-            
+//            fillCmbStation();
+//            cmbStation.setSelectedIndex(0);
+
         } catch (SQLException ex) {
             String msg = "There was an error in the action";
             if (ex.getErrorCode() == 2627) { // 2627 is unique constraint (includes primary key), 2601 is unique index
@@ -355,10 +367,10 @@ public class Activity extends MyInternalFrame {
             JOptionPane.showInternalConfirmDialog(this, msg,
                     "Error", JOptionPane.PLAIN_MESSAGE,
                     JOptionPane.ERROR_MESSAGE);
-            
+
             Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
 
     }//GEN-LAST:event_btnCreateActionPerformed
 
@@ -372,61 +384,64 @@ public class Activity extends MyInternalFrame {
                     + "   WHERE [cardNumber] = ? and "
                     + "   [cardPurchaseDate]= ? and "
                     + "   [activityDate] = ?";
-            
+
             st = con.prepareStatement(s);
             st.setInt(1, cardNumber);
-            st.setTimestamp(2, new Timestamp(this.purchaseDate.getTime()));
-            st.setTimestamp(3, new Timestamp(this.activityDate.getTime()));
-            
+            st.setTimestamp(2, this.purchaseDate);
+            st.setTimestamp(3, this.activityDate);
+
             int result = st.executeUpdate();
-            
+
             if (result == 1) {
                 JOptionPane.showInternalMessageDialog(this,
-                        "Activity was deledted",
+                        "Activity was deledted, "
+                                + "Showing next activity for the card",
                         "INFORMATION MESSAGE",
                         JOptionPane.INFORMATION_MESSAGE);
-                try {
-                    this.setClosed(true);
-                } catch (PropertyVetoException ex) {
-                    Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
-                }
 
                 //close the frame if there  are now activites for the ticket
-//                if (checkForOtherAct() == null) {
-//                    try {
-//                        JOptionPane.showInternalMessageDialog(this,
-//                        "No other activities for this card, closing window",
-//                        "INFORMATION MESSAGE",
-//                        JOptionPane.INFORMATION_MESSAGE);
-//                        this.setClosed(true);
-//                        
-//                    } catch (PropertyVetoException ex) {
-//                        Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
-//                    }
-//                } else {
-//                    //get other activites for the ticket and set data
-//                    buildForm();
-//                    fillCmbActType();
-//                    setDefaults();
-//                }
+                if ((rs = checkForOtherAct()) == null) {
+                    try {
+                        JOptionPane.showInternalMessageDialog(this,
+                                "No other activities for this card, closing window",
+                                "INFORMATION MESSAGE",
+                                JOptionPane.INFORMATION_MESSAGE);
+                        this.setClosed(true);
+
+                    } catch (PropertyVetoException ex) {
+                        Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else {
+                    //get other activites for the ticket and set data
+                    int stationID = rs.getInt("stationID");
+                    String line = rs.getString("lineName");
+                    Timestamp time = rs.getTimestamp("activityDate");
+                    String type = rs.getString("activityType");
+                    fillCmbStation();
+                    setSelectedValue(cmbStation, stationID);
+                    setSelectedValue(cmbLine, line);
+                    setSelectedValue(cmbActivityType, (type.equals("I") ? utils.Constants.INGOING : utils.Constants.OUTGOING));
+                    dchActivityDate.setDate(time);
+
+                }
             } else {
                 JOptionPane.showInternalMessageDialog(this,
                         "Erro, couldnt delete Activity",
                         "Error",
                         JOptionPane.ERROR_MESSAGE);
-                
+
             }
 
             //fillCmbStation();
             //cmbStation.setSelectedIndex(0);
         } catch (SQLException ex) {
             String msg = ex.getMessage();
-            
+
             JOptionPane.showInternalMessageDialog(this,
                     msg,
                     "Error",
                     JOptionPane.PLAIN_MESSAGE);
-            
+
             Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -434,6 +449,52 @@ public class Activity extends MyInternalFrame {
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
         // TODO add your handling code here:
+        try {
+            // TODO add your handling code here:
+            PreparedStatement st;
+
+            String s = "UPDATE [LondonU2].[dbo].[tblActivity] "
+                    + " SET [activityType] = ? "
+                    + " ,[stationID] = ? "
+                    + " ,[lineName] = ? "
+                    + " WHERE [cardNumber] = ?"
+                    + " and [cardPurchaseDate] = ?"
+                    + " and [activityDate] = ?";
+
+            st = con.prepareStatement(s);
+            st.setString(1, (activityType) ? "O" : "I");
+            st.setInt(2, this.stationID);
+            st.setString(3, this.lineName);
+
+            st.setInt(4, cardNumber);
+            st.setTimestamp(5, this.purchaseDate);
+            st.setTimestamp(6, this.activityDate);
+
+            int result = st.executeUpdate();
+
+            if (result == 1) {
+                JOptionPane.showInternalMessageDialog(this,
+                        "Activity was updated",
+                        "INFORMATION MESSAGE",
+                        JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showInternalMessageDialog(this,
+                        "Erro, couldnt update activity",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+
+            }
+        } catch (SQLException ex) {
+            String msg = ex.getMessage();
+
+            JOptionPane.showInternalMessageDialog(this,
+                    msg,
+                    "Error",
+                    JOptionPane.PLAIN_MESSAGE);
+
+            Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }//GEN-LAST:event_btnUpdateActionPerformed
 
 
@@ -461,95 +522,94 @@ public class Activity extends MyInternalFrame {
         ResultSet rs;
         PreparedStatement st;
         try {
-            
+
             String s;
             s = "SELECT TOP(1) A.* FROM tblActivity As A WHERE "
                     + "A.cardNumber = ? and A.cardPurchaseDate = ? ";
             st = con.prepareStatement(s);
-            
+
             st.setInt(1, this.cardNumber);
 
             //for some reason i had to cast timestemp to string , dont ask me why !!!
-            st.setString(2, new Timestamp(this.purchaseDate.getTime()).toString());
-            
+            st.setTimestamp(2, this.purchaseDate);
+
             rs = st.executeQuery();
-            
+
             if (rs.next()) {
-                this.activityDate = rs.getDate("activityDate");
+                this.activityDate = rs.getTimestamp("activityDate");
                 return rs;
             }
         } catch (SQLException ex) {
             Logger.getLogger(Activity.class
                     .getName()).log(Level.SEVERE, null, ex);
             return null;
-            
+
         }
-        
+
         return null;
     }
 
     private void setVaribles() {
         PreparedStatement st;
         ResultSet rs;
-        
+
         try {
-            
+
             String s;
             s = "SELECT A.*, S.name FROM tblActivity As A "
                     + "join tblStation As S on A.stationID = S.ID "
                     + "WHERE "
                     + "A.cardNumber = ? and A.cardPurchaseDate = ? and A.activityDate = ?";
             st = con.prepareStatement(s);
-            
+
             st.setInt(1, this.cardNumber);
 
-            //for some reason i had to cast timestemp to string , dont ask me why !!!
-            st.setString(2, new Timestamp(this.purchaseDate.getTime()).toString());
-            st.setString(3, new Timestamp(this.activityDate.getTime()).toString());
+            st.setTimestamp(2, this.purchaseDate);
+            st.setTimestamp(3, this.activityDate);
             rs = st.executeQuery();
-            
+
             if (rs.next()) {
-                
+
                 this.activityType = (rs.getString("activityType").equals("I")) ? INGOING : OUTGOING;
-                this.stationID = rs.getInt("stationID");
-                this.lineName = rs.getString("lineName");
-                
+                this.stationEdit = this.stationID = rs.getInt("stationID");
+                this.lineEdit = this.lineName = rs.getString("lineName");
+
                 PreparedStatement st2;
                 ResultSet rs2;
                 String stationName;
-                
+
                 st = con.prepareStatement("SELECT S.ID,S.name FROM tblStation S WHERE "
                         + "S.ID = ?");
                 st.setInt(1, this.stationID);
                 rs = st.executeQuery();
-                
+
                 if (rs.next()) {
                     this.stationName = rs.getString("name");
                 }
-                
+
             }
         } catch (SQLException ex) {
             Logger.getLogger(Activity.class
                     .getName()).log(Level.SEVERE, null, ex);
-            
+
         }
-        
+
     }
-    
+
     private void setDefaults() {
         if (this.cardNumber > 0 && this.purchaseDate != null && this.activityDate != null
                 && this.stationName != null && this.lineName != null) {
-            
+
             setSelectedValue(cmbCard, String.valueOf(this.cardNumber));
             setSelectedValue(cmbPurchaseDate, this.purchaseDate.toString());
             dchActivityDate.setDate(this.activityDate);
-            
+
             setSelectedValue(cmbActivityType, (this.activityType == INGOING) ? "Ingoing" : "Outgoing");
             setSelectedValue(cmbStation, this.stationName);
             setSelectedValue(cmbLine, this.lineName);
         }
     }
-    
+
     private void fillCmbCard() {
         Statement s;
         ResultSet rs;
@@ -562,17 +622,17 @@ public class Activity extends MyInternalFrame {
             }
             if (!items.isEmpty()) {
                 Collections.sort(items);
-                
+
                 cmbCard.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
-                if (super.getMode() == utils.Constants.ADD_MODE) {
-                    cmbCard.setSelectedIndex(0);
-                }
+//                if (super.getMode() == utils.Constants.ADD_MODE) {
+//                    cmbCard.setSelectedIndex(0);
+//                }
             }
         } catch (SQLException ex) {
             Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     private void fillCmbPurchaseDate(int cardNumber) {
         PreparedStatement st;
         ResultSet rs;
@@ -580,58 +640,69 @@ public class Activity extends MyInternalFrame {
             st = con.prepareStatement("SELECT C.purchaseDate FROM tblCard As C WHERE C.number = ?");
             st.setInt(1, cardNumber);
             rs = st.executeQuery();
-            
+
             ArrayList<ComboItem> items = new ArrayList<>();
             while (rs.next()) {
-                items.add(new ComboItem(rs.getDate("purchaseDate"), rs.getString("purchaseDate")));
+                items.add(new ComboItem(rs.getTimestamp("purchaseDate"), rs.getString("purchaseDate")));
             }
             if (!items.isEmpty()) {
                 Collections.sort(items);
-                
+
                 cmbPurchaseDate.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
-                if (super.getMode() == utils.Constants.ADD_MODE) {
-                    cmbPurchaseDate.setSelectedIndex(0);
-                }
+//                if (super.getMode() == utils.Constants.ADD_MODE) {
+//                    cmbPurchaseDate.setSelectedIndex(0);
+//                }
             }
         } catch (SQLException ex) {
             Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     private void fillCmbStation() {
         Statement s;
         ResultSet rs;
         try {
             s = con.createStatement();
-            rs = s.executeQuery("SELECT ID, name FROM tblStation");
+            String query = "SELECT ID ,name"
+                              + " FROM  tblStation";
+            
+            String outQ = "SELECT distinct sil.stationID ,s.name"
+                              + " FROM  tblStation"
+                               + " s  inner join  tblStationInLine sil"
+                               + "  on s.ID = sil.stationID";
+            
+            rs = s.executeQuery(outQ);
             ArrayList<ComboItem> items = new ArrayList<>();
             while (rs.next()) {
-                items.add(new ComboItem(rs.getInt("ID"), rs.getString("name")));
+                items.add(new ComboItem(rs.getInt("stationID"), rs.getString("name")));
             }
             if (!items.isEmpty()) {
                 Collections.sort(items);
-                
+
                 cmbStation.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
-                ComboItem Item = (ComboItem) cmbStation.getSelectedItem();
-                this.stationID = (int) Item.getKey();
-                fillCmbLine(stationID);
+//                if (super.getMode() == utils.Constants.ADD_MODE) {
+//                    ComboItem Item = (ComboItem) cmbStation.getSelectedItem();
+//                    this.stationID = (int) Item.getKey();
+//                    fillCmbLine(stationID);
+//                }
+
             }
         } catch (SQLException ex) {
             Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     private void fillCmbActType() {
-        
+
         ArrayList<ComboItem> items = new ArrayList<>();
-        
+
         items.add(new ComboItem(utils.Constants.INGOING, "Ingoing"));
         items.add(new ComboItem(utils.Constants.OUTGOING, "Outgoing"));
-        
+
         cmbActivityType.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
         cmbActivityType.setSelectedIndex(0);
     }
-    
+
     private void fillCmbLine(int stationID) {
         PreparedStatement st;
         ResultSet rs;
@@ -640,25 +711,30 @@ public class Activity extends MyInternalFrame {
                     + "As SIL WHERE SIL.stationID = ?");
             st.setInt(1, stationID);
             rs = st.executeQuery();
-            
+
             ArrayList<ComboItem> items = new ArrayList<>();
             while (rs.next()) {
                 items.add(new ComboItem(rs.getString("lineName"), rs.getString("lineName")));
             }
             if (!items.isEmpty()) {
                 Collections.sort(items);
-                
+
                 cmbLine.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
-                cmbLine.setSelectedIndex(0);
-                
+//                if (super.getMode() == utils.Constants.ADD_MODE) {
+//                    cmbLine.setSelectedIndex(0);
+//                }
+//                else{
+//                    setSelectedValue(cmbLine, this.lineName);
+//                }
+
             }
         } catch (SQLException ex) {
             Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     private void setActiveness() {
-        dchActivityDate.getDateEditor().setEnabled(false);
+
         if (getMode() == ADD_MODE) {
             // key fields
             cmbCard.setEnabled(true);
@@ -668,8 +744,8 @@ public class Activity extends MyInternalFrame {
             // control buttons
             btnCreate.setVisible(true);
             btnDelete.setVisible(false);
-            btnDelete.setVisible(false);
-            
+            btnUpdate.setVisible(false);
+
         } else { // edit mode
             // key fields
             cmbCard.setEnabled(false);
