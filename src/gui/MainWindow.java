@@ -226,11 +226,12 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 
                 break;
             case "Edit Card":
-                java.util.Date utilDate = new java.util.Date(1951, 03, 14, 0, 0, 0);
-                java.util.Date date1970 = new java.util.Date(1970, 01, 01, 0, 0, 0);
-                java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime() - date1970.getTime());
-
-                ifram = new Card(e.getActionCommand(), selectedUserType, 1, sqlDate);
+//                java.util.Date utilDate = new java.util.Date(1951, 03, 14, 0, 0, 0);
+//                java.util.Date date1970 = new java.util.Date(1970, 01, 01, 0, 0, 0);
+//                java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime() - date1970.getTime());
+//
+//                ifram = new Card(e.getActionCommand(), selectedUserType, 1, sqlDate);
+                ifram = new CardDialog(e.getActionCommand(), selectedUserType, this);
                 break;
             case "Add Role":
                 ifram = new AddRole(e.getActionCommand(), selectedUserType);

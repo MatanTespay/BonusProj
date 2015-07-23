@@ -522,7 +522,7 @@ public class Card extends MyInternalFrame {
                 // result set not empty - the card is Oyster
                 this.type = OYSTER;
                 rs.next();
-                this.picture = rs.getObject("picture", ImageIcon.class); //TODO: FIX THIS IMPORT
+               // this.picture = rs.getObject("picture", ImageIcon.class); //TODO: FIX THIS IMPORT
 
             } else {
                 // result set is empty - the card is Paper
