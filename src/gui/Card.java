@@ -8,7 +8,19 @@ package gui;
 import utils.QueryCombobox;
 import init.ComboItem;
 import static init.MainClass.con;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.RenderingHints;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.sql.Blob;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,8 +29,10 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import sun.misc.IOUtils;
 import utils.Column;
 import static utils.Constants.ADD_MODE;
 import static utils.Constants.EDIT_MODE;
@@ -77,7 +91,7 @@ public class Card extends MyInternalFrame {
 
             if (getMode() == EDIT_MODE) {
                 cmbCard.setModel(new QueryCombobox(cmbCard, Integer.class, getAllCards));
-                cmbPurchaseDate.setModel(new QueryCombobox(cmbPurchaseDate, cmbCard, Date.class, getPurchaseDate));                
+                cmbPurchaseDate.setModel(new QueryCombobox(cmbPurchaseDate, cmbCard, Date.class, getPurchaseDate));
             } else {
                 // add mode
                 setNewCard();
@@ -93,7 +107,7 @@ public class Card extends MyInternalFrame {
             setTableProperties(tblPrograms);
             picFileChooser = new JFileChooser();
             setActiveness();
-            pPrograms.setVisible(false);
+            //pPrograms.setVisible(false);
         } catch (SQLException ex) {
 
         }
@@ -369,10 +383,16 @@ public class Card extends MyInternalFrame {
     private void btnBrowseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBrowseActionPerformed
         int o = picFileChooser.showOpenDialog(this);
         if (o == JFileChooser.APPROVE_OPTION) {
-            File f = picFileChooser.getSelectedFile();
-            ImageIcon icon = new ImageIcon("" + f);
-            lblPicture.setIcon(icon);
-            this.picture = icon;
+            try {
+                File f = picFileChooser.getSelectedFile();
+                Path p = f.toPath();
+                byte[] b =  Files.readAllBytes(p);
+                ImageIcon icon = getScaledImage(b);
+                lblPicture.setIcon(icon);
+                this.picture = icon;
+            } catch (IOException ex) {
+                Logger.getLogger(Card.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }//GEN-LAST:event_btnBrowseActionPerformed
 
@@ -396,8 +416,8 @@ public class Card extends MyInternalFrame {
             st.setInt(3, zone);
             st.setDouble(4, length);
 //            st.executeUpdate();
-            
-            ((CustomTableModel) tblPrograms.getModel()).addRow(new Object[]{zone,length});
+
+            ((CustomTableModel) tblPrograms.getModel()).addRow(new Object[]{zone, length});
 
         } catch (SQLException | NullPointerException ex) {
 //            Logger.getLogger(Card.class.getName()).log(Level.SEVERE, null, ex);
@@ -430,7 +450,7 @@ public class Card extends MyInternalFrame {
             st.setInt(3, zone);
             st.setDouble(4, length);
             st.executeUpdate();
-            
+
             ((CustomTableModel) tblPrograms.getModel()).removeRow(tblPrograms.getSelectedRow());
 
         } catch (SQLException | NullPointerException ex) {
@@ -447,7 +467,7 @@ public class Card extends MyInternalFrame {
     }//GEN-LAST:event_btnCancelActionPerformed
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        pPrograms.setVisible(true);
+        //pPrograms.setVisible(true);
 //        saveFields();
     }//GEN-LAST:event_btnSaveActionPerformed
 
@@ -479,14 +499,14 @@ public class Card extends MyInternalFrame {
     private void fillPrograms() {
         PreparedStatement st;
         ResultSet rs;
-         
+
         ArrayList<Column> cols = new ArrayList<>();
         cols.add(new Column("#", "#", Integer.class)); //*UNBOUND to DB - displays row num*/
         cols.add(new Column("Zone", "zoneNumber", Integer.class));
         cols.add(new Column("Length", "cardLength", Double.class));
 
         try {
-        String tableName = this.type == PAPER ? "tblPaperCardAreas" : "tblOysterCardAreas";
+            String tableName = this.type == PAPER ? "tblPaperCardAreas" : "tblOysterCardAreas";
             PreparedStatement getAllPrograms = con.prepareStatement("SELECT * FROM " + tableName + " As CA "
                     + "JOIN tblCardLengths As CL on CA.cardLength = CL.lengthDescription "
                     + "WHERE CA.cardNumber = ? and CA.cardPurchaseDate = ?");
@@ -525,11 +545,12 @@ public class Card extends MyInternalFrame {
 //    }
 
     private void setDefaults() {
-        int defaultCard = Integer.valueOf(((ComboItem) cmbCard.getSelectedItem())
-                .getKey().toString());
+//        int defaultCard = Integer.valueOf(((ComboItem) cmbCard.getSelectedItem())
+//                .getKey().toString());
 //        ((QueryCombobox)cmbPurchaseDate.getModel()).fill(defaultCard);
 //        ((QueryCombobox)cmbCard.getModel()).fill(cardNumber);
 
+        cmbCard.getModel().setSelectedItem(this.cardNumber);
         cmbPurchaseDate.setSelectedItem(String.valueOf(this.purchaseDate));
 
         cmbType.setSelectedItem((this.type == PAPER) ? "Paper" : "Oyster");
@@ -540,6 +561,32 @@ public class Card extends MyInternalFrame {
         } else {
             // paper
             chbIsTourist.setSelected(this.isTourist);
+        }
+    }
+
+    private Image scaleIamge(Image img, int w, int h) {
+
+        BufferedImage resizeImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g = resizeImage.createGraphics();
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+        g.drawImage(img, 0, 0, w, h, null);
+        g.dispose();
+        return resizeImage;
+
+    }
+
+    private ImageIcon getScaledImage(byte[] blobAsBytes) {
+        try {
+            BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(blobAsBytes));
+            if (bufferedImage != null) {
+                ImageIcon resized = new ImageIcon(scaleIamge(bufferedImage, 120, 110));
+
+                return resized;
+            }
+            return null;
+        } catch (IOException ex) {
+            Logger.getLogger(Card.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         }
     }
 
@@ -558,7 +605,12 @@ public class Card extends MyInternalFrame {
                 // result set not empty - the card is Oyster
                 this.type = OYSTER;
                 rs.next();
-               // this.picture = rs.getObject("picture", ImageIcon.class); //TODO: FIX THIS IMPORT
+
+                //this.picture = rs.getObject("picture", ImageIcon.class); //TODO: FIX THIS IMPORT
+                Blob blob = rs.getBlob("picture");
+                int blobLength = (int) blob.length();
+                byte[] blobAsBytes = blob.getBytes(1, blobLength);
+                this.picture = getScaledImage(blobAsBytes);
 
             } else {
                 // result set is empty - the card is Paper
@@ -575,6 +627,7 @@ public class Card extends MyInternalFrame {
             }
 
         } catch (SQLException ex) {
+            System.out.println("ex = " + ex.getMessage());
             Logger.getLogger(Card.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -585,7 +638,6 @@ public class Card extends MyInternalFrame {
 
         if (getMode() == ADD_MODE) {
             cmbType.setEnabled(true);
-
 
         } else {
             // edit mode
