@@ -25,6 +25,8 @@ import java.util.Date;
 import org.apache.commons.lang.StringUtils;
 
 import com.opencsv.CSVReader;
+import java.util.Locale;
+import org.apache.commons.lang.ArrayUtils;
 
 /**
  *
@@ -33,7 +35,10 @@ import com.opencsv.CSVReader;
 public class CsvHandler {
 
     public static String SCHEMA_NAME = null;
-   String SQL_INSERT = "INSERT INTO ${table}(${keys}) VALUES(${values})";
+    //insert qeury with colunms keys
+    String SQL_INSERT_WITH_COLS = "INSERT INTO ${table}(${keys}) VALUES(${values})";
+    //insert qeury without colunms keys
+    String SQL_INSERT = "INSERT INTO ${table} VALUES(${values})";
     private static final String TABLE_REGEX = "\\$\\{table\\}";
     private static final String KEYS_REGEX = "\\$\\{keys\\}";
     private static final String VALUES_REGEX = "\\$\\{values\\}";
@@ -51,7 +56,7 @@ public class CsvHandler {
         this.seprator = ',';
     }
 
-    public static void PrintTablesMetaData() {
+    public static void PrintTablesMetaData(String nameOfTable) {
 
         //create and setup your database and get db connection
         try {
@@ -65,11 +70,16 @@ public class CsvHandler {
             ResultSet result = metaData.getTables(null, SCHEMA_NAME, null, tableType);
             while (result.next()) {
                 String tableName = result.getString(3);
+                if (!tableName.toLowerCase().equals(nameOfTable.toLowerCase())) {
+                    continue;
+                }
 
                 builder.append(tableName).append("( ");
                 ResultSet columns = metaData.getColumns(null, null, tableName, null);
-
+                ResultSetMetaData columnsMetaData = columns.getMetaData();
+                boolean isAout = columnsMetaData.isAutoIncrement(1);
                 while (columns.next()) {
+
                     String columnName = columns.getString(4);
                     builder.append(columnName);
                     builder.append(",");
@@ -102,7 +112,40 @@ public class CsvHandler {
      */
     public void loadCSV(String csvFile, String tableName,
             boolean truncateBeforeLoad) throws Exception {
+        boolean isAutoInc = false; //check if key of table is Auto Increment
+        boolean isFirstRowCol = false; //check if first row of file are culomns definition or row data.
+        String firstColumnName = "";
 
+        //<editor-fold defaultstate="collapsed" desc="get meta data of table from DB">
+        DatabaseMetaData metaData = MainClass.con.getMetaData();
+        String tableType[] = {"TABLE"};
+
+        StringBuilder builder = new StringBuilder();
+
+        ResultSet result = metaData.getTables(null, SCHEMA_NAME, null, tableType);
+        //</editor-fold>
+
+        //<editor-fold defaultstate="collapsed" desc="check if auto Increment is set to key table and get the column key name">
+        while (result.next()) {
+            String nameOfTable = result.getString(3);
+            if (!tableName.toLowerCase().equals(nameOfTable.toLowerCase())) {
+                continue;
+            }
+
+            builder.append(tableName).append("( ");
+            ResultSet columns = metaData.getColumns(null, null, tableName, null);
+            ResultSetMetaData columnsMetaData = columns.getMetaData();
+
+            while (columns.next()) {
+                //get col type as string
+                isAutoInc = columns.getString(6).contains("identity");
+                firstColumnName = columns.getString(4);
+                break;
+            }
+        }
+        //</editor-fold>
+
+        //<editor-fold defaultstate="collapsed" desc="Init CSVReader for reading file">
         CSVReader csvReader = null;
         if (null == MainClass.con) {
             throw new Exception("Not a valid connection.");
@@ -116,21 +159,62 @@ public class CsvHandler {
             throw new Exception("Error occured while executing file. "
                     + e.getMessage());
         }
+//</editor-fold>
 
-        String[] headerRow = csvReader.readNext();
-        if (null == headerRow) {
+        //<editor-fold defaultstate="collapsed" desc="get first row from file and check if it contains column names">
+        Object[] firstRow = csvReader.readNext();
+        Object[] firstRowWithoutCol = new Object[firstRow.length - 1];
+        if (null == firstRow) {
             throw new FileNotFoundException(
                     "No columns defined in given CSV file."
                     + "Please check the CSV file format.");
-        }       
-        
-        String questionmarks = StringUtils.repeat("?,", headerRow.length);
-        questionmarks = (String) questionmarks.subSequence(0, questionmarks.length() - 1);
- 
-        String query = SQL_INSERT.replaceFirst(TABLE_REGEX, tableName);
-        query = query.replaceFirst(KEYS_REGEX, StringUtils.join(headerRow, ","));
-        query = query.replaceFirst(VALUES_REGEX, questionmarks);
- 
+        } else {
+
+            if (isAutoInc) {
+                System.arraycopy(firstRow, 1, firstRowWithoutCol, 0, firstRow.length-1);
+            }
+
+            if (((String) firstRow[0]).startsWith("﻿")) {
+                firstRow[0] = ((String) firstRow[0]).substring(1);
+            }
+
+            if (((String) firstRow[0]).toLowerCase().equals(firstColumnName.toLowerCase())
+                    || ((String) firstRowWithoutCol[0]).toLowerCase().equals(firstColumnName.toLowerCase())) {
+                isFirstRowCol = true;
+            }
+
+        }
+        //</editor-fold>
+
+        //<editor-fold defaultstate="collapsed" desc="Set params holder for query">
+        String questionmarks;
+        String query;
+        if (!isAutoInc) {
+            questionmarks = StringUtils.repeat("?,", firstRow.length);
+            questionmarks = (String) questionmarks.subSequence(0, questionmarks.length() - 1);
+        } else {
+            questionmarks = StringUtils.repeat("?,", firstRowWithoutCol.length);
+            questionmarks = (String) questionmarks.subSequence(0, questionmarks.length() - 1);
+        }
+
+        //</editor-fold>
+        //<editor-fold defaultstate="collapsed" desc="Set insert query">
+        if (isFirstRowCol) {
+            query = SQL_INSERT_WITH_COLS.replaceFirst(TABLE_REGEX, tableName);
+            if (!isAutoInc) {
+                query = query.replaceFirst(KEYS_REGEX, StringUtils.join(firstRow, ","));
+                query = query.replaceFirst(VALUES_REGEX, questionmarks);
+            }else{
+                query = query.replaceFirst(KEYS_REGEX, StringUtils.join(firstRowWithoutCol, ","));
+                query = query.replaceFirst(VALUES_REGEX, questionmarks);
+            }
+
+        } else {
+            query = SQL_INSERT.replaceFirst(TABLE_REGEX, tableName);
+            query = query.replaceFirst(VALUES_REGEX, questionmarks);
+        }
+        //</editor-fold>
+
         //for testing
         System.out.println("Query: " + query);
 
@@ -142,28 +226,49 @@ public class CsvHandler {
             con.setAutoCommit(false);
             ps = con.prepareStatement(query);
 
-            if (truncateBeforeLoad) {
-                //delete data from table before loading csv
-                con.createStatement().execute("DELETE FROM " + tableName);
-            }
-
+//            //check if user wants to delete old data befor insert new data
+//            if (truncateBeforeLoad) {
+//                //delete data from table before loading csv
+//                con.createStatement().execute("DELETE FROM " + tableName);
+//            }
             final int batchSize = 1000;
             int count = 0;
             Date date = null;
+            Integer number;
+            Double d;
             while ((nextLine = csvReader.readNext()) != null) {
 
                 if (null != nextLine) {
                     int index = 1;
-                    for (String string : nextLine) {
-                        date = DateUtil.convertToDate(string);
+                    for (int i = 0; i < nextLine.length; i++) {
+                        //if key col is auto increment skip key col from file
+                        if (isAutoInc && i == 0) {
+                            continue;
+                        }
+
+                        //<editor-fold defaultstate="collapsed" desc="fix the invalid char that fuckedUp everything for two days">
+                        nextLine[i] = nextLine[i].trim();
+                        if (nextLine[i].startsWith("﻿")) {
+                            nextLine[i] = nextLine[i].substring(1);
+                        }
+                        //</editor-fold>
+
+                        //<editor-fold defaultstate="collapsed" desc="Convert the string from file to correct type and add to statement">
+                        date = ConvertUtil.convertToDate(nextLine[i]);
                         if (null != date) {
                             Timestamp time = new Timestamp(date.getTime());
                             ps.setTimestamp(index++, time);
                             //ps.setDate(index++, new java.sql.Date(date.getTime()));
+                        } else if ((number = ConvertUtil.convertToInt(nextLine[i])) != null) {
+
+                            ps.setInt(index++, number);
+                        } else if ((d = ConvertUtil.convertToDouble(nextLine[i])) != null) {
+
+                            ps.setDouble(index++, d);
                         } else {
-                            string = string.trim();
-                            ps.setString(index++, string);
+                            ps.setString(index++, nextLine[i]);
                         }
+                        //</editor-fold>
                     }
                     ps.addBatch();
                 }
@@ -175,9 +280,9 @@ public class CsvHandler {
             ps.executeBatch(); // insert remaining records
             con.commit();
             JOptionPane.showMessageDialog(null,
-                        "data has been imported successfully",
-                        "INFORMATION MESSAGE",
-                        JOptionPane.INFORMATION_MESSAGE);
+                    "data has been imported successfully",
+                    "INFORMATION MESSAGE",
+                    JOptionPane.INFORMATION_MESSAGE);
         } catch (Exception e) {
             con.rollback();
             e.printStackTrace();
@@ -232,7 +337,7 @@ public class CsvHandler {
                 for (int i = 1; i <= colunmCount; i++) {
                     fw.append(res.getMetaData().getColumnName(i).toLowerCase());
                     if (i != colunmCount) {
-                                fw.append(",");
+                        fw.append(",");
                     }
 
                 }
