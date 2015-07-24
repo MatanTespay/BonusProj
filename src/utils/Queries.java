@@ -27,27 +27,25 @@ public class Queries {
             + "lineType = ? lineLength = ? WHERE name = ?";
     public final static String UPDATE_COLOR = "UPDATE tblLineColor SET name = ? "
             + "WHERE lineName = ?";
-
-    //DELETE LINE transaction
-    public final static String DELETE_COLOR = "DELETE FROM tblLineColor WHERE lineName = ?";
+    
+    // note: deleting a line automatically deletes the color
     public final static String DELETE_LINE = "DELETE FROM tblLine WHERE name = ?";
 
     //------------------------------STATION-------------------------------------
-    
-    public static final String NEXT_STATION_ID ="SELECT TOP 1 ID+1 As 'ID' "
-            + "FROM tblStation ORDER BY ID DESC";
-            
+
     public static final String SELECT_LINES_OF_STATIONS = "SELECT L.*, LC.name "
             + "As 'colorName' FROM tblStationInLine As SIL join tblLine As L on "
             + "SIL.lineName = L.name join tblLineColor  As LC on L.name = "
             + "LC.lineName WHERE SIL.stationID = ? ";
-
+    
+    public static final String SELECT_STATION_ID_BY_NAME = "SELECT ID FROM tblStation As S WHERE S.name = ?";
+    
     public static final String SELECT_STATION = "SELECT * FROM tblStation As S WHERE S.ID = ?";
 
-    public final static String INSERT_STATION = "INSERT INTO tblStation VALUES (?,?,?,?,?)";
+    public final static String INSERT_STATION = "INSERT INTO tblStation VALUES (?,?,?,?)";
 
-    public final static String UPDATE_STATION = "UPDATE tblStation SET name = ? "
-            + "platformNum = ? kiosk = ? zoneNumber = ? WHERE name = ?";
+    public final static String UPDATE_STATION = "UPDATE tblStation SET name = ?, "
+            + "platformNum = ?, kiosk = ?, zoneNumber = ? WHERE ID = ?";
 
     public final static String DELETE_STATION = "DELETE FROM tblStation WHERE stationID = ?";
 

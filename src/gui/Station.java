@@ -6,7 +6,6 @@
 package gui;
 
 import init.ComboItem;
-import init.InputValidator;
 import static init.MainClass.con;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,7 +22,6 @@ import static utils.Constants.ADD_MODE;
 import static utils.Constants.EDIT_MODE;
 import utils.CustomTableModel;
 import static utils.HelperClass.setSelectedValue;
-import static utils.HelperClass.setTableProperties;
 import utils.InputType;
 import utils.Queries;
 import utils.QueryCombobox;
@@ -34,7 +32,7 @@ import utils.QueryCombobox;
  */
 public class Station extends MyInternalFrame {
 
-    private int stationID;
+    private Integer stationID;
     private String stationName;
     private int platformNum;
     private boolean isKiosk;
@@ -62,18 +60,7 @@ public class Station extends MyInternalFrame {
         setMode(ADD_MODE);
         initComponents();
         buildForm();
-        PreparedStatement getNextID;
-        ResultSet rs;
-
-        try {
-            getNextID = con.prepareStatement(Queries.NEXT_STATION_ID);
-            rs = getNextID.getResultSet();
-            this.stationID = rs.getByte("ID");
-            tfStationID.setText(String.valueOf(stationID));
-
-        } catch (SQLException ex) {
-
-        }
+        tfStationID.setText("(auto number)");
     }
 
     public Station(String title, String type, int stationID, JInternalFrame parent) {
@@ -96,46 +83,22 @@ public class Station extends MyInternalFrame {
             setActiveness();
 
             // set document listeners to text fields
-            tfStationID.getDocument().addDocumentListener(new DocumentListener() {
-
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    btnSave.setEnabled(true);
-                    try {
-                        stationID = Integer.valueOf(tfStationID.getText());
-                    } catch (NumberFormatException ex) {
-                        stationID = 0;
-                    }
-
-                }
-
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    try {
-                        stationID = Integer.valueOf(tfStationID.getText());
-                    } catch (NumberFormatException ex) {
-                        stationID = 0;
-                    }
-                    if (tfStationID.getText().equals("")) {
-                        btnSave.setEnabled(false);
-                    }
-                }
-
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                }
-            });
             tfName.getDocument().addDocumentListener(new DocumentListener() {
 
                 @Override
                 public void insertUpdate(DocumentEvent e) {
                     stationName = tfName.getText();
+                    btnSave.setEnabled(true);
+                    btnSave.setToolTipText(null);
                 }
 
                 @Override
                 public void removeUpdate(DocumentEvent e) {
                     stationName = tfName.getText();
-
+                    if (tfName.getText().equals("")){
+                        btnSave.setEnabled(false);
+                        btnSave.setToolTipText("The station must have a name");
+                    }
                 }
 
                 @Override
@@ -202,6 +165,7 @@ public class Station extends MyInternalFrame {
             }
         });
 
+        spnPlatforms.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
         spnPlatforms.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 spnPlatformsPropertyChange(evt);
@@ -259,8 +223,7 @@ public class Station extends MyInternalFrame {
                         .addComponent(lblPlatforms)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(spnPlatforms)))
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(chbKiosk)
                 .addGap(24, 24, 24))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pDetailsLayout.createSequentialGroup()
@@ -271,10 +234,7 @@ public class Station extends MyInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(99, 99, 99))
-                    .addGroup(pDetailsLayout.createSequentialGroup()
-                        .addGap(101, 101, 101)
-                        .addGap(97, 97, 97)
-                        .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         pDetailsLayout.setVerticalGroup(
@@ -299,10 +259,11 @@ public class Station extends MyInternalFrame {
                             .addComponent(chbKiosk)
                             .addComponent(spnPlatforms, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(18, 18, 18)
-                .addGroup(pDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(pDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnCancel)
-                    .addComponent(btnSave)
-                    .addComponent(btnDelete))
+                    .addGroup(pDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnSave)
+                        .addComponent(btnDelete)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -428,9 +389,11 @@ public class Station extends MyInternalFrame {
 
             deleteSIL = con.prepareStatement(Queries.DELETE_STATION_IN_LINE);
             deleteSIL.setInt(1, stationID);
-            deleteSIL.setString(1, lineName);
+            deleteSIL.setString(2, lineName);
             deleteSIL.executeUpdate();
-
+            
+            btnDelete.setEnabled(isOkToDelete());
+            
         } catch (SQLException e) {
             System.err.println("Error code: " + e.getErrorCode() + "\nError Message: " + e.getMessage());
         }
@@ -461,8 +424,10 @@ public class Station extends MyInternalFrame {
 
             insertSIL = con.prepareStatement(Queries.INSERT_STATION_IN_LINE);
             insertSIL.setInt(1, stationID);
-            insertSIL.setString(1, lineName);
+            insertSIL.setString(2, lineName);
             insertSIL.executeUpdate();
+            
+            btnDelete.setEnabled(isOkToDelete());
 
         } catch (SQLException e) {
             System.err.println("Error code: " + e.getErrorCode() + "\nError Message: " + e.getMessage());
@@ -472,16 +437,23 @@ public class Station extends MyInternalFrame {
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         PreparedStatement insertStation;
         PreparedStatement updateStation;
+        PreparedStatement getStationID;
 
         try {
             if (getMode() == ADD_MODE) {
                 insertStation = con.prepareStatement(Queries.INSERT_STATION);
-                insertStation.setInt(1, stationID);
-                insertStation.setString(2, stationName);
-                insertStation.setInt(3, platformNum);
-                insertStation.setBoolean(4, isKiosk);
-                insertStation.setInt(5, zoneNumber);
+                insertStation.setString(1, stationName);
+                insertStation.setInt(2, platformNum);
+                insertStation.setBoolean(3, isKiosk);
+                insertStation.setInt(4, zoneNumber);
                 insertStation.executeUpdate();
+                
+                // after creating the new station we want to show its new autonumber
+                getStationID = con.prepareStatement(Queries.SELECT_STATION_ID_BY_NAME);
+                ResultSet rs = getStationID.executeQuery();
+                this.stationID = rs.getInt("ID");
+                tfStationID.setText(stationID.toString());
+                
             } else {
                 //edit mode
                 updateStation = con.prepareStatement(Queries.UPDATE_STATION);
@@ -575,6 +547,9 @@ public class Station extends MyInternalFrame {
             lineTableModel.bindComboBox(cmbLine, 0, 0);
             lineTableModel.fillTable();
             tblLines.setModel(lineTableModel);
+            
+            btnDelete.setEnabled(isOkToDelete());
+            
         } catch (SQLException ex) {
 
         }
@@ -590,10 +565,10 @@ public class Station extends MyInternalFrame {
 
             rs.next();
             this.stationName = rs.getString("name");
-            this.platformNum = rs.getInt("platformNum");
+            this.platformNum = rs.getInt("platformNum"); // CHECK WHAT IF NULL
             this.isKiosk = rs.getBoolean("Kiosk");
             this.zoneNumber = rs.getInt("zoneNumber");
-
+            
         } catch (SQLException ex) {
             Logger.getLogger(Station.class
                     .getName()).log(Level.SEVERE, null, ex);
@@ -601,28 +576,35 @@ public class Station extends MyInternalFrame {
     }
 
     public void setDefaults() {
-        tfStationID.setText(String.valueOf(this.stationID));
+        tfStationID.setText(this.stationID.toString());
         tfName.setText(this.stationName);
-        setSelectedValue(cmbZone, String.valueOf(this.zoneNumber));
+//        setSelectedValue(cmbZone, String.valueOf(this.zoneNumber)); //WHAT FOR?
         spnPlatforms.setValue(this.platformNum);
         chbKiosk.setSelected(this.isKiosk);
         cmbLine.setSelectedIndex(0);
     }
 
     private void setActiveness() {
-        if (getMode() == ADD_MODE) {
-            // key fields
-            tfStationID.setEnabled(true);
+        
+        tfStationID.setEnabled(false);
+        
+        if (getMode() == ADD_MODE) {           
             pLines.setVisible(false);
             btnSave.setEnabled(false);
-            btnDelete.setEnabled(false);
-
+ 
         } else {
             // edit mode
-            tfStationID.setEnabled(false);
             pLines.setVisible(true);
             btnSave.setEnabled(true);
-            btnDelete.setEnabled(true);
         }
+        btnDelete.setEnabled(isOkToDelete());
+    }
+    
+    private boolean isOkToDelete(){
+        if (tblLines.getModel().getRowCount() > 0){
+            btnDelete.setToolTipText("Deleting the station is not allowed since it has lines");
+            return false;
+        } 
+        return true;
     }
 }

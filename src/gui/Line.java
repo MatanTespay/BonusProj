@@ -85,13 +85,13 @@ public class Line extends MyInternalFrame {
                 @Override
                 public void insertUpdate(DocumentEvent e) {
                     lineName = tfName.getText();
-                    btnSave.setEnabled(isOkayToSave());
+                    btnSave.setEnabled(isOkToSave());
                 }
 
                 @Override
                 public void removeUpdate(DocumentEvent e) {
                     lineName = tfName.getText();
-                    btnSave.setEnabled(isOkayToSave());
+                    btnSave.setEnabled(isOkToSave());
                 }
 
                 @Override
@@ -127,14 +127,14 @@ public class Line extends MyInternalFrame {
                 @Override
                 public void insertUpdate(DocumentEvent e) {
                     colorName = tfColor.getText();
-                    btnSave.setEnabled(isOkayToSave());
+                    btnSave.setEnabled(isOkToSave());
 
                 }
 
                 @Override
                 public void removeUpdate(DocumentEvent e) {
                     colorName = tfColor.getText();
-                    btnSave.setEnabled(isOkayToSave());
+                    btnSave.setEnabled(isOkToSave());
                 }
 
                 @Override
@@ -448,19 +448,21 @@ public class Line extends MyInternalFrame {
 
             deleteSIL = con.prepareStatement(Queries.DELETE_STATION_IN_LINE);
             deleteSIL.setInt(1, stationID);
-            deleteSIL.setString(1, lineName);
+            deleteSIL.setString(2, lineName);
             deleteSIL.executeUpdate();
-            
+
             JOptionPane.showInternalMessageDialog(this,
-                        "Satation was removed successfully from this line! What a crappy station it was.",
-                        "Hooray!",
-                        JOptionPane.PLAIN_MESSAGE);
-            
+                    "Satation was removed successfully from this line! What a crappy station it was.",
+                    "Hooray!",
+                    JOptionPane.PLAIN_MESSAGE);
+
+            btnDelete.setEnabled(isOkToDelete());
+
         } catch (SQLException e) {
             JOptionPane.showInternalMessageDialog(this,
-                            "Error code: " + e.getErrorCode() +". Go figure it yourself!",
-                            "Bummer!",
-                            JOptionPane.ERROR_MESSAGE);
+                    "Error code: " + e.getErrorCode() + ". Go figure it yourself!",
+                    "Bummer!",
+                    JOptionPane.ERROR_MESSAGE);
             System.err.println("Error code: " + e.getErrorCode() + "\nError Message: " + e.getMessage());
         }
     }//GEN-LAST:event_btnRemoveStationActionPerformed
@@ -500,19 +502,21 @@ public class Line extends MyInternalFrame {
 
             insertSIL = con.prepareStatement(Queries.INSERT_STATION_IN_LINE);
             insertSIL.setInt(1, stationID);
-            insertSIL.setString(1, lineName);
+            insertSIL.setString(2, lineName);
             insertSIL.executeUpdate();
-            
+
             JOptionPane.showInternalMessageDialog(this,
-                        "Satation was added successfully to this line! Oh yeah!",
-                        "Hooray!",
-                        JOptionPane.PLAIN_MESSAGE);
-            
+                    "Satation was added successfully to this line! Oh yeah!",
+                    "Hooray!",
+                    JOptionPane.PLAIN_MESSAGE);
+
+            btnDelete.setEnabled(isOkToDelete());
+
         } catch (SQLException e) {
             JOptionPane.showInternalMessageDialog(this,
-                            "Error code: " + e.getErrorCode() +". Go figure it yourself!",
-                            "Bummer!",
-                            JOptionPane.ERROR_MESSAGE);
+                    "Error code: " + e.getErrorCode() + ". Go figure it yourself!",
+                    "Bummer!",
+                    JOptionPane.ERROR_MESSAGE);
             System.err.println("Error code: " + e.getErrorCode() + "\nError Message: " + e.getMessage());
         }
     }//GEN-LAST:event_btnAddStationActionPerformed
@@ -574,12 +578,12 @@ public class Line extends MyInternalFrame {
             switch (e.getErrorCode()) {
                 case 515:
                     JOptionPane.showInternalMessageDialog(this,
-                            "Line name " + lineName + " has already been taken.",
+                            "Line name \"" + lineName + "\" has already been taken.",
                             "Bummer!",
                             JOptionPane.ERROR_MESSAGE);
                 default:
                     JOptionPane.showInternalMessageDialog(this,
-                            "Error code: " + e.getErrorCode() +". Go figure it yourself!",
+                            "Error code: " + e.getErrorCode() + ". Go figure it yourself!",
                             "Bummer!",
                             JOptionPane.ERROR_MESSAGE);
             }
@@ -593,7 +597,7 @@ public class Line extends MyInternalFrame {
                     con.rollback();
                 } catch (SQLException excep) {
                     JOptionPane.showInternalMessageDialog(this,
-                            "Error code: " + e.getErrorCode() +". Go figure it yourself!",
+                            "Error code: " + e.getErrorCode() + ". Go figure it yourself!",
                             "Bummer!",
                             JOptionPane.ERROR_MESSAGE);
                     System.err.println("Error code: " + e.getErrorCode() + "\nError Message: " + e.getMessage());
@@ -613,39 +617,22 @@ public class Line extends MyInternalFrame {
     }//GEN-LAST:event_btnCancelActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        PreparedStatement deleteColor;
         PreparedStatement deleteLine;
-
         try {
-            con.setAutoCommit(false);
-            deleteColor = con.prepareStatement(Queries.DELETE_COLOR);
-            deleteColor.setString(1, lineName);
-            deleteColor.executeUpdate();
-
             deleteLine = con.prepareStatement(Queries.DELETE_LINE);
             deleteLine.setString(1, lineName);
             deleteLine.executeUpdate();
-
-            con.commit();
+            JOptionPane.showInternalMessageDialog(this,
+                    "Line was deleted successfully! Who needed it anyway?",
+                    "Hooray!",
+                    JOptionPane.PLAIN_MESSAGE);
+            this.dispose();
 
         } catch (SQLException e) {
-            System.err.println("Error code: " + e.getErrorCode() + "\nError Message: " + e.getMessage());
-            if (con != null) {
-                try {
-                    System.err.print("Transaction is being rolled back");
-                    con.rollback();
-                } catch (SQLException excep) {
-                    System.err.println("Error code: " + e.getErrorCode() + "\nError Message: " + e.getMessage());
-                }
-            }
-        } finally {
-            try {
-                con.setAutoCommit(true);
-
-            } catch (SQLException ex) {
-                Logger.getLogger(Line.class
-                        .getName()).log(Level.SEVERE, null, ex);
-            }
+            JOptionPane.showInternalMessageDialog(this,
+                    "Error code: " + e.getErrorCode() + ". Go figure it yourself!",
+                    "Bummer!",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnDeleteActionPerformed
 
@@ -714,6 +701,8 @@ public class Line extends MyInternalFrame {
             stationTblModel.bindComboBox(cmbStation, 0, 1);
             stationTblModel.fillTable();
             tblStations.setModel(stationTblModel);
+            
+            btnDelete.setEnabled(isOkToDelete());
         } catch (SQLException ex) {
 
         }
@@ -729,7 +718,7 @@ public class Line extends MyInternalFrame {
             rs.next();
             this.colorName = rs.getString(5)/*color name*/;
             this.foundedYear = rs.getInt("foundedYear");
-            this.lineLength = rs.getDouble("lineLength");
+            this.lineLength = (rs.getDouble("lineLength") != 0) ? rs.getDouble("lineLength") : null;
             this.lineName = rs.getString("name");
             this.lineType = rs.getString("lineType");
 
@@ -740,6 +729,7 @@ public class Line extends MyInternalFrame {
 
     private void setDefaults() {
         tfName.setText(this.lineName);
+        tfColor.setText(this.colorName);
         ychFoundationYear.setYear(this.foundedYear);
         cmbType.setSelectedItem((this.lineType.equals("O")) ? "Overground" : "Underground");
         tfLength.setText(String.valueOf(this.lineLength));
@@ -749,25 +739,35 @@ public class Line extends MyInternalFrame {
         if (getMode() == ADD_MODE) {
             tfName.setEnabled(true);
             pStations.setVisible(false);
-            btnDelete.setEnabled(false);
         } else {
             // edit mode
             tfName.setEnabled(false);
             pStations.setVisible(true);
-            btnDelete.setEnabled(true);
         }
-        btnSave.setEnabled(isOkayToSave());
+        btnSave.setEnabled(isOkToSave());
+        btnSave.setEnabled(isOkToDelete());
     }
 
-    private boolean isOkayToSave() {
+    private boolean isOkToSave() {
         if (lineName == null || lineName.isEmpty()) {
             // saving is not allowed without line name
+            btnSave.setToolTipText("The line must have a name and a color");
             return false;
         }
         if (colorName == null || colorName.isEmpty()) {
             // saving is not allowed without color name
+            btnSave.setToolTipText("The line must have a name and a color");
             return false;
         }
+        btnSave.setToolTipText(null);
+        return true;
+    }
+    
+    private boolean isOkToDelete(){
+        if (tblStations.getModel().getRowCount() > 0){
+            btnDelete.setToolTipText("Deleting the line is not allowed since it has stations");
+            return false;
+        } 
         return true;
     }
 
