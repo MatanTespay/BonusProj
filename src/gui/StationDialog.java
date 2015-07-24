@@ -15,20 +15,20 @@ import utils.QueryCombobox;
 
 /**
  *
- * @author Matan
+ * @author asus
  */
-public class LineDialog extends MyInternalFrame {
-
+public class StationDialog extends MyInternalFrame {
+    
     MainWindow mainWindow;
-    String lineName;
+    private int stationID;
 
     /**
-     * Creates new form LineDialog
+     * Creates new form StationDialog
      * @param title
      * @param type
      * @param parent
      */
-    public LineDialog(String title, String type, MainWindow parent) {
+    public StationDialog(String title, String type, MainWindow parent) {
         super(title, type);
         initComponents();
         this.mainWindow = parent;
@@ -45,15 +45,15 @@ public class LineDialog extends MyInternalFrame {
     private void initComponents() {
 
         lblLineName = new javax.swing.JLabel();
-        cmbLineName = new javax.swing.JComboBox();
+        cmbStationName = new javax.swing.JComboBox();
         bntOK = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
 
-        lblLineName.setText("Line Name:");
+        lblLineName.setText("Station Name:");
 
-        cmbLineName.addActionListener(new java.awt.event.ActionListener() {
+        cmbStationName.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbLineNameActionPerformed(evt);
+                cmbStationNameActionPerformed(evt);
             }
         });
 
@@ -80,13 +80,13 @@ public class LineDialog extends MyInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(bntOK, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
                         .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lblLineName)
                         .addGap(18, 18, 18)
-                        .addComponent(cmbLineName, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(cmbStationName, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -94,7 +94,7 @@ public class LineDialog extends MyInternalFrame {
                 .addGap(21, 21, 21)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblLineName)
-                    .addComponent(cmbLineName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cmbStationName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(41, 41, 41)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(bntOK)
@@ -105,22 +105,20 @@ public class LineDialog extends MyInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void cmbLineNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbLineNameActionPerformed
+    private void cmbStationNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbStationNameActionPerformed
 
-        ComboItem lineItem = (ComboItem) cmbLineName.getSelectedItem();
-        this.lineName = (lineItem.getKey().toString());
-
-    }//GEN-LAST:event_cmbLineNameActionPerformed
+        ComboItem stationItem = (ComboItem) cmbStationName.getSelectedItem();
+        this.stationID = Integer.valueOf(stationItem.getKey().toString());
+    }//GEN-LAST:event_cmbStationNameActionPerformed
 
     private void bntOKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bntOKActionPerformed
         // TODO add your handling code here:
-        if (this.lineName != null) {
 
-            this.setVisible(false);
-            mainWindow.desktop.remove(this);
-            Line l = new Line(title, getSelectedUserType(), this.lineName);
-            mainWindow.createFrame(l);
-        }
+        this.setVisible(false);
+        mainWindow.desktop.remove(this);
+        Station s = new Station(title, getSelectedUserType(), this.stationID);
+        mainWindow.createFrame(s);
+
     }//GEN-LAST:event_bntOKActionPerformed
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
@@ -130,21 +128,23 @@ public class LineDialog extends MyInternalFrame {
         mainWindow.desktop.remove(this);
     }//GEN-LAST:event_btnCancelActionPerformed
 
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton bntOK;
+    private javax.swing.JButton btnCancel;
+    private javax.swing.JComboBox cmbStationName;
+    private javax.swing.JLabel lblLineName;
+    // End of variables declaration//GEN-END:variables
+
     private void fillCmbLine() {
         PreparedStatement st;
         try {
-            st = con.prepareStatement("SELECT name FROM tblLine");
+            st = con.prepareStatement("SELECT ID,name FROM tblStation");
 
-            cmbLineName.setModel(new QueryCombobox(cmbLineName, String.class, st));
+            cmbStationName.setModel(new QueryCombobox(cmbStationName, String.class, st));
 
         } catch (SQLException ex) {
             Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton bntOK;
-    private javax.swing.JButton btnCancel;
-    private javax.swing.JComboBox cmbLineName;
-    private javax.swing.JLabel lblLineName;
-    // End of variables declaration//GEN-END:variables
 }

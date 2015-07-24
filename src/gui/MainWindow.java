@@ -201,7 +201,6 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 //        }
 //        return null;
 //    }
-
     @Override
     public void actionPerformed(ActionEvent e) {
         //JOptionPane.showInternalConfirmDialog(null, e.getSource().getClass().toString());
@@ -236,7 +235,10 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
                 ifram = new AddRole(e.getActionCommand(), selectedUserType);
                 break;
             case "Add Station":
-                ifram = new Station(e.getActionCommand(), selectedUserType, 9);
+                ifram = new Station(e.getActionCommand(), selectedUserType);
+                break;
+            case "Edit Station":
+                ifram = new StationDialog(e.getActionCommand(), selectedUserType, this);
                 break;
             case "Add Card":
                 ifram = new Card(e.getActionCommand(), selectedUserType);
@@ -251,7 +253,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
                 ifram = new Line(e.getActionCommand(), selectedUserType);
                 break;
             case "Edit Line":
-                ifram = new LineDialog(e.getActionCommand(), selectedUserType,this);
+                ifram = new LineDialog(e.getActionCommand(), selectedUserType, this);
                 break;
             case "Add Site":
                 ifram = new Site(e.getActionCommand(), selectedUserType, 2);

@@ -8,7 +8,6 @@ package gui;
 import init.ComboItem;
 import static init.MainClass.con;
 import java.beans.PropertyVetoException;
-import java.util.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -24,7 +23,6 @@ import static utils.Constants.ADD_MODE;
 import static utils.Constants.EDIT_MODE;
 import static utils.Constants.INGOING;
 import static utils.Constants.OUTGOING;
-import utils.HelperClass;
 import static utils.HelperClass.setSelectedValue;
 
 /**

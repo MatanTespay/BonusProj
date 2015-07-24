@@ -22,7 +22,7 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="pStations" pref="0" max="32767" attributes="0"/>
+                  <Component id="pStations" pref="495" max="32767" attributes="0"/>
                   <Component id="pDetails" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="32767" attributes="0"/>
@@ -71,8 +71,8 @@
                   </Group>
                   <Group type="103" groupAlignment="1" max="-2" attributes="0">
                       <Component id="ychFoundationYear" max="32767" attributes="0"/>
-                      <Component id="cmbColor" alignment="1" max="32767" attributes="0"/>
                       <Component id="tfName" alignment="1" min="-2" pref="85" max="-2" attributes="0"/>
+                      <Component id="tfColor" min="-2" pref="85" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
@@ -93,7 +93,7 @@
                       </Group>
                       <Component id="cmbType" min="-2" pref="110" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="110" max="32767" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace max="32767" attributes="0"/>
@@ -121,8 +121,8 @@
                       <Component id="tfLength" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="lblLength" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="lblKm" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="cmbColor" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="lblColor" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="tfColor" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
@@ -143,12 +143,12 @@
       <SubComponents>
         <Component class="javax.swing.JLabel" name="lbName">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Line Name"/>
+            <Property name="text" type="java.lang.String" value="Line Name*"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="lblColor">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Color"/>
+            <Property name="text" type="java.lang.String" value="Color*"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="lblFoundation">
@@ -157,18 +157,11 @@
           </Properties>
         </Component>
         <Component class="com.toedter.calendar.JYearChooser" name="ychFoundationYear">
-          <Events>
-            <EventHandler event="propertyChange" listener="java.beans.PropertyChangeListener" parameters="java.beans.PropertyChangeEvent" handler="ychFoundationYearPropertyChange"/>
-          </Events>
-        </Component>
-        <Component class="javax.swing.JComboBox" name="cmbColor">
           <Properties>
-            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="new javax.swing.DefaultComboBoxModel(new String[] { &quot;Underground&quot;, &quot;Overground&quot; })" type="code"/>
-            </Property>
+            <Property name="startYear" type="int" value="1863"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cmbColorActionPerformed"/>
+            <EventHandler event="propertyChange" listener="java.beans.PropertyChangeListener" parameters="java.beans.PropertyChangeEvent" handler="ychFoundationYearPropertyChange"/>
           </Events>
         </Component>
         <Component class="javax.swing.JTextField" name="tfName">
@@ -188,7 +181,7 @@
         </Component>
         <Component class="javax.swing.JTextField" name="tfLength">
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tfLengthActionPerformed"/>
+            <EventHandler event="propertyChange" listener="java.beans.PropertyChangeListener" parameters="java.beans.PropertyChangeEvent" handler="tfLengthPropertyChange"/>
           </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="lblKm">
@@ -228,6 +221,11 @@
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDeleteActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JTextField" name="tfColor">
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tfColorActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>
