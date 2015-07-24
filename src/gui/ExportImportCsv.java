@@ -3,12 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package utils;
+package gui;
 
 import gui.MyInternalFrame;
 import javax.swing.JFileChooser;
 //import utils.CsvHandler;
 import javax.swing.JOptionPane;
+import utils.CsvHandler;
 
 /**
  *
@@ -36,6 +37,7 @@ public class ExportImportCsv extends MyInternalFrame {
         jPanel1 = new javax.swing.JPanel();
         btnExport = new javax.swing.JButton();
         btnImport = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         btnExport.setText("Export Site Info");
         btnExport.addActionListener(new java.awt.event.ActionListener() {
@@ -51,6 +53,13 @@ public class ExportImportCsv extends MyInternalFrame {
             }
         });
 
+        jButton1.setText("jButton1");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -61,11 +70,17 @@ public class ExportImportCsv extends MyInternalFrame {
                 .addGap(38, 38, 38)
                 .addComponent(btnImport)
                 .addContainerGap(22, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton1)
+                .addGap(75, 75, 75))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(131, Short.MAX_VALUE)
+                .addContainerGap(79, Short.MAX_VALUE)
+                .addComponent(jButton1)
+                .addGap(29, 29, 29)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnExport)
                     .addComponent(btnImport))
@@ -103,13 +118,13 @@ public class ExportImportCsv extends MyInternalFrame {
 
             String fileName = c.getSelectedFile().getAbsolutePath();
 
-//            CsvHandler csv = new CsvHandler();
+            CsvHandler csv = new CsvHandler();
 
             if (!fileName.endsWith(".csv".toLowerCase())) {
                 fileName += ".csv";
             }
 
-//            csv.exportSiteExitDistanceToCsv(null, fileName);
+            csv.exportSiteExitDistanceToCsv(null, fileName);
 
         }
 
@@ -127,13 +142,13 @@ public class ExportImportCsv extends MyInternalFrame {
             try {
                 String fileName = c.getSelectedFile().getAbsolutePath();
 
-//                CsvHandler csv = new CsvHandler();
+                CsvHandler csv = new CsvHandler();
 
                 if (!fileName.endsWith(".csv".toLowerCase())) {
                     fileName += ".csv";
                 }
 
-//                csv.loadCSV(fileName, "TempAct", true);
+                csv.loadCSV(fileName, "TempSite", false);
                 
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(null,
@@ -145,10 +160,16 @@ public class ExportImportCsv extends MyInternalFrame {
         }
     }//GEN-LAST:event_btnImportActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+            CsvHandler.PrintTablesMetaData("tblStation");
+    }//GEN-LAST:event_jButton1ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnExport;
     private javax.swing.JButton btnImport;
+    private javax.swing.JButton jButton1;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
 }

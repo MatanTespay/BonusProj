@@ -74,8 +74,7 @@ public class CSVLoader {
 				.length() - 1);
 
 		String query = SQL_INSERT.replaceFirst(TABLE_REGEX, tableName);
-		query = query
-				.replaceFirst(KEYS_REGEX, StringUtils.join(headerRow, ","));
+		query = query.replaceFirst(KEYS_REGEX, StringUtils.join(headerRow, ","));
 		query = query.replaceFirst(VALUES_REGEX, questionmarks);
 
 		System.out.println("Query: " + query);
@@ -101,7 +100,7 @@ public class CSVLoader {
 				if (null != nextLine) {
 					int index = 1;
 					for (String string : nextLine) {
-						date = DateUtil.convertToDate(string);
+						date = ConvertUtil.convertToDate(string);
 						if (null != date) {
 							ps.setDate(index++, new java.sql.Date(date
 									.getTime()));
