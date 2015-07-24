@@ -18,7 +18,8 @@ public enum  InputType {
     DOUBLE("Double"),
     DATE("Date"),
     EMAIL("Email"),
-    ROLE("ROLE");
+    ROLE("ROLE"),
+    YEAR_RANGE("INT_RANGE");
 
     private final String Type;
 

@@ -21,7 +21,6 @@ import javax.swing.table.TableModel;
 import static utils.Constants.ADD_MODE;
 import static utils.Constants.EDIT_MODE;
 import static utils.HelperClass.setSelectedValue;
-import static utils.HelperClass.setTableProperties;
 
 /**
  *
@@ -76,8 +75,8 @@ public class Site extends MyInternalFrame {
         fillCmbType();
         fillNearByExits();
         fillNearBySites();
-        setTableProperties(tblNearbyExits);
-        setTableProperties(tblNearbySites);
+//        setTableProperties(tblNearbyExits);
+//        setTableProperties(tblNearbySites);
         setActiveness();
         super.validators = new ArrayList<InputValidator>() {
             {

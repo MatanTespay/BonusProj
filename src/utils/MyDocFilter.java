@@ -10,6 +10,7 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.DocumentFilter;
+import static utils.InputType.YEAR_RANGE;
 
 /**
  *
@@ -18,9 +19,15 @@ import javax.swing.text.DocumentFilter;
 public class MyDocFilter extends DocumentFilter {
 
     InputType type;
+    int minYear;
+    int maxYear;
 
     public MyDocFilter(InputType type) {
         this.type = type;
+    }
+
+    public MyDocFilter(int minYear, int maxYear) {
+        this.type = YEAR_RANGE;
     }
 
     @Override
@@ -58,6 +65,12 @@ public class MyDocFilter extends DocumentFilter {
                             Toolkit.getDefaultToolkit().beep();
                             return false;
                         }
+                    }
+                    break;
+                case YEAR_RANGE:
+                    int year = Integer.parseInt(text);
+                    if (year < minYear || year > maxYear) {
+                        return false;
                     }
                     break;
             }

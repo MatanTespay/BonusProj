@@ -23,8 +23,8 @@ public class Queries {
     public final static String INSERT_COLOR = "INSERT INTO tblLineColor VALUES (?,?)";
 
     //UPDATE LINE transaction
-    public final static String UPDATE_LINE = "UPDATE tblLine SET foundedYear = ? "
-            + "lineType = ? lineLength = ? WHERE name = ?";
+    public final static String UPDATE_LINE = "UPDATE tblLine SET foundedYear = ?, "
+            + "lineType = ?, lineLength = ? WHERE name = ?";
     public final static String UPDATE_COLOR = "UPDATE tblLineColor SET name = ? "
             + "WHERE lineName = ?";
     

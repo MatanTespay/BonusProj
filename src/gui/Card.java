@@ -8,12 +8,9 @@ package gui;
 import utils.QueryCombobox;
 import init.ComboItem;
 import static init.MainClass.con;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -32,14 +29,12 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
-import sun.misc.IOUtils;
 import utils.Column;
 import static utils.Constants.ADD_MODE;
 import static utils.Constants.EDIT_MODE;
 import static utils.Constants.OYSTER;
 import static utils.Constants.PAPER;
 import utils.CustomTableModel;
-import static utils.HelperClass.setTableProperties;
 
 /**
  *
@@ -104,7 +99,7 @@ public class Card extends MyInternalFrame {
             cmbLength.setModel(new QueryCombobox(cmbLength, Integer.class, getAllCardLengths));
             cmbZone.setModel(new QueryCombobox(cmbZone, Integer.class, getAllZones));
 
-            setTableProperties(tblPrograms);
+//            setTableProperties(tblPrograms);
             picFileChooser = new JFileChooser();
             setActiveness();
             //pPrograms.setVisible(false);

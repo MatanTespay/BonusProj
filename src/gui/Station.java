@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JSpinner;
+import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.PlainDocument;
@@ -21,7 +24,6 @@ import utils.Column;
 import static utils.Constants.ADD_MODE;
 import static utils.Constants.EDIT_MODE;
 import utils.CustomTableModel;
-import static utils.HelperClass.setSelectedValue;
 import utils.InputType;
 import utils.Queries;
 import utils.QueryCombobox;
@@ -34,7 +36,7 @@ public class Station extends MyInternalFrame {
 
     private Integer stationID;
     private String stationName;
-    private int platformNum;
+    private Integer platformNum;
     private boolean isKiosk;
     private int zoneNumber;
 
@@ -59,8 +61,10 @@ public class Station extends MyInternalFrame {
         super(title, type);
         setMode(ADD_MODE);
         initComponents();
-        buildForm();
         tfStationID.setText("(auto number)");
+        buildForm();
+        this.zoneNumber = 1;
+        this.platformNum = 2;
     }
 
     public Station(String title, String type, int stationID, JInternalFrame parent) {
@@ -77,7 +81,6 @@ public class Station extends MyInternalFrame {
             // set models to comboboxe
             cmbZone.setModel(new QueryCombobox(cmbZone, String.class, getAllZones));
             cmbLine.setModel(new QueryCombobox(cmbLine, String.class, getAllLines));
-            setLineTableModel();
 
             // set visibility and enablement
             setActiveness();
@@ -88,17 +91,42 @@ public class Station extends MyInternalFrame {
                 @Override
                 public void insertUpdate(DocumentEvent e) {
                     stationName = tfName.getText();
-                    btnSave.setEnabled(true);
-                    btnSave.setToolTipText(null);
+                    btnSave.setEnabled(isOkToSave());
                 }
 
                 @Override
                 public void removeUpdate(DocumentEvent e) {
                     stationName = tfName.getText();
-                    if (tfName.getText().equals("")){
-                        btnSave.setEnabled(false);
-                        btnSave.setToolTipText("The station must have a name");
+                    btnSave.setEnabled(isOkToSave());
+                }
+
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                }
+            });
+
+            JSpinner.NumberEditor platformEditor = (JSpinner.NumberEditor) spnPlatforms.getEditor();
+            JTextField platformTextField = platformEditor.getTextField();
+            platformTextField.getDocument().addDocumentListener(new DocumentListener() {
+
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    try {
+                        platformNum = Integer.valueOf(platformTextField.getText());
+                    } catch (NumberFormatException ex) {
+                        platformNum = null;
                     }
+                    btnSave.setEnabled(isOkToSave());
+                }
+
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    try {
+                        platformNum = Integer.valueOf(platformTextField.getText());
+                    } catch (NumberFormatException ex) {
+                        platformNum = null;
+                    }
+                    btnSave.setEnabled(isOkToSave());
                 }
 
                 @Override
@@ -112,6 +140,7 @@ public class Station extends MyInternalFrame {
 
             PlainDocument nameDoc = (PlainDocument) tfName.getDocument();
             nameDoc.setDocumentFilter(new utils.MyDocFilter(InputType.TEXT));
+
         } catch (SQLException ex) {
         }
     }
@@ -165,7 +194,7 @@ public class Station extends MyInternalFrame {
             }
         });
 
-        spnPlatforms.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
+        spnPlatforms.setModel(new javax.swing.SpinnerNumberModel(2, 2, 8, 1));
         spnPlatforms.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 spnPlatformsPropertyChange(evt);
@@ -380,7 +409,7 @@ public class Station extends MyInternalFrame {
     private void btnRemoveLineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveLineActionPerformed
         PreparedStatement deleteSIL;
         Object value;
-        String lineName;
+        String lineName = "";
 
         try {
             value = tblLines.getModel().getValueAt(tblLines.getSelectedRow(), 0);
@@ -391,11 +420,27 @@ public class Station extends MyInternalFrame {
             deleteSIL.setInt(1, stationID);
             deleteSIL.setString(2, lineName);
             deleteSIL.executeUpdate();
-            
+
+            JOptionPane.showInternalMessageDialog(this,
+                    "Line was removed successfully from this station! What a crappy line it was.",
+                    "Hooray!",
+                    JOptionPane.PLAIN_MESSAGE);
+
             btnDelete.setEnabled(isOkToDelete());
-            
+
         } catch (SQLException e) {
-            System.err.println("Error code: " + e.getErrorCode() + "\nError Message: " + e.getMessage());
+            switch (e.getErrorCode()) {
+                case 547:
+                    JOptionPane.showInternalMessageDialog(this,
+                            "This line can not be renoved from this station. There are 2 possibilities:\n"
+                            + "1. Activites have already been made in this line in this station.\n"
+                            + "2. There are nearby sites related to this line in this station.\n\n"
+                            + "Please check the above in order to continue.",
+                            "Bummer!",
+                            JOptionPane.ERROR_MESSAGE);
+                    break;
+            }
+
         }
     }//GEN-LAST:event_btnRemoveLineActionPerformed
 
@@ -427,9 +472,18 @@ public class Station extends MyInternalFrame {
             insertSIL.setString(2, lineName);
             insertSIL.executeUpdate();
             
+            JOptionPane.showInternalMessageDialog(this,
+                    "Line was added successfully to this station! Oh yeah!",
+                    "Hooray!",
+                    JOptionPane.PLAIN_MESSAGE);
+            
             btnDelete.setEnabled(isOkToDelete());
 
         } catch (SQLException e) {
+            JOptionPane.showInternalMessageDialog(this,
+                    "Station name " + stationName + "already exists. Please be original and pick another name.",
+                    "Bummer!",
+                    JOptionPane.ERROR_MESSAGE);
             System.err.println("Error code: " + e.getErrorCode() + "\nError Message: " + e.getMessage());
         }
     }//GEN-LAST:event_btnAddLineActionPerformed
@@ -447,13 +501,13 @@ public class Station extends MyInternalFrame {
                 insertStation.setBoolean(3, isKiosk);
                 insertStation.setInt(4, zoneNumber);
                 insertStation.executeUpdate();
-                
+
                 // after creating the new station we want to show its new autonumber
                 getStationID = con.prepareStatement(Queries.SELECT_STATION_ID_BY_NAME);
                 ResultSet rs = getStationID.executeQuery();
                 this.stationID = rs.getInt("ID");
                 tfStationID.setText(stationID.toString());
-                
+
             } else {
                 //edit mode
                 updateStation = con.prepareStatement(Queries.UPDATE_STATION);
@@ -464,7 +518,19 @@ public class Station extends MyInternalFrame {
                 updateStation.setInt(5, stationID);
                 updateStation.executeUpdate();
             }
+            JOptionPane.showInternalMessageDialog(this,
+                    "Station \"" + stationName + "\" was saved successfully.",
+                    "Hooray!",
+                    JOptionPane.PLAIN_MESSAGE);
+
         } catch (SQLException e) {
+            switch (e.getErrorCode()) {
+                case 2627:
+                    JOptionPane.showInternalMessageDialog(this,
+                            "Station name " + stationName + "already exists. Please be original and pick another name.",
+                            "Bummer!",
+                            JOptionPane.ERROR_MESSAGE);
+            }
             System.err.println("Error code: " + e.getErrorCode() + "\nError Message: " + e.getMessage());
         }
     }//GEN-LAST:event_btnSaveActionPerformed
@@ -495,8 +561,18 @@ public class Station extends MyInternalFrame {
             deleteStation = con.prepareStatement(Queries.DELETE_STATION);
             deleteStation.setInt(1, stationID);
             deleteStation.executeUpdate();
+            
+            JOptionPane.showInternalMessageDialog(this,
+                    "Station was deleted successfully! Who needed it anyway?",
+                    "Hooray!",
+                    JOptionPane.PLAIN_MESSAGE);
+            this.dispose();
+            
         } catch (SQLException e) {
-            System.err.println("Error code: " + e.getErrorCode() + "\nError Message: " + e.getMessage());
+            JOptionPane.showInternalMessageDialog(this,
+                    "Error code: " + e.getErrorCode() + ". Go figure it yourself!",
+                    "Bummer!",
+                    JOptionPane.ERROR_MESSAGE);
         }
 
     }//GEN-LAST:event_btnDeleteActionPerformed
@@ -547,9 +623,9 @@ public class Station extends MyInternalFrame {
             lineTableModel.bindComboBox(cmbLine, 0, 0);
             lineTableModel.fillTable();
             tblLines.setModel(lineTableModel);
-            
+
             btnDelete.setEnabled(isOkToDelete());
-            
+
         } catch (SQLException ex) {
 
         }
@@ -568,7 +644,7 @@ public class Station extends MyInternalFrame {
             this.platformNum = rs.getInt("platformNum"); // CHECK WHAT IF NULL
             this.isKiosk = rs.getBoolean("Kiosk");
             this.zoneNumber = rs.getInt("zoneNumber");
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(Station.class
                     .getName()).log(Level.SEVERE, null, ex);
@@ -585,26 +661,39 @@ public class Station extends MyInternalFrame {
     }
 
     private void setActiveness() {
-        
+
         tfStationID.setEnabled(false);
-        
-        if (getMode() == ADD_MODE) {           
+
+        if (getMode() == ADD_MODE) {
             pLines.setVisible(false);
-            btnSave.setEnabled(false);
- 
+
         } else {
             // edit mode
+            setLineTableModel();
             pLines.setVisible(true);
-            btnSave.setEnabled(true);
         }
+        btnSave.setEnabled(isOkToSave());
         btnDelete.setEnabled(isOkToDelete());
     }
-    
-    private boolean isOkToDelete(){
-        if (tblLines.getModel().getRowCount() > 0){
+
+    private boolean isOkToSave() {
+        if (getMode() == EDIT_MODE && (stationName == null || stationName.isEmpty())) {
+            btnSave.setToolTipText("The station must have a name");
+            return false;
+        }
+        if (platformNum == null || platformNum < 2 || platformNum > 8) {
+            btnSave.setToolTipText("The station must have a name");
+            return false;
+        }
+        btnSave.setToolTipText(null);
+        return true;
+    }
+
+    private boolean isOkToDelete() {
+        if (tblLines.getModel().getRowCount() > 0) {
             btnDelete.setToolTipText("Deleting the station is not allowed since it has lines");
             return false;
-        } 
+        }
         return true;
     }
 }
