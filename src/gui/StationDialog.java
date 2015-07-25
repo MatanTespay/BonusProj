@@ -19,8 +19,8 @@ import utils.QueryCombobox;
  */
 public class StationDialog extends MyInternalFrame {
     
-    MainWindow mainWindow;
-    private int stationID;
+    private final MainWindow mainWindow;
+    private short stationID;
 
     /**
      * Creates new form StationDialog
@@ -108,7 +108,7 @@ public class StationDialog extends MyInternalFrame {
     private void cmbStationNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbStationNameActionPerformed
 
         ComboItem stationItem = (ComboItem) cmbStationName.getSelectedItem();
-        this.stationID = Integer.valueOf(stationItem.getKey().toString());
+        this.stationID = Short.valueOf(stationItem.getKey().toString());
     }//GEN-LAST:event_cmbStationNameActionPerformed
 
     private void bntOKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bntOKActionPerformed
@@ -122,8 +122,6 @@ public class StationDialog extends MyInternalFrame {
     }//GEN-LAST:event_bntOKActionPerformed
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
-        // TODO add your handling code here:
-
         this.setVisible(false);
         mainWindow.desktop.remove(this);
     }//GEN-LAST:event_btnCancelActionPerformed

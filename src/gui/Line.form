@@ -226,7 +226,7 @@
         <Component class="javax.swing.JSpinner" name="spnLength">
           <Properties>
             <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-              <SpinnerModel initial="1.0001" minimum="0.001" numberType="java.lang.Double" stepSize="0.5" type="number"/>
+              <SpinnerModel initial="1.0001" minimum="9.999871E-4" numberType="java.lang.Float" stepSize="0.5" type="number"/>
             </Property>
           </Properties>
         </Component>

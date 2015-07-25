@@ -52,11 +52,28 @@ public class MyDocFilter extends DocumentFilter {
         }
         try {
             switch (type) {
+                case BYTE:
+                    Byte.parseByte(text);
+                    break;
+                case CHAR1:
+                    short sh = Short.parseShort(text);
+                    if (sh < 0 || sh > 10) {
+                        return false;
+                    }
+                    break;
                 case DOUBLE:
                     Double.parseDouble(text);
                     break;
+                case FLOAT:
+                    Float.parseFloat(text);
                 case INT:
                     Integer.parseInt(text);
+                    break;
+                case LONG:
+                    Long.parseLong(text);
+                    break;
+                case SHORT:
+                    Short.parseShort(text);
                     break;
                 case TEXT:
                     char[] chars = text.toCharArray();

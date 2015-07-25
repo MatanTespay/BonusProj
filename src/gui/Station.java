@@ -36,9 +36,9 @@ import utils.QueryCombobox;
  */
 public class Station extends MyInternalFrame {
 
-    private Integer stationID;
+    private short stationID;
     private String stationName;
-    private Integer platformNum;
+    private Byte platformNum;
     private boolean isKiosk;
     private int zoneNumber;
 
@@ -49,7 +49,7 @@ public class Station extends MyInternalFrame {
      * @param type
      * @param stationID
      */
-    public Station(String title, String type, int stationID) {
+    public Station(String title, String type, short stationID) {
         super(title, type);
         setMode(EDIT_MODE);
         this.stationID = stationID;
@@ -69,7 +69,7 @@ public class Station extends MyInternalFrame {
         this.platformNum = 2;
     }
 
-    public Station(String title, String type, int stationID, JInternalFrame parent) {
+    public Station(String title, String type, short stationID, JInternalFrame parent) {
         this(title, type, stationID);
         this.parent = parent;
     }
@@ -114,7 +114,7 @@ public class Station extends MyInternalFrame {
                 @Override
                 public void insertUpdate(DocumentEvent e) {
                     try {
-                        platformNum = Integer.valueOf(platformTextField.getText());
+                        platformNum = Byte.valueOf(platformTextField.getText());
                     } catch (NumberFormatException ex) {
                         platformNum = null;
                     }
@@ -124,7 +124,7 @@ public class Station extends MyInternalFrame {
                 @Override
                 public void removeUpdate(DocumentEvent e) {
                     try {
-                        platformNum = Integer.valueOf(platformTextField.getText());
+                        platformNum = Byte.valueOf(platformTextField.getText());
                     } catch (NumberFormatException ex) {
                         platformNum = null;
                     }
@@ -138,7 +138,7 @@ public class Station extends MyInternalFrame {
 
             // set document filters to text fields
             PlainDocument stationIdDoc = (PlainDocument) tfStationID.getDocument();
-            stationIdDoc.setDocumentFilter(new utils.MyDocFilter(InputType.INT));
+            stationIdDoc.setDocumentFilter(new utils.MyDocFilter(InputType.SHORT));
 
             PlainDocument nameDoc = (PlainDocument) tfName.getDocument();
             nameDoc.setDocumentFilter(new utils.MyDocFilter(InputType.TEXT));
@@ -196,7 +196,7 @@ public class Station extends MyInternalFrame {
             }
         });
 
-        spnPlatforms.setModel(new javax.swing.SpinnerNumberModel(2, 2, 8, 1));
+        spnPlatforms.setModel(new javax.swing.SpinnerNumberModel(Short.valueOf((short)2), Short.valueOf((short)2), Short.valueOf((short)8), Short.valueOf((short)1)));
         spnPlatforms.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 spnPlatformsPropertyChange(evt);
@@ -457,7 +457,7 @@ public class Station extends MyInternalFrame {
     }//GEN-LAST:event_cmbZoneActionPerformed
 
     private void spnPlatformsPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_spnPlatformsPropertyChange
-        this.platformNum = Integer.parseInt(spnPlatforms.getValue().toString());
+        this.platformNum = Byte.parseByte(spnPlatforms.getValue().toString());
     }//GEN-LAST:event_spnPlatformsPropertyChange
 
     private void btnAddLineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddLineActionPerformed
@@ -501,7 +501,7 @@ public class Station extends MyInternalFrame {
             if (getMode() == ADD_MODE) {
                 insertStation = con.prepareStatement(Queries.INSERT_STATION);
                 insertStation.setString(1, stationName);
-                insertStation.setInt(2, platformNum);
+                insertStation.setByte(2, platformNum);
                 insertStation.setBoolean(3, isKiosk);
                 insertStation.setInt(4, zoneNumber);
                 insertStation.executeUpdate();
@@ -509,14 +509,14 @@ public class Station extends MyInternalFrame {
                 // after creating the new station we want to show its new autonumber
                 getStationID = con.prepareStatement(Queries.SELECT_STATION_ID_BY_NAME);
                 ResultSet rs = getStationID.executeQuery();
-                this.stationID = rs.getInt("ID");
-                tfStationID.setText(stationID.toString());
+                this.stationID = rs.getShort("ID");
+                tfStationID.setText(String.valueOf(stationID));
 
             } else {
                 //edit mode
                 updateStation = con.prepareStatement(Queries.UPDATE_STATION);
                 updateStation.setString(1, stationName);
-                updateStation.setInt(2, platformNum);
+                updateStation.setByte(2, platformNum);
                 updateStation.setBoolean(3, isKiosk);
                 updateStation.setInt(4, zoneNumber);
                 updateStation.setInt(5, stationID);
@@ -645,7 +645,7 @@ public class Station extends MyInternalFrame {
 
             rs.next();
             this.stationName = rs.getString("name");
-            this.platformNum = rs.getInt("platformNum"); // CHECK WHAT IF NULL
+            this.platformNum = rs.getByte("platformNum");
             this.isKiosk = rs.getBoolean("Kiosk");
             this.zoneNumber = rs.getInt("zoneNumber");
 
@@ -656,7 +656,7 @@ public class Station extends MyInternalFrame {
     }
 
     public void setDefaults() {
-        tfStationID.setText(this.stationID.toString());
+        tfStationID.setText(String.valueOf(stationID));
         tfName.setText(this.stationName);
 //        setSelectedValue(cmbZone, String.valueOf(this.zoneNumber)); //WHAT FOR?
         spnPlatforms.setValue(this.platformNum);

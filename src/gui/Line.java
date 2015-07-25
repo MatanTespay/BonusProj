@@ -38,9 +38,9 @@ import utils.Queries;
 public class Line extends MyInternalFrame {
 
     private String lineName;
-    private Integer foundedYear;
-    private String lineType;
-    private Double lineLength;
+    private Short foundedYear;
+    private Character lineType;
+    private Float lineLength;
     private String colorName;
 
     /**
@@ -70,7 +70,7 @@ public class Line extends MyInternalFrame {
         setMode(ADD_MODE);
         initComponents();
         buildForm();
-        this.lineType = "U";
+        this.lineType = 'U';
     }
 
     private void buildForm() {
@@ -129,7 +129,7 @@ public class Line extends MyInternalFrame {
                 @Override
                 public void insertUpdate(DocumentEvent e) {
                     try {
-                        lineLength = Double.valueOf(lengthTextField.getText());
+                        lineLength = Float.valueOf(lengthTextField.getText());
                     } catch (NumberFormatException ex) {
                         lineLength = null;
                     }
@@ -140,7 +140,7 @@ public class Line extends MyInternalFrame {
                 @Override
                 public void removeUpdate(DocumentEvent e) {
                     try {
-                        lineLength = Double.valueOf(lengthTextField.getText());
+                        lineLength = Float.valueOf(lengthTextField.getText());
                     } catch (NumberFormatException ex) {
                         lineLength = null;
                     }
@@ -159,7 +159,7 @@ public class Line extends MyInternalFrame {
                 @Override
                 public void insertUpdate(DocumentEvent e) {
                     try {
-                        foundedYear = Integer.valueOf(yearText.getText());
+                        foundedYear = Short.valueOf(yearText.getText());
                     } catch (NumberFormatException ex) {
                         foundedYear = null;
                     }
@@ -170,7 +170,7 @@ public class Line extends MyInternalFrame {
                 @Override
                 public void removeUpdate(DocumentEvent e) {
                     try {
-                        foundedYear = Integer.valueOf(yearText.getText());
+                        foundedYear = Short.valueOf(yearText.getText());
                     } catch (NumberFormatException ex) {
                         foundedYear = null;
                     }
@@ -277,7 +277,7 @@ public class Line extends MyInternalFrame {
             }
         });
 
-        spnLength.setModel(new javax.swing.SpinnerNumberModel(Double.valueOf(1.0001d), Double.valueOf(0.001d), null, Double.valueOf(0.5d)));
+        spnLength.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(1.0001f), Float.valueOf(9.999871E-4f), null, Float.valueOf(0.5f)));
 
         javax.swing.GroupLayout pDetailsLayout = new javax.swing.GroupLayout(pDetails);
         pDetails.setLayout(pDetailsLayout);
@@ -455,7 +455,7 @@ public class Line extends MyInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnViewStationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewStationActionPerformed
-        int stationID = Integer.parseInt(tblStations.getModel().getValueAt(tblStations.getSelectedRow(), 0).toString());
+        short stationID = Short.parseShort(tblStations.getModel().getValueAt(tblStations.getSelectedRow(), 0).toString());
         Station newFrame = new Station(evt.getActionCommand(), getSelectedUserType(), stationID, this);
         openChildFrame(newFrame);
     }//GEN-LAST:event_btnViewStationActionPerformed
@@ -463,14 +463,14 @@ public class Line extends MyInternalFrame {
     private void btnRemoveStationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveStationActionPerformed
         PreparedStatement deleteSIL;
         Object value;
-        int stationID;
+        short stationID;
 
         try {
             value = tblStations.getModel().getValueAt(tblStations.getSelectedRow(), 0);
-            stationID = Integer.parseInt(value.toString());
+            stationID = Short.parseShort(value.toString());
 
             deleteSIL = con.prepareStatement(Queries.DELETE_STATION_IN_LINE);
-            deleteSIL.setInt(1, stationID);
+            deleteSIL.setShort(1, stationID);
             deleteSIL.setString(2, lineName);
             deleteSIL.executeUpdate();
 
@@ -516,20 +516,20 @@ public class Line extends MyInternalFrame {
 
     private void cmbTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbTypeActionPerformed
         String strType = (String) cmbType.getModel().getSelectedItem();
-        this.lineType = (strType.equals("Overground")) ? "O" : "U";
+        this.lineType = (strType.equals("Overground")) ? 'O' : 'U';
     }//GEN-LAST:event_cmbTypeActionPerformed
 
     private void btnAddStationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddStationActionPerformed
         ComboItem selectedStation;
-        int stationID;
+        short stationID;
         PreparedStatement insertSIL;
 
         try {
             selectedStation = (ComboItem) ((QueryCombobox) cmbStation.getModel()).getSelectedItem();
-            stationID = Integer.valueOf(selectedStation.getKey().toString());
+            stationID = Short.valueOf(selectedStation.getKey().toString());
 
             insertSIL = con.prepareStatement(Queries.INSERT_STATION_IN_LINE);
-            insertSIL.setInt(1, stationID);
+            insertSIL.setShort(1, stationID);
             insertSIL.setString(2, lineName);
             insertSIL.executeUpdate();
 
@@ -562,10 +562,10 @@ public class Line extends MyInternalFrame {
             if (getMode() == ADD_MODE) {
                 insertLine = con.prepareStatement(Queries.INSERT_LINE);
                 insertLine.setString(1, lineName);
-                insertLine.setInt(2, foundedYear);
-                insertLine.setString(3, lineType);
+                insertLine.setShort(2, foundedYear);
+                insertLine.setString(3, lineType.toString());
                 if (lineLength != null) {
-                    insertLine.setDouble(4, lineLength);
+                    insertLine.setFloat(4, lineLength);
                 } else {
                     insertLine.setNull(4, java.sql.Types.DOUBLE);
                 }
@@ -580,10 +580,10 @@ public class Line extends MyInternalFrame {
                 // edit mode
                 updateLine = con.prepareStatement(Queries.UPDATE_LINE);
 
-                updateLine.setInt(1, foundedYear);
-                updateLine.setString(2, lineType);
+                updateLine.setShort(1, foundedYear);
+                updateLine.setString(2, lineType.toString());
                 if (lineLength != null) {
-                    updateLine.setDouble(3, lineLength);
+                    updateLine.setFloat(3, lineLength);
                 } else {
                     updateLine.setNull(3, java.sql.Types.DOUBLE);
                 }
@@ -696,9 +696,9 @@ public class Line extends MyInternalFrame {
 
     private void setStationTblModel() {
         ArrayList<Column> cols = new ArrayList<>();
-        cols.add(new Column("ID", "ID", Integer.class));
+        cols.add(new Column("ID", "ID", Short.class));
         cols.add(new Column("Name", "Name", String.class));
-        cols.add(new Column("Platforms", "platformNum", Integer.class));
+        cols.add(new Column("Platforms", "platformNum", Short.class));
         cols.add(new Column("Kiosk", "Kiosk", Boolean.class));
         cols.add(new Column("Zone", "zoneNumber", Integer.class));
 
@@ -735,10 +735,10 @@ public class Line extends MyInternalFrame {
 
             rs.next();
             this.colorName = rs.getString(5)/*color name*/;
-            this.foundedYear = rs.getInt("foundedYear");
-            this.lineLength = (rs.getDouble("lineLength") != 0) ? rs.getDouble("lineLength") : null;
+            this.foundedYear = rs.getShort("foundedYear");
+            this.lineLength = (rs.getFloat("lineLength") != 0) ? rs.getFloat("lineLength") : null;
             this.lineName = rs.getString("name");
-            this.lineType = rs.getString("lineType");
+            this.lineType = rs.getString("lineType").charAt(0);
 
         } catch (SQLException ex) {
             Logger.getLogger(Line.class.getName()).log(Level.SEVERE, null, ex);
@@ -749,7 +749,7 @@ public class Line extends MyInternalFrame {
         tfName.setText(this.lineName);
         tfColor.setText(this.colorName);
         ychFoundationYear.setYear(this.foundedYear);
-        cmbType.setSelectedItem((this.lineType.equals("O")) ? "Overground" : "Underground");
+        cmbType.setSelectedItem((this.lineType.equals('O')) ? "Overground" : "Underground");
 
         double minLength = Double.valueOf(((SpinnerNumberModel) spnLength.getModel()).getMinimum().toString());
         spnLength.setValue((lineLength != null) ? lineLength : minLength);
