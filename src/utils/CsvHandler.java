@@ -110,18 +110,32 @@ public class CsvHandler {
      * records.
      * @throws Exception
      */
-    public void loadCSV(String csvFile, String tableName,
+public void loadCSV(String csvFile, String tableName,
             boolean truncateBeforeLoad) throws Exception {
         boolean isAutoInc = false; //check if key of table is Auto Increment
         boolean isFirstRowCol = false; //check if first row of file are culomns definition or row data.
+        boolean withIdentityCol = true;
+        ArrayList<String> cols = new ArrayList<>();
+        int numOfCol = 1;
         String firstColumnName = "";
 
+        String queryColCount = "SELECT\n"
+                + "     name\n"
+                + "FROM\n"
+                + "     [LondonU2].sys.columns\n"
+                + "WHERE\n"
+                + "     object_id = OBJECT_ID('" + tableName + "')";
+        PreparedStatement pcount = MainClass.con.prepareCall(queryColCount);
+        ResultSet rsCount = pcount.executeQuery();
+        while (rsCount.next()) {
+            cols.add(rsCount.getString(numOfCol));
+        }
+        if (!cols.isEmpty()) {
+            numOfCol = cols.size();
+        }
         //<editor-fold defaultstate="collapsed" desc="get meta data of table from DB">
         DatabaseMetaData metaData = MainClass.con.getMetaData();
         String tableType[] = {"TABLE"};
-
-        StringBuilder builder = new StringBuilder();
-
         ResultSet result = metaData.getTables(null, SCHEMA_NAME, null, tableType);
         //</editor-fold>
 
@@ -131,11 +145,7 @@ public class CsvHandler {
             if (!tableName.toLowerCase().equals(nameOfTable.toLowerCase())) {
                 continue;
             }
-
-            builder.append(tableName).append("( ");
             ResultSet columns = metaData.getColumns(null, null, tableName, null);
-            ResultSetMetaData columnsMetaData = columns.getMetaData();
-
             while (columns.next()) {
                 //get col type as string
                 isAutoInc = columns.getString(6).contains("identity");
@@ -162,27 +172,28 @@ public class CsvHandler {
 //</editor-fold>
 
         //<editor-fold defaultstate="collapsed" desc="get first row from file and check if it contains column names">
-        Object[] firstRow = csvReader.readNext();
-        Object[] firstRowWithoutCol = new Object[firstRow.length - 1];
+        String[] firstRow = csvReader.readNext();
+
+        withIdentityCol = (numOfCol == firstRow.length);
+
+        String[] firstRowWithoutCol = new String[firstRow.length - 1];
         if (null == firstRow) {
             throw new FileNotFoundException(
-                    "No columns defined in given CSV file."
+                    "An ecror in given CSV file."
                     + "Please check the CSV file format.");
         } else {
 
             if (isAutoInc) {
-                System.arraycopy(firstRow, 1, firstRowWithoutCol, 0, firstRow.length-1);
+                System.arraycopy(firstRow, 1, firstRowWithoutCol, 0, firstRow.length - 1);
             }
 
-            if (((String) firstRow[0]).startsWith("﻿")) {
+            if (firstRow[0].startsWith("﻿")) {
                 firstRow[0] = ((String) firstRow[0]).substring(1);
             }
 
-            if (((String) firstRow[0]).toLowerCase().equals(firstColumnName.toLowerCase())
-                    || ((String) firstRowWithoutCol[0]).toLowerCase().equals(firstColumnName.toLowerCase())) {
+            if (cols.contains(firstRow[0])) {
                 isFirstRowCol = true;
             }
-
         }
         //</editor-fold>
 
@@ -190,10 +201,18 @@ public class CsvHandler {
         String questionmarks;
         String query;
         if (!isAutoInc) {
+            //table is not with identity'
             questionmarks = StringUtils.repeat("?,", firstRow.length);
             questionmarks = (String) questionmarks.subSequence(0, questionmarks.length() - 1);
         } else {
-            questionmarks = StringUtils.repeat("?,", firstRowWithoutCol.length);
+            //table is with identity'
+            if (withIdentityCol) {
+                questionmarks = StringUtils.repeat("?,", firstRow.length - 1);
+
+            } else {
+                questionmarks = StringUtils.repeat("?,", firstRow.length);
+            }
+
             questionmarks = (String) questionmarks.subSequence(0, questionmarks.length() - 1);
         }
 
@@ -202,13 +221,19 @@ public class CsvHandler {
         if (isFirstRowCol) {
             query = SQL_INSERT_WITH_COLS.replaceFirst(TABLE_REGEX, tableName);
             if (!isAutoInc) {
+                // table is not with identity' 
                 query = query.replaceFirst(KEYS_REGEX, StringUtils.join(firstRow, ","));
-                query = query.replaceFirst(VALUES_REGEX, questionmarks);
-            }else{
-                query = query.replaceFirst(KEYS_REGEX, StringUtils.join(firstRowWithoutCol, ","));
-                query = query.replaceFirst(VALUES_REGEX, questionmarks);
+            } else {
+                // table is with identity'
+                if (withIdentityCol) {
+                    query = query.replaceFirst(KEYS_REGEX, StringUtils.join(firstRowWithoutCol, ","));
+                }
+                else{
+                    query = query.replaceFirst(KEYS_REGEX, StringUtils.join(firstRow, ","));
+                } 
             }
-
+            
+            query = query.replaceFirst(VALUES_REGEX, questionmarks);
         } else {
             query = SQL_INSERT.replaceFirst(TABLE_REGEX, tableName);
             query = query.replaceFirst(VALUES_REGEX, questionmarks);
@@ -233,45 +258,51 @@ public class CsvHandler {
 //            }
             final int batchSize = 1000;
             int count = 0;
-            Date date = null;
-            Integer number;
-            Double d;
+//            Date date = null;
+//            Integer number;
+//            Double d;
+
+            if (!isFirstRowCol) {
+                addRowToBatch(firstRow, ps, isAutoInc,withIdentityCol);
+            }
+
             while ((nextLine = csvReader.readNext()) != null) {
 
-                if (null != nextLine) {
-                    int index = 1;
-                    for (int i = 0; i < nextLine.length; i++) {
-                        //if key col is auto increment skip key col from file
-                        if (isAutoInc && i == 0) {
-                            continue;
-                        }
-
-                        //<editor-fold defaultstate="collapsed" desc="fix the invalid char that fuckedUp everything for two days">
-                        nextLine[i] = nextLine[i].trim();
-                        if (nextLine[i].startsWith("﻿")) {
-                            nextLine[i] = nextLine[i].substring(1);
-                        }
-                        //</editor-fold>
-
-                        //<editor-fold defaultstate="collapsed" desc="Convert the string from file to correct type and add to statement">
-                        date = ConvertUtil.convertToDate(nextLine[i]);
-                        if (null != date) {
-                            Timestamp time = new Timestamp(date.getTime());
-                            ps.setTimestamp(index++, time);
-                            //ps.setDate(index++, new java.sql.Date(date.getTime()));
-                        } else if ((number = ConvertUtil.convertToInt(nextLine[i])) != null) {
-
-                            ps.setInt(index++, number);
-                        } else if ((d = ConvertUtil.convertToDouble(nextLine[i])) != null) {
-
-                            ps.setDouble(index++, d);
-                        } else {
-                            ps.setString(index++, nextLine[i]);
-                        }
-                        //</editor-fold>
-                    }
-                    ps.addBatch();
-                }
+//                if (null != nextLine) {
+//                    int index = 1;
+//                    for (int i = 0; i < nextLine.length; i++) {
+//                        //if key col is auto increment skip key col from file
+//                        if (isAutoInc && i == 0) {
+//                            continue;
+//                        }
+//
+//                        //<editor-fold defaultstate="collapsed" desc="fix the invalid char that fuckedUp everything for two days">
+//                        nextLine[i] = nextLine[i].trim();
+//                        if (nextLine[i].startsWith("﻿")) {
+//                            nextLine[i] = nextLine[i].substring(1);
+//                        }
+//                        //</editor-fold>
+//
+//                        //<editor-fold defaultstate="collapsed" desc="Convert the string from file to correct type and add to statement">
+//                        date = ConvertUtil.convertToDate(nextLine[i]);
+//                        if (null != date) {
+//                            Timestamp time = new Timestamp(date.getTime());
+//                            ps.setTimestamp(index++, time);
+//                            //ps.setDate(index++, new java.sql.Date(date.getTime()));
+//                        } else if ((number = ConvertUtil.convertToInt(nextLine[i])) != null) {
+//
+//                            ps.setInt(index++, number);
+//                        } else if ((d = ConvertUtil.convertToDouble(nextLine[i])) != null) {
+//
+//                            ps.setDouble(index++, d);
+//                        } else {
+//                            ps.setString(index++, nextLine[i]);
+//                        }
+//                        //</editor-fold>
+//                    }
+//                    ps.addBatch();
+//                }
+                addRowToBatch(nextLine, ps, isAutoInc,withIdentityCol);
 
                 if (++count % batchSize == 0) {
                     ps.executeBatch();
@@ -296,6 +327,47 @@ public class CsvHandler {
 
             csvReader.close();
         }
+    }
+
+    private void addRowToBatch(String[] nextLine, PreparedStatement ps, Boolean isAutoInc,boolean withKeyCol) throws SQLException {
+        Date date = null;
+        Integer number;
+        Double d;
+        if (null != nextLine) {
+            int index = 1;
+            for (int i = 0; i < nextLine.length; i++) {
+                //if key col is auto increment skip key col from file
+                if (isAutoInc && withKeyCol && i == 0) {
+                    continue;
+                }
+
+                //<editor-fold defaultstate="collapsed" desc="fix the invalid char that fuckedUp everything for two days">
+                nextLine[i] = nextLine[i].trim();
+                if (nextLine[i].startsWith("﻿")) {
+                    nextLine[i] = nextLine[i].substring(1);
+                }
+                        //</editor-fold>
+
+                //<editor-fold defaultstate="collapsed" desc="Convert the string from file to correct type and add to statement">
+                date = ConvertUtil.convertToDate(nextLine[i]);
+                if (null != date) {
+                    Timestamp time = new Timestamp(date.getTime());
+                    ps.setTimestamp(index++, time);
+                    //ps.setDate(index++, new java.sql.Date(date.getTime()));
+                } else if ((number = ConvertUtil.convertToInt(nextLine[i])) != null) {
+
+                    ps.setInt(index++, number);
+                } else if ((d = ConvertUtil.convertToDouble(nextLine[i])) != null) {
+
+                    ps.setDouble(index++, d);
+                } else {
+                    ps.setString(index++, nextLine[i]);
+                }
+                //</editor-fold>
+            }
+            ps.addBatch();
+        }
+
     }
 
     public char getSeprator() {
