@@ -117,8 +117,6 @@ public void loadCSV(String csvFile, String tableName,
         boolean withIdentityCol = true;
         ArrayList<String> cols = new ArrayList<>();
         int numOfCol = 1;
-        String firstColumnName = "";
-
         String queryColCount = "SELECT\n"
                 + "     name\n"
                 + "FROM\n"
