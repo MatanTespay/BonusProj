@@ -21,7 +21,7 @@ public class LineDialog extends MyInternalFrame {
 
     MainWindow mainWindow;
     String lineName;
-
+    
     /**
      * Creates new form LineDialog
      * @param title
@@ -33,8 +33,16 @@ public class LineDialog extends MyInternalFrame {
         initComponents();
         this.mainWindow = parent;
         fillCmbLine();
+        setVariables();
     }
 
+    private void setVariables(){
+        ComboItem lineItem = (ComboItem) cmbLineName.getSelectedItem();
+        if (lineItem == null) {
+            return;
+        }
+        this.lineName = (lineItem.getKey().toString());
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

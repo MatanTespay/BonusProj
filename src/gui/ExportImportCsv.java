@@ -6,6 +6,7 @@
 package gui;
 
 import gui.MyInternalFrame;
+import java.io.File;
 import javax.swing.JFileChooser;
 //import utils.CsvHandler;
 import javax.swing.JOptionPane;
@@ -38,7 +39,7 @@ public class ExportImportCsv extends MyInternalFrame {
         btnExport = new javax.swing.JButton();
         btnImport = new javax.swing.JButton();
 
-        btnExport.setText("Export Site Info");
+        btnExport.setText("Export");
         btnExport.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnExportActionPerformed(evt);
@@ -96,10 +97,11 @@ public class ExportImportCsv extends MyInternalFrame {
     private void btnExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportActionPerformed
         // TODO add your handling code here:
 
-        JFileChooser c = new JFileChooser();
+        File workingDirectory = new File(System.getProperty("user.home")+"/Desktop");
+        JFileChooser c = new JFileChooser(workingDirectory);
         // Demonstrate "Open" dialog:
         int rVal = c.showOpenDialog(ExportImportCsv.this);
-
+       
         if (rVal == JFileChooser.APPROVE_OPTION) {
 
             String fileName = c.getSelectedFile().getAbsolutePath();
@@ -119,10 +121,11 @@ public class ExportImportCsv extends MyInternalFrame {
 
     private void btnImportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImportActionPerformed
         // TODO add your handling code here:
-        JFileChooser c = new JFileChooser();
+        File workingDirectory = new File(System.getProperty("user.home")+"/Desktop");
+        JFileChooser c = new JFileChooser(workingDirectory);
         // Demonstrate "Open" dialog:
         int rVal = c.showOpenDialog(ExportImportCsv.this);
-
+        
         if (rVal == JFileChooser.APPROVE_OPTION) {
 
             try {

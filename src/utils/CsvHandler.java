@@ -147,7 +147,6 @@ public void loadCSV(String csvFile, String tableName,
             while (columns.next()) {
                 //get col type as string
                 isAutoInc = columns.getString(6).contains("identity");
-                firstColumnName = columns.getString(4);
                 break;
             }
         }

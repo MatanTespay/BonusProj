@@ -7,15 +7,25 @@ package gui;
 
 import init.ComboItem;
 import static init.MainClass.con;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.chart.NumberAxis;
+import javax.swing.JComponent;
+import javax.swing.JFormattedTextField;
 import javax.swing.JInternalFrame;
+import javax.swing.JSpinner;
+import javax.swing.JTextField;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.DefaultFormatter;
 import javax.swing.text.PlainDocument;
 import utils.Column;
 import static utils.Constants.ADD_MODE;
@@ -32,11 +42,12 @@ import utils.QueryCombobox;
  */
 public class Station extends MyInternalFrame {
 
-    private Integer stationID;
+    private int stationID;
     private String stationName;
     private int platformNum;
     private boolean isKiosk;
     private int zoneNumber;
+    JTextField editor;
 
     /**
      * Creates new form Station2
@@ -71,6 +82,18 @@ public class Station extends MyInternalFrame {
     private void buildForm() {
 
         try {
+            JComponent comp = this.spnPlatforms.getEditor();
+            JFormattedTextField field = (JFormattedTextField)comp.getComponent(0);
+            DefaultFormatter formatter = (DefaultFormatter)field.getFormatter();
+            formatter.setCommitsOnValidEdit(true);
+            this.spnPlatforms.addChangeListener(new ChangeListener() {
+
+                @Override
+                public void stateChanged(ChangeEvent e) {
+                   platformNum = (Integer)spnPlatforms.getValue();
+                }
+            });
+            
             PreparedStatement getAllZones = con.prepareStatement("SELECT * FROM tblZone");
             PreparedStatement getAllLines = con.prepareStatement("SELECT name FROM tblLine");
 
@@ -95,7 +118,7 @@ public class Station extends MyInternalFrame {
                 @Override
                 public void removeUpdate(DocumentEvent e) {
                     stationName = tfName.getText();
-                    if (tfName.getText().equals("")){
+                    if (tfName.getText().equals("")) {
                         btnSave.setEnabled(false);
                         btnSave.setToolTipText("The station must have a name");
                     }
@@ -391,9 +414,9 @@ public class Station extends MyInternalFrame {
             deleteSIL.setInt(1, stationID);
             deleteSIL.setString(2, lineName);
             deleteSIL.executeUpdate();
-            
+
             btnDelete.setEnabled(isOkToDelete());
-            
+
         } catch (SQLException e) {
             System.err.println("Error code: " + e.getErrorCode() + "\nError Message: " + e.getMessage());
         }
@@ -426,7 +449,7 @@ public class Station extends MyInternalFrame {
             insertSIL.setInt(1, stationID);
             insertSIL.setString(2, lineName);
             insertSIL.executeUpdate();
-            
+
             btnDelete.setEnabled(isOkToDelete());
 
         } catch (SQLException e) {
@@ -447,13 +470,13 @@ public class Station extends MyInternalFrame {
                 insertStation.setBoolean(3, isKiosk);
                 insertStation.setInt(4, zoneNumber);
                 insertStation.executeUpdate();
-                
+
                 // after creating the new station we want to show its new autonumber
                 getStationID = con.prepareStatement(Queries.SELECT_STATION_ID_BY_NAME);
                 ResultSet rs = getStationID.executeQuery();
                 this.stationID = rs.getInt("ID");
-                tfStationID.setText(stationID.toString());
-                
+                tfStationID.setText(String.valueOf(stationID));
+                this.btnDelete.setEnabled(true);
             } else {
                 //edit mode
                 updateStation = con.prepareStatement(Queries.UPDATE_STATION);
@@ -547,9 +570,9 @@ public class Station extends MyInternalFrame {
             lineTableModel.bindComboBox(cmbLine, 0, 0);
             lineTableModel.fillTable();
             tblLines.setModel(lineTableModel);
-            
+
             btnDelete.setEnabled(isOkToDelete());
-            
+
         } catch (SQLException ex) {
 
         }
@@ -568,7 +591,7 @@ public class Station extends MyInternalFrame {
             this.platformNum = rs.getInt("platformNum"); // CHECK WHAT IF NULL
             this.isKiosk = rs.getBoolean("Kiosk");
             this.zoneNumber = rs.getInt("zoneNumber");
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(Station.class
                     .getName()).log(Level.SEVERE, null, ex);
@@ -576,7 +599,8 @@ public class Station extends MyInternalFrame {
     }
 
     public void setDefaults() {
-        tfStationID.setText(this.stationID.toString());
+        tfStationID.setText(String.valueOf(stationID));
+        //tfStationID.setText(this.stationID.toString());
         tfName.setText(this.stationName);
 //        setSelectedValue(cmbZone, String.valueOf(this.zoneNumber)); //WHAT FOR?
         spnPlatforms.setValue(this.platformNum);
@@ -585,13 +609,14 @@ public class Station extends MyInternalFrame {
     }
 
     private void setActiveness() {
-        
+
         tfStationID.setEnabled(false);
-        
-        if (getMode() == ADD_MODE) {           
+
+        if (getMode() == ADD_MODE) {
             pLines.setVisible(false);
             btnSave.setEnabled(false);
- 
+            btnDelete.setEnabled(false);
+            
         } else {
             // edit mode
             pLines.setVisible(true);
@@ -599,12 +624,12 @@ public class Station extends MyInternalFrame {
         }
         btnDelete.setEnabled(isOkToDelete());
     }
-    
-    private boolean isOkToDelete(){
-        if (tblLines.getModel().getRowCount() > 0){
+
+    private boolean isOkToDelete() {
+        if (tblLines.getModel().getRowCount() > 0) {
             btnDelete.setToolTipText("Deleting the station is not allowed since it has lines");
             return false;
-        } 
+        }
         return true;
     }
 }

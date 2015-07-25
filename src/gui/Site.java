@@ -653,7 +653,7 @@ public class Site extends MyInternalFrame {
                 items.add(new ComboItem(rs.getString("siteType"), rs.getString("siteType")));
             }
             Collections.sort(items);
-            items.add(0, null);
+            //items.add(0, null);
             cmbType.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
         } catch (SQLException ex) {
             Logger.getLogger(Site.class.getName()).log(Level.SEVERE, null, ex);

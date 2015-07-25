@@ -162,7 +162,11 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
      */
     public void createFrame(MyInternalFrame frame) {
         //MyInternalFrame frame = new MyInternalFrame(title);
+
         frame.setVisible(true); //necessary as of 1.3
+        Dimension desktopSize = desktop.getSize();
+        Dimension jInternalFrameSize = frame.getSize();
+        frame.setLocation((desktopSize.width - jInternalFrameSize.width) / 2, (desktopSize.height - jInternalFrameSize.height) / 2);
 
         desktop.add(frame);
         try {
@@ -257,6 +261,9 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
                 break;
             case "Add Site":
                 ifram = new Site(e.getActionCommand(), selectedUserType, 2);
+                break;
+            case "Edit Site":
+                ifram = new SiteDialog(e.getActionCommand(), selectedUserType, this);
                 break;
             case "Add Deposit":
                 ifram = new Deposits(e.getActionCommand(), selectedUserType);
@@ -436,6 +443,9 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
             MainClass.setIsIflySaved(true);
             return;
         }
+
+        login.getUserTxtName().setText("mtn");
+        login.getUsertxtPassword().setText("1234");
 
         login.setVisible(true);
         login.resetFocus(0);

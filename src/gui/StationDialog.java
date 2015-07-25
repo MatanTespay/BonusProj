@@ -18,12 +18,13 @@ import utils.QueryCombobox;
  * @author asus
  */
 public class StationDialog extends MyInternalFrame {
-    
+
     MainWindow mainWindow;
     private int stationID;
 
     /**
      * Creates new form StationDialog
+     *
      * @param title
      * @param type
      * @param parent
@@ -33,6 +34,15 @@ public class StationDialog extends MyInternalFrame {
         initComponents();
         this.mainWindow = parent;
         fillCmbLine();
+        setVariables();
+    }
+
+    private void setVariables() {
+        ComboItem item = (ComboItem) cmbStationName.getSelectedItem();
+        if (item == null) {
+            return;
+        }
+        this.stationID = ((Integer)item.getKey());
     }
 
     /**
@@ -107,8 +117,8 @@ public class StationDialog extends MyInternalFrame {
 
     private void cmbStationNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbStationNameActionPerformed
 
-        ComboItem stationItem = (ComboItem) cmbStationName.getSelectedItem();
-        this.stationID = Integer.valueOf(stationItem.getKey().toString());
+        ComboItem item = (ComboItem) cmbStationName.getSelectedItem();
+         this.stationID = ((Integer)item.getKey());
     }//GEN-LAST:event_cmbStationNameActionPerformed
 
     private void bntOKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bntOKActionPerformed
@@ -141,7 +151,7 @@ public class StationDialog extends MyInternalFrame {
         try {
             st = con.prepareStatement("SELECT ID,name FROM tblStation");
 
-            cmbStationName.setModel(new QueryCombobox(cmbStationName, String.class, st));
+            cmbStationName.setModel(new QueryCombobox(cmbStationName, Integer.class, st));
 
         } catch (SQLException ex) {
             Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
