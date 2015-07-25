@@ -11,8 +11,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JButton;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
@@ -414,13 +416,14 @@ public class Station extends MyInternalFrame {
         try {
             value = tblLines.getModel().getValueAt(tblLines.getSelectedRow(), 0);
             lineName = value.toString();
-            ((CustomTableModel) tblLines.getModel()).removeRow(tblLines.getSelectedRow());
 
             deleteSIL = con.prepareStatement(Queries.DELETE_STATION_IN_LINE);
             deleteSIL.setInt(1, stationID);
             deleteSIL.setString(2, lineName);
             deleteSIL.executeUpdate();
-
+            
+            ((CustomTableModel) tblLines.getModel()).fillTable();
+            
             JOptionPane.showInternalMessageDialog(this,
                     "Line was removed successfully from this station! What a crappy line it was.",
                     "Hooray!",
@@ -445,7 +448,7 @@ public class Station extends MyInternalFrame {
     }//GEN-LAST:event_btnRemoveLineActionPerformed
 
     private void cmbLineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbLineActionPerformed
-
+        btnAddLine.setEnabled(cmbLine.getItemCount() != 0);
     }//GEN-LAST:event_cmbLineActionPerformed
 
     private void cmbZoneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbZoneActionPerformed
@@ -465,12 +468,13 @@ public class Station extends MyInternalFrame {
         try {
             selectedStation = (ComboItem) ((QueryCombobox) cmbLine.getModel()).getSelectedItem();
             lineName = selectedStation.getKey().toString();
-            ((CustomTableModel) tblLines.getModel()).addRow(lineName);
 
             insertSIL = con.prepareStatement(Queries.INSERT_STATION_IN_LINE);
             insertSIL.setInt(1, stationID);
             insertSIL.setString(2, lineName);
             insertSIL.executeUpdate();
+            
+            ((CustomTableModel) tblLines.getModel()).fillTable();
             
             JOptionPane.showInternalMessageDialog(this,
                     "Line was added successfully to this station! Oh yeah!",
@@ -610,20 +614,20 @@ public class Station extends MyInternalFrame {
         cols.add(new Column("Type", "lineType", String.class));
         cols.add(new Column("Length", "lineLength", Double.class));
         try {
-            PreparedStatement getAllLines = con.prepareStatement("SELECT L.*, "
-                    + "LC.name As 'colorName' FROM tblStationInLine As SIL "
-                    + "join tblLine As L on SIL.lineName = L.name join tblLineColor "
-                    + "As LC on L.name = LC.lineName WHERE SIL.stationID = ? ");
+            PreparedStatement getAllLines = con.prepareStatement(Queries.SELECT_LINES_OF_STATION);
             getAllLines.setInt(1, stationID);
-            PreparedStatement addLine = con.prepareStatement("SELECT L.*, LC.name "
-                    + "As 'colorName' , LC.lineName FROM tblLine As L join tblLineColor "
-                    + "As LC on L.name = LC.lineName WHERE lineName = ?");
 
-            CustomTableModel lineTableModel = new CustomTableModel(tblLines, cols, addLine, getAllLines);
+            CustomTableModel lineTableModel = new CustomTableModel(tblLines, cols, getAllLines);
             lineTableModel.bindComboBox(cmbLine, 0, 0);
-            lineTableModel.fillTable();
+            
+            HashSet<JButton> tableButtons = new HashSet<>();
+            tableButtons.add(btnRemoveLine);
+            tableButtons.add(btnViewLine);
+            lineTableModel.bindButtons(tableButtons);
+            
             tblLines.setModel(lineTableModel);
-
+            lineTableModel.fillTable();
+            
             btnDelete.setEnabled(isOkToDelete());
 
         } catch (SQLException ex) {

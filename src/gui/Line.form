@@ -166,9 +166,6 @@
             </Property>
             <Property name="startYear" type="int" value="1863"/>
           </Properties>
-          <Events>
-            <EventHandler event="propertyChange" listener="java.beans.PropertyChangeListener" parameters="java.beans.PropertyChangeEvent" handler="ychFoundationYearPropertyChange"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JTextField" name="tfName">
           <Events>
@@ -225,9 +222,6 @@
           </Events>
         </Component>
         <Component class="javax.swing.JTextField" name="tfColor">
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tfColorActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JSpinner" name="spnLength">
           <Properties>

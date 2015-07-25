@@ -412,7 +412,7 @@ public class Card extends MyInternalFrame {
             st.setDouble(4, length);
 //            st.executeUpdate();
 
-            ((CustomTableModel) tblPrograms.getModel()).addRow(new Object[]{zone, length});
+//            ((CustomTableModel) tblPrograms.getModel()).addRow(new Object[]{zone, length});
 
         } catch (SQLException | NullPointerException ex) {
 //            Logger.getLogger(Card.class.getName()).log(Level.SEVERE, null, ex);
@@ -446,7 +446,7 @@ public class Card extends MyInternalFrame {
             st.setDouble(4, length);
             st.executeUpdate();
 
-            ((CustomTableModel) tblPrograms.getModel()).removeRow(tblPrograms.getSelectedRow());
+//            ((CustomTableModel) tblPrograms.getModel()).removeRow(tblPrograms.getSelectedRow());
 
         } catch (SQLException | NullPointerException ex) {
 //            Logger.getLogger(Card.class.getName()).log(Level.SEVERE, null, ex);
@@ -508,8 +508,8 @@ public class Card extends MyInternalFrame {
             getAllPrograms.setInt(1, this.cardNumber);
             getAllPrograms.setDate(2, this.purchaseDate);
 
-            CustomTableModel programTableModel = new CustomTableModel(tblPrograms, cols, null/*no add statement*/, getAllPrograms);
-            tblPrograms.setModel(programTableModel);
+//            CustomTableModel programTableModel = new CustomTableModel(tblPrograms, cols, null/*no add statement*/, getAllPrograms);
+//            tblPrograms.setModel(programTableModel);
         } catch (SQLException ex) {
 
         }

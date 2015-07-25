@@ -12,9 +12,6 @@ package utils;
 public class Queries {
 
     //----------------------------LINE & COLOR----------------------------------  
-    public static final String SELECT_STATIONS_OF_LINE = "SELECT * tblStationInLine "
-            + "As SIL join tblStation As S on SIL.stationID = S.ID WHERE SIL.lineName = ?";
-
     public static final String SELECT_LINE_AND_COLOR = "SELECT * FROM tblLine As L "
             + "join tblLineColor As LC on L.name = LC.lineName WHERE L.name = ?";
 
@@ -27,20 +24,14 @@ public class Queries {
             + "lineType = ?, lineLength = ? WHERE name = ?";
     public final static String UPDATE_COLOR = "UPDATE tblLineColor SET name = ? "
             + "WHERE lineName = ?";
-    
+
     // note: deleting a line automatically deletes the color
     public final static String DELETE_LINE = "DELETE FROM tblLine WHERE name = ?";
 
     //------------------------------STATION-------------------------------------
-
-    public static final String SELECT_LINES_OF_STATIONS = "SELECT L.*, LC.name "
-            + "As 'colorName' FROM tblStationInLine As SIL join tblLine As L on "
-            + "SIL.lineName = L.name join tblLineColor  As LC on L.name = "
-            + "LC.lineName WHERE SIL.stationID = ? ";
-    
     public static final String SELECT_STATION_ID_BY_NAME = "SELECT ID FROM tblStation As S WHERE S.name = ?";
-    
-    public static final String SELECT_STATION = "SELECT * FROM tblStation As S WHERE S.ID = ?";
+
+    public static final String SELECT_STATION = "SELECT * FROM tblStation WHERE ID = ?";
 
     public final static String INSERT_STATION = "INSERT INTO tblStation VALUES (?,?,?,?)";
 
@@ -50,6 +41,13 @@ public class Queries {
     public final static String DELETE_STATION = "DELETE FROM tblStation WHERE stationID = ?";
 
     //-------------------------STATION IN LINE----------------------------------
+    public static final String SELECT_STATIONS_OF_LINE = "SELECT * FROM tblStationInLine "
+            + "As SIL join tblStation As S on SIL.stationID = S.ID WHERE SIL.lineName = ?";
+
+    public static final String SELECT_LINES_OF_STATION = "SELECT L.*, LC.name "
+            + "As 'colorName' FROM tblStationInLine As SIL join tblLine As L on "
+            + "SIL.lineName = L.name join tblLineColor  As LC on L.name = "
+            + "LC.lineName WHERE SIL.stationID = ? ";
 
     public final static String INSERT_STATION_IN_LINE = "INSERT INTO tblStationInLine VALUES (?,?)";
 
