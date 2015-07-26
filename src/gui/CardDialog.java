@@ -11,10 +11,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,10 +24,13 @@ import java.util.logging.Logger;
 public class CardDialog extends MyInternalFrame {
 
     int cardNumber;
-    Date purchaseDate;
+    Timestamp purchaseDate;
     MainWindow mainWindow;
     /**
      * Creates new form CardDialog
+     * @param title
+     * @param type
+     * @param parent
      */
     public CardDialog(String title, String type, MainWindow parent) {
         super(title, type);
@@ -145,7 +147,7 @@ public class CardDialog extends MyInternalFrame {
             return;
         }
         ComboItem purchaseDateItem = (ComboItem) cmbPDate.getSelectedItem();
-        this.purchaseDate = (Date) purchaseDateItem.getKey();
+        this.purchaseDate = Timestamp.valueOf(purchaseDateItem.getKey().toString());
         
     }//GEN-LAST:event_cmbPDateActionPerformed
 
@@ -202,7 +204,7 @@ public class CardDialog extends MyInternalFrame {
 
             ArrayList<ComboItem> items = new ArrayList<>();
             while (rs.next()) {
-                items.add(new ComboItem(rs.getDate("purchaseDate"), rs.getDate("purchaseDate").toString()));
+                items.add(new ComboItem(rs.getTimestamp("purchaseDate"), rs.getTimestamp("purchaseDate").toString()));
             }
             if (!items.isEmpty()) {
                 Collections.sort(items);
@@ -210,7 +212,7 @@ public class CardDialog extends MyInternalFrame {
                 cmbPDate.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
 
                 ComboItem purchaseDateItem = (ComboItem) cmbPDate.getSelectedItem();
-                this.purchaseDate = (Date) purchaseDateItem.getKey();
+                this.purchaseDate = Timestamp.valueOf(purchaseDateItem.getKey().toString());
                 cmbPDate.setSelectedIndex(0);
             }
         } catch (SQLException ex) {

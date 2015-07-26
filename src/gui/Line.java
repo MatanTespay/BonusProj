@@ -70,7 +70,7 @@ public class Line extends MyInternalFrame {
         setMode(ADD_MODE);
         initComponents();
         buildForm();
-        this.lineType = 'U';
+        this.lineType = utils.Constants.UNDERGROUND;
     }
 
     private void buildForm() {
@@ -78,7 +78,7 @@ public class Line extends MyInternalFrame {
             PreparedStatement getAllStations = con.prepareStatement("SELECT ID, name FROM tblStation");
 
             // set models to comboboxes   
-            cmbStation.setModel(new QueryCombobox(cmbStation, Integer.class, getAllStations));
+            cmbStation.setModel(new QueryCombobox(cmbStation, Short.class, getAllStations));
 
             // set visibility and enablement
             setActiveness();
@@ -235,6 +235,7 @@ public class Line extends MyInternalFrame {
         lblFoundation.setText("Foundation Year");
 
         ychFoundationYear.setEndYear(new java.util.Date().getYear()+1900);
+        ychFoundationYear.setMinimum(utils.Constants.LUNDON_U_FOUNDATION_YEAR);
         ychFoundationYear.setStartYear(1863);
 
         tfName.addActionListener(new java.awt.event.ActionListener() {
@@ -516,7 +517,7 @@ public class Line extends MyInternalFrame {
 
     private void cmbTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbTypeActionPerformed
         String strType = (String) cmbType.getModel().getSelectedItem();
-        this.lineType = (strType.equals("Overground")) ? 'O' : 'U';
+        this.lineType = (strType.equals("Overground")) ? utils.Constants.OVERGROUND : utils.Constants.UNDERGROUND;
     }//GEN-LAST:event_cmbTypeActionPerformed
 
     private void btnAddStationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddStationActionPerformed
@@ -711,12 +712,12 @@ public class Line extends MyInternalFrame {
 
             stationTblModel = new CustomTableModel(tblStations, cols, getAllStations);
             stationTblModel.bindComboBox(cmbStation, 0, 1);
-            
+
             HashSet<JButton> tableButtons = new HashSet<>();
             tableButtons.add(btnRemoveStation);
             tableButtons.add(btnViewStation);
             stationTblModel.bindButtons(tableButtons);
-            
+
             tblStations.setModel(stationTblModel);
             stationTblModel.fillTable();
 
@@ -763,9 +764,9 @@ public class Line extends MyInternalFrame {
         } else {
             // edit mode
             tfName.setEnabled(false);
-            setStationTblModel();
             pStations.setVisible(true);
             btnDelete.setVisible(true);
+            setStationTblModel();
         }
         btnSave.setEnabled(isOkToSave());
         btnSave.setEnabled(isOkToDelete());
@@ -782,7 +783,7 @@ public class Line extends MyInternalFrame {
         }
 
         if (foundedYear == null || foundedYear < ychFoundationYear.getMinimum() || foundedYear > ychFoundationYear.getMaximum()) {
-            btnSave.setToolTipText("The line's foundation year must be netween 1863 and the current year");
+            btnSave.setToolTipText("The line's foundation year must be between " + utils.Constants.LUNDON_U_FOUNDATION_YEAR + " and the current year");
             return false;
         }
 

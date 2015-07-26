@@ -164,6 +164,9 @@
             <Property name="endYear" type="int" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="new java.util.Date().getYear()+1900" type="code"/>
             </Property>
+            <Property name="minimum" type="int" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection code="utils.Constants.LUNDON_U_FOUNDATION_YEAR" type="code"/>
+            </Property>
             <Property name="startYear" type="int" value="1863"/>
           </Properties>
         </Component>

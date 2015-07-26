@@ -22,19 +22,23 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import utils.Column;
 import static utils.Constants.ADD_MODE;
 import static utils.Constants.EDIT_MODE;
 import static utils.Constants.OYSTER;
 import static utils.Constants.PAPER;
 import utils.CustomTableModel;
+import utils.Queries;
 
 /**
  *
@@ -42,8 +46,8 @@ import utils.CustomTableModel;
  */
 public class Card extends MyInternalFrame {
 
-    private int cardNumber;
-    private Date purchaseDate;
+    private long cardNumber;
+    private Timestamp purchaseDate;
     private boolean type;
     private ImageIcon picture;
     private JFileChooser picFileChooser;
@@ -57,7 +61,7 @@ public class Card extends MyInternalFrame {
      * @param cardNumber
      * @param purchaseDate
      */
-    public Card(String title, String type, int cardNumber, Date purchaseDate) {
+    public Card(String title, String type, int cardNumber, Timestamp purchaseDate) {
         super(title, type);
         setMode(EDIT_MODE);
         this.cardNumber = cardNumber;
@@ -78,31 +82,25 @@ public class Card extends MyInternalFrame {
     private void buildForm() {
         initComponents();
         try {
+
+            picFileChooser = new JFileChooser();
+
+            // set model to comboboxes
             PreparedStatement getAllCards = con.prepareStatement("SELECT number FROM tblCard");
             PreparedStatement getPurchaseDate = con.prepareStatement("SELECT purchaseDate FROM tblCard "
                     + "WHERE number = ?");
             PreparedStatement getAllCardLengths = con.prepareStatement("SELECT * FROM tblCardLengths");
             PreparedStatement getAllZones = con.prepareStatement("SELECT * FROM tblZone");
 
-            if (getMode() == EDIT_MODE) {
-                cmbCard.setModel(new QueryCombobox(cmbCard, Integer.class, getAllCards));
-                cmbPurchaseDate.setModel(new QueryCombobox(cmbPurchaseDate, cmbCard, Date.class, getPurchaseDate));
-            } else {
-                // add mode
-                setNewCard();
-                cmbCard.setModel(new javax.swing.DefaultComboBoxModel(new ComboItem[]{
-                    new ComboItem(cardNumber, String.valueOf(cardNumber))}));
-                cmbPurchaseDate.setModel(new javax.swing.DefaultComboBoxModel(new ComboItem[]{
-                    new ComboItem(purchaseDate.toString(), purchaseDate.toString())}));
-            }
+            cmbCard.setModel(new QueryCombobox(cmbCard, Integer.class, getAllCards));
+            cmbPurchaseDate.setModel(new QueryCombobox(cmbPurchaseDate, cmbCard, Date.class, getPurchaseDate));
 
             cmbLength.setModel(new QueryCombobox(cmbLength, Integer.class, getAllCardLengths));
             cmbZone.setModel(new QueryCombobox(cmbZone, Integer.class, getAllZones));
 
-//            setTableProperties(tblPrograms);
-            picFileChooser = new JFileChooser();
+            // set visibility and enablement
             setActiveness();
-            //pPrograms.setVisible(false);
+
         } catch (SQLException ex) {
 
         }
@@ -129,6 +127,7 @@ public class Card extends MyInternalFrame {
         lblPicture = new javax.swing.JLabel();
         btnSave = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
+        btnDelete = new javax.swing.JButton();
         pPrograms = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblPrograms = new javax.swing.JTable();
@@ -136,8 +135,8 @@ public class Card extends MyInternalFrame {
         lblLength = new javax.swing.JLabel();
         cmbZone = new javax.swing.JComboBox();
         cmbLength = new javax.swing.JComboBox();
-        btnRemove = new javax.swing.JButton();
-        btnAdd = new javax.swing.JButton();
+        btnRemoveProgram = new javax.swing.JButton();
+        btnAddProgram = new javax.swing.JButton();
 
         pDetails.setBorder(javax.swing.BorderFactory.createTitledBorder("Details"));
 
@@ -196,6 +195,13 @@ public class Card extends MyInternalFrame {
             }
         });
 
+        btnDelete.setText("Delete");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout pDetailsLayout = new javax.swing.GroupLayout(pDetails);
         pDetails.setLayout(pDetailsLayout);
         pDetailsLayout.setHorizontalGroup(
@@ -222,6 +228,8 @@ public class Card extends MyInternalFrame {
                             .addComponent(lblPicture, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pDetailsLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -249,10 +257,11 @@ public class Card extends MyInternalFrame {
                             .addComponent(lblType))
                         .addGap(18, 18, 18)
                         .addComponent(chbIsTourist)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
                 .addGroup(pDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCancel)
-                    .addComponent(btnSave))
+                    .addComponent(btnSave)
+                    .addComponent(btnDelete))
                 .addContainerGap())
         );
 
@@ -279,17 +288,17 @@ public class Card extends MyInternalFrame {
 
         cmbLength.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        btnRemove.setText("Remove");
-        btnRemove.addActionListener(new java.awt.event.ActionListener() {
+        btnRemoveProgram.setText("Remove");
+        btnRemoveProgram.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRemoveActionPerformed(evt);
+                btnRemoveProgramActionPerformed(evt);
             }
         });
 
-        btnAdd.setText("Add");
-        btnAdd.addActionListener(new java.awt.event.ActionListener() {
+        btnAddProgram.setText("Add");
+        btnAddProgram.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddActionPerformed(evt);
+                btnAddProgramActionPerformed(evt);
             }
         });
 
@@ -299,13 +308,13 @@ public class Card extends MyInternalFrame {
             pProgramsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pProgramsLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addGroup(pProgramsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(pProgramsLayout.createSequentialGroup()
-                        .addComponent(btnRemove)
+                        .addComponent(btnRemoveProgram)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnAdd))
+                        .addComponent(btnAddProgram))
                     .addGroup(pProgramsLayout.createSequentialGroup()
                         .addGroup(pProgramsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblLength)
@@ -331,8 +340,8 @@ public class Card extends MyInternalFrame {
                             .addComponent(lblLength))
                         .addGap(38, 38, 38)
                         .addGroup(pProgramsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnAdd)
-                            .addComponent(btnRemove)))
+                            .addComponent(btnAddProgram)
+                            .addComponent(btnRemoveProgram)))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -343,9 +352,9 @@ public class Card extends MyInternalFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(pDetails, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(pPrograms, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pDetails, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pPrograms, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -353,7 +362,7 @@ public class Card extends MyInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(pDetails, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(pPrograms, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -381,7 +390,7 @@ public class Card extends MyInternalFrame {
             try {
                 File f = picFileChooser.getSelectedFile();
                 Path p = f.toPath();
-                byte[] b =  Files.readAllBytes(p);
+                byte[] b = Files.readAllBytes(p);
                 ImageIcon icon = getScaledImage(b);
                 lblPicture.setIcon(icon);
                 this.picture = icon;
@@ -391,7 +400,7 @@ public class Card extends MyInternalFrame {
         }
     }//GEN-LAST:event_btnBrowseActionPerformed
 
-    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+    private void btnAddProgramActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProgramActionPerformed
         String tableName = (this.type == PAPER) ? "tblPaperCardAreas" : "tblOysterCardAreas";
         ComboItem zoneItem;
         ComboItem lengthItem;
@@ -406,25 +415,24 @@ public class Card extends MyInternalFrame {
             length = Double.valueOf(lengthItem.getKey().toString());
 
             st = con.prepareStatement("INSERT INTO " + tableName + " VALUES (?,?,?,?)");
-            st.setInt(1, this.cardNumber);
-            st.setDate(2, this.purchaseDate);
+            st.setLong(1, this.cardNumber);
+            st.setTimestamp(2, this.purchaseDate);
             st.setInt(3, zone);
             st.setDouble(4, length);
 //            st.executeUpdate();
 
 //            ((CustomTableModel) tblPrograms.getModel()).addRow(new Object[]{zone, length});
-
         } catch (SQLException | NullPointerException ex) {
 //            Logger.getLogger(Card.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_btnAddActionPerformed
+    }//GEN-LAST:event_btnAddProgramActionPerformed
 
     private void cmbPurchaseDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbPurchaseDateActionPerformed
         ComboItem purchaseDateItem = (ComboItem) cmbPurchaseDate.getSelectedItem();
-        this.purchaseDate = (Date) purchaseDateItem.getKey();
+        this.purchaseDate = (Timestamp.valueOf(purchaseDateItem.getKey().toString()));
     }//GEN-LAST:event_cmbPurchaseDateActionPerformed
 
-    private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
+    private void btnRemoveProgramActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveProgramActionPerformed
         String tableName = (this.type == PAPER) ? "tblPaperCardAreas" : "tblOysterCardAreas";
         ComboItem zoneItem;
         ComboItem lengthItem;
@@ -440,18 +448,17 @@ public class Card extends MyInternalFrame {
 
             st = con.prepareStatement("DELETE FROM " + tableName + " WHERE cardNumber = ? "
                     + "and cardPurchaseDate = ? and zoneNumber = ? and cardLength = ?");
-            st.setInt(1, this.cardNumber);
-            st.setDate(2, this.purchaseDate);
+            st.setLong(1, this.cardNumber);
+            st.setTimestamp(2, this.purchaseDate);
             st.setInt(3, zone);
             st.setDouble(4, length);
             st.executeUpdate();
 
 //            ((CustomTableModel) tblPrograms.getModel()).removeRow(tblPrograms.getSelectedRow());
-
         } catch (SQLException | NullPointerException ex) {
 //            Logger.getLogger(Card.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_btnRemoveActionPerformed
+    }//GEN-LAST:event_btnRemoveProgramActionPerformed
 
     private void chbIsTouristActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chbIsTouristActionPerformed
         this.isTourist = chbIsTourist.isSelected();
@@ -462,16 +469,77 @@ public class Card extends MyInternalFrame {
     }//GEN-LAST:event_btnCancelActionPerformed
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        //pPrograms.setVisible(true);
-//        saveFields();
+        PreparedStatement insertCard;
+
+        try {
+            if (getMode() == ADD_MODE) {
+                insertCard = con.prepareStatement(Queries.INSERT_CARD);
+                insertCard.setLong(1, cardNumber);
+                insertCard.setTimestamp(2, purchaseDate);
+                insertCard.executeUpdate();
+
+            } 
+            
+            JOptionPane.showInternalMessageDialog(this,
+                    "Card was added successfully!",
+                    "Hooray!",
+                    JOptionPane.PLAIN_MESSAGE);
+
+            setMode(EDIT_MODE);
+            setActiveness();
+        } catch (SQLException e) {
+            switch (e.getErrorCode()) {
+                case 2627:
+                    if (getMode() == ADD_MODE && e.getMessage().contains("tblLine")) {
+                        JOptionPane.showInternalMessageDialog(this,
+                                "Sorry but the name \"" + cardNumber + "\" is already taken. Please be original.",
+                                "Bummer!",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+
+                    if (e.getMessage().contains("tblColor")) {
+                        JOptionPane.showInternalMessageDialog(this,
+                                "Sorry but the color \"" + cardNumber + "\" is already taken. Please be original.",
+                                "Bummer!",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+
+                    break;
+                default:
+                    JOptionPane.showInternalMessageDialog(this,
+                            "Error code: " + e.getErrorCode() + ". Go figure it yourself!",
+                            "Bummer!",
+                            JOptionPane.ERROR_MESSAGE);
+            }
+            System.err.println("Error code: " + e.getErrorCode() + "\nError Message: " + e.getMessage());
+            if (con != null) {
+                try {
+                    con.rollback();
+                } catch (SQLException excep) {
+                    System.err.println("Error code: " + e.getErrorCode() + "\nError Message: " + e.getMessage());
+                }
+            }
+        } finally {
+            try {
+                con.setAutoCommit(true);
+            } catch (SQLException ex) {
+                Logger.getLogger(Line.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
     }//GEN-LAST:event_btnSaveActionPerformed
+
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnDeleteActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAdd;
+    private javax.swing.JButton btnAddProgram;
     private javax.swing.JButton btnBrowse;
     private javax.swing.JButton btnCancel;
-    private javax.swing.JButton btnRemove;
+    private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnRemoveProgram;
     private javax.swing.JButton btnSave;
     private javax.swing.JCheckBox chbIsTourist;
     private javax.swing.JComboBox cmbCard;
@@ -491,25 +559,34 @@ public class Card extends MyInternalFrame {
     private javax.swing.JTable tblPrograms;
     // End of variables declaration//GEN-END:variables
 
-    private void fillPrograms() {
-        PreparedStatement st;
-        ResultSet rs;
+    private void setProgramTableModel() {
 
         ArrayList<Column> cols = new ArrayList<>();
         cols.add(new Column("#", "#", Integer.class)); //*UNBOUND to DB - displays row num*/
         cols.add(new Column("Zone", "zoneNumber", Integer.class));
         cols.add(new Column("Length", "cardLength", Double.class));
 
-        try {
-            String tableName = this.type == PAPER ? "tblPaperCardAreas" : "tblOysterCardAreas";
-            PreparedStatement getAllPrograms = con.prepareStatement("SELECT * FROM " + tableName + " As CA "
-                    + "JOIN tblCardLengths As CL on CA.cardLength = CL.lengthDescription "
-                    + "WHERE CA.cardNumber = ? and CA.cardPurchaseDate = ?");
-            getAllPrograms.setInt(1, this.cardNumber);
-            getAllPrograms.setDate(2, this.purchaseDate);
+        PreparedStatement getAllPrograms;
+        CustomTableModel programTblModel;
 
-//            CustomTableModel programTableModel = new CustomTableModel(tblPrograms, cols, null/*no add statement*/, getAllPrograms);
-//            tblPrograms.setModel(programTableModel);
+        try {
+            getAllPrograms = (this.type == PAPER)
+                    ? con.prepareStatement(Queries.SELECT_PAPER_PROGRAMS_AND_LENGTH_OF_CARD)
+                    : con.prepareStatement(Queries.SELECT_OYSTER_PROGRAMS_AND_LENGTHS_OF_CARD);
+
+            getAllPrograms.setLong(1, this.cardNumber);
+            getAllPrograms.setTimestamp(2, this.purchaseDate);
+
+            programTblModel = new CustomTableModel(tblPrograms, cols, getAllPrograms);
+
+            HashSet<JButton> tableButtons = new HashSet<>();
+            tableButtons.add(btnRemoveProgram);
+            programTblModel.bindButtons(tableButtons);
+
+            tblPrograms.setModel(programTblModel);
+            programTblModel.fillTable();
+
+            btnDelete.setEnabled(isOkToDelete());
         } catch (SQLException ex) {
 
         }
@@ -520,7 +597,7 @@ public class Card extends MyInternalFrame {
 //                    + "JOIN tblCardLengths As CL on CA.cardLength = CL.lengthDescription "
 //                    + "WHERE CA.cardNumber = ? and CA.cardPurchaseDate = ?");
 //            st.setInt(1, this.cardNumber);
-//            st.setDate(2, this.purchaseDate);
+//            st.setTimestamp(2, this.purchaseDate);
 //            rs = st.executeQuery();
 //            ArrayList<Object[]> rows = new ArrayList();
 //            
@@ -589,19 +666,18 @@ public class Card extends MyInternalFrame {
         PreparedStatement st;
         ResultSet rs;
         try {
-            st = con.prepareStatement("SELECT * FROM tblOysterCard WHERE "
-                    + "number = ? and purchaseDate = ?");
-            st.setInt(1, cardNumber);
+            st = con.prepareStatement(Queries.SELECT_OYSTER_PICTURE);
+            st.setLong(1, cardNumber);
             st.setString(2, this.purchaseDate.toString());
 
             rs = st.executeQuery();
 
             if (rs.isBeforeFirst()) {
                 // result set not empty - the card is Oyster
-                this.type = OYSTER;
-                rs.next();
 
-                //this.picture = rs.getObject("picture", ImageIcon.class); //TODO: FIX THIS IMPORT
+                rs.next();
+                this.type = OYSTER;
+
                 Blob blob = rs.getBlob("picture");
                 int blobLength = (int) blob.length();
                 byte[] blobAsBytes = blob.getBytes(1, blobLength);
@@ -609,16 +685,15 @@ public class Card extends MyInternalFrame {
 
             } else {
                 // result set is empty - the card is Paper
-                st = con.prepareStatement("SELECT isTourist FROM tblPaperCard WHERE "
-                        + "number = ? and purchaseDate = ?");
-                st.setInt(1, cardNumber);
+                st = con.prepareStatement(Queries.SELECT_PAPER_ISTOURIST);
+                st.setLong(1, cardNumber);
                 st.setString(2, this.purchaseDate.toString());
 
                 rs = st.executeQuery();
 
-                this.type = PAPER;
                 rs.next();
-                this.isTourist = rs.getBoolean("isTourist"); // //TODO: CHECK IF CORRECT
+                this.type = PAPER;
+                this.isTourist = rs.getBoolean("isTourist");
             }
 
         } catch (SQLException ex) {
@@ -628,18 +703,23 @@ public class Card extends MyInternalFrame {
     }
 
     private void setActiveness() {
-        cmbCard.setEnabled(false);
-        cmbPurchaseDate.setEnabled(false);
 
         if (getMode() == ADD_MODE) {
             cmbType.setEnabled(true);
-
+            pPrograms.setVisible(false);
+            btnDelete.setVisible(false);
         } else {
             // edit mode
-
             cmbType.setEnabled(false);
-
+            pPrograms.setVisible(true);
+            btnDelete.setVisible(true);
+            setProgramTblModel();
         }
+        cmbCard.setEnabled(false);
+        cmbPurchaseDate.setEnabled(false);
+
+        btnSave.setEnabled(isOkToSave());
+        btnSave.setEnabled(isOkToDelete());
         modifyFormToCardType();
     }
 
@@ -654,25 +734,22 @@ public class Card extends MyInternalFrame {
             btnBrowse.setVisible(false);
             chbIsTourist.setVisible(true);
         }
-        fillPrograms();
+        setProgramTableModel();
     }
 
-    private void setNewCard() {
-        Statement st;
-        ResultSet rs;
+    private boolean isOkToSave() {
+        return true;
+    }
 
-        try {
-            st = con.createStatement(
-                    ResultSet.TYPE_SCROLL_INSENSITIVE,
-                    ResultSet.CONCUR_READ_ONLY);
-            rs = st.executeQuery("SELECT number FROM tblCard");
-
-            rs.last();
-            this.cardNumber = rs.getInt("number") + 1;
-            this.purchaseDate = new Date(new java.util.Date().getTime());
-
-        } catch (SQLException ex) {
-            Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
+    private boolean isOkToDelete() {
+        if (tblPrograms.getModel().getRowCount() == 0) {
+            btnDelete.setToolTipText("Deleting the card is not allowed since it has programs");
+            return false;
         }
+        return true;
+    }
+
+    private void setProgramTblModel() {
+        return;
     }
 }

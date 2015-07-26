@@ -40,7 +40,7 @@ public class Station extends MyInternalFrame {
     private String stationName;
     private Byte platformNum;
     private boolean isKiosk;
-    private int zoneNumber;
+    private byte zoneNumber;
 
     /**
      * Creates new form Station2
@@ -65,8 +65,8 @@ public class Station extends MyInternalFrame {
         initComponents();
         tfStationID.setText("(auto number)");
         buildForm();
-        this.zoneNumber = 1;
-        this.platformNum = 2;
+        this.zoneNumber = Byte.parseByte(((ComboItem)cmbZone.getItemAt(0)).getKey().toString());
+        this.platformNum = Byte.parseByte(((ComboItem)cmbZone.getItemAt(0)).getKey().toString());
     }
 
     public Station(String title, String type, short stationID, JInternalFrame parent) {
@@ -81,7 +81,7 @@ public class Station extends MyInternalFrame {
             PreparedStatement getAllLines = con.prepareStatement("SELECT name FROM tblLine");
 
             // set models to comboboxe
-            cmbZone.setModel(new QueryCombobox(cmbZone, String.class, getAllZones));
+            cmbZone.setModel(new QueryCombobox(cmbZone, Byte.class, getAllZones));
             cmbLine.setModel(new QueryCombobox(cmbLine, String.class, getAllLines));
 
             // set visibility and enablement
@@ -418,7 +418,7 @@ public class Station extends MyInternalFrame {
             lineName = value.toString();
 
             deleteSIL = con.prepareStatement(Queries.DELETE_STATION_IN_LINE);
-            deleteSIL.setInt(1, stationID);
+            deleteSIL.setShort(1, stationID);
             deleteSIL.setString(2, lineName);
             deleteSIL.executeUpdate();
             
@@ -453,7 +453,7 @@ public class Station extends MyInternalFrame {
 
     private void cmbZoneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbZoneActionPerformed
         ComboItem zoneItem = (ComboItem) cmbZone.getSelectedItem();
-        this.zoneNumber = Integer.parseInt(zoneItem.getKey().toString());
+        this.zoneNumber = Byte.parseByte(zoneItem.getKey().toString());
     }//GEN-LAST:event_cmbZoneActionPerformed
 
     private void spnPlatformsPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_spnPlatformsPropertyChange
@@ -470,7 +470,7 @@ public class Station extends MyInternalFrame {
             lineName = selectedStation.getKey().toString();
 
             insertSIL = con.prepareStatement(Queries.INSERT_STATION_IN_LINE);
-            insertSIL.setInt(1, stationID);
+            insertSIL.setShort(1, stationID);
             insertSIL.setString(2, lineName);
             insertSIL.executeUpdate();
             
@@ -503,7 +503,7 @@ public class Station extends MyInternalFrame {
                 insertStation.setString(1, stationName);
                 insertStation.setByte(2, platformNum);
                 insertStation.setBoolean(3, isKiosk);
-                insertStation.setInt(4, zoneNumber);
+                insertStation.setByte(4, zoneNumber);
                 insertStation.executeUpdate();
 
                 // after creating the new station we want to show its new autonumber
@@ -518,8 +518,8 @@ public class Station extends MyInternalFrame {
                 updateStation.setString(1, stationName);
                 updateStation.setByte(2, platformNum);
                 updateStation.setBoolean(3, isKiosk);
-                updateStation.setInt(4, zoneNumber);
-                updateStation.setInt(5, stationID);
+                updateStation.setByte(4, zoneNumber);
+                updateStation.setShort(5, stationID);
                 updateStation.executeUpdate();
             }
             JOptionPane.showInternalMessageDialog(this,
@@ -563,7 +563,7 @@ public class Station extends MyInternalFrame {
         PreparedStatement deleteStation;
         try {
             deleteStation = con.prepareStatement(Queries.DELETE_STATION);
-            deleteStation.setInt(1, stationID);
+            deleteStation.setShort(1, stationID);
             deleteStation.executeUpdate();
             
             JOptionPane.showInternalMessageDialog(this,
@@ -610,9 +610,9 @@ public class Station extends MyInternalFrame {
         ArrayList<Column> cols = new ArrayList<>();
         cols.add(new Column("Name", "name", String.class));
         cols.add(new Column("Color", "colorName", String.class));
-        cols.add(new Column("Foundation year", "foundedYear", Integer.class));
+        cols.add(new Column("Foundation year", "foundedYear", Short.class));
         cols.add(new Column("Type", "lineType", String.class));
-        cols.add(new Column("Length", "lineLength", Double.class));
+        cols.add(new Column("Length", "lineLength", Float.class));
         try {
             PreparedStatement getAllLines = con.prepareStatement(Queries.SELECT_LINES_OF_STATION);
             getAllLines.setInt(1, stationID);
@@ -647,7 +647,7 @@ public class Station extends MyInternalFrame {
             this.stationName = rs.getString("name");
             this.platformNum = rs.getByte("platformNum");
             this.isKiosk = rs.getBoolean("Kiosk");
-            this.zoneNumber = rs.getInt("zoneNumber");
+            this.zoneNumber = rs.getByte("zoneNumber");
 
         } catch (SQLException ex) {
             Logger.getLogger(Station.class
@@ -658,7 +658,6 @@ public class Station extends MyInternalFrame {
     public void setDefaults() {
         tfStationID.setText(String.valueOf(stationID));
         tfName.setText(this.stationName);
-//        setSelectedValue(cmbZone, String.valueOf(this.zoneNumber)); //WHAT FOR?
         spnPlatforms.setValue(this.platformNum);
         chbKiosk.setSelected(this.isKiosk);
         cmbLine.setSelectedIndex(0);
@@ -685,7 +684,8 @@ public class Station extends MyInternalFrame {
             btnSave.setToolTipText("The station must have a name");
             return false;
         }
-        if (platformNum == null || platformNum < 2 || platformNum > 8) {
+        if (platformNum == null || platformNum < utils.Constants.MIN_NUM_OF_PLATFORMS
+                || platformNum > utils.Constants.MAX_NUM_OF_PLATFORMS) {
             btnSave.setToolTipText("The station must have a name");
             return false;
         }
