@@ -18,12 +18,13 @@ import utils.QueryCombobox;
  * @author asus
  */
 public class StationDialog extends MyInternalFrame {
-    
+
     private final MainWindow mainWindow;
     private short stationID;
 
     /**
      * Creates new form StationDialog
+     *
      * @param title
      * @param type
      * @param parent
@@ -33,6 +34,15 @@ public class StationDialog extends MyInternalFrame {
         initComponents();
         this.mainWindow = parent;
         fillCmbLine();
+        setVariables();
+    }
+
+    private void setVariables() {
+        ComboItem item = (ComboItem) cmbStationName.getSelectedItem();
+        if (item == null) {
+            return;
+        }
+        this.stationID = Short.valueOf(item.getKey().toString());
     }
 
     /**
@@ -139,10 +149,10 @@ public class StationDialog extends MyInternalFrame {
         try {
             st = con.prepareStatement("SELECT ID,name FROM tblStation");
 
-            cmbStationName.setModel(new QueryCombobox(cmbStationName, String.class, st));
+            cmbStationName.setModel(new QueryCombobox(cmbStationName, Integer.class, st));
 
         } catch (SQLException ex) {
-            Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
+            //Logger.getLogger(StationDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

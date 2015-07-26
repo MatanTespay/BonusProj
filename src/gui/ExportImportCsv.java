@@ -6,6 +6,7 @@
 package gui;
 
 import gui.MyInternalFrame;
+import java.io.File;
 import javax.swing.JFileChooser;
 //import utils.CsvHandler;
 import javax.swing.JOptionPane;
@@ -37,9 +38,8 @@ public class ExportImportCsv extends MyInternalFrame {
         jPanel1 = new javax.swing.JPanel();
         btnExport = new javax.swing.JButton();
         btnImport = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
 
-        btnExport.setText("Export Site Info");
+        btnExport.setText("Export");
         btnExport.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnExportActionPerformed(evt);
@@ -53,13 +53,6 @@ public class ExportImportCsv extends MyInternalFrame {
             }
         });
 
-        jButton1.setText("jButton1");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -70,17 +63,11 @@ public class ExportImportCsv extends MyInternalFrame {
                 .addGap(38, 38, 38)
                 .addComponent(btnImport)
                 .addContainerGap(22, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1)
-                .addGap(75, 75, 75))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(79, Short.MAX_VALUE)
-                .addComponent(jButton1)
-                .addGap(29, 29, 29)
+                .addContainerGap(77, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnExport)
                     .addComponent(btnImport))
@@ -110,10 +97,11 @@ public class ExportImportCsv extends MyInternalFrame {
     private void btnExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportActionPerformed
         // TODO add your handling code here:
 
-        JFileChooser c = new JFileChooser();
+        File workingDirectory = new File(System.getProperty("user.home")+"/Desktop");
+        JFileChooser c = new JFileChooser(workingDirectory);
         // Demonstrate "Open" dialog:
         int rVal = c.showOpenDialog(ExportImportCsv.this);
-
+       
         if (rVal == JFileChooser.APPROVE_OPTION) {
 
             String fileName = c.getSelectedFile().getAbsolutePath();
@@ -133,10 +121,11 @@ public class ExportImportCsv extends MyInternalFrame {
 
     private void btnImportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImportActionPerformed
         // TODO add your handling code here:
-        JFileChooser c = new JFileChooser();
+        File workingDirectory = new File(System.getProperty("user.home")+"/Desktop");
+        JFileChooser c = new JFileChooser(workingDirectory);
         // Demonstrate "Open" dialog:
         int rVal = c.showOpenDialog(ExportImportCsv.this);
-
+        
         if (rVal == JFileChooser.APPROVE_OPTION) {
 
             try {
@@ -160,16 +149,10 @@ public class ExportImportCsv extends MyInternalFrame {
         }
     }//GEN-LAST:event_btnImportActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-            CsvHandler.PrintTablesMetaData("tblStation");
-    }//GEN-LAST:event_jButton1ActionPerformed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnExport;
     private javax.swing.JButton btnImport;
-    private javax.swing.JButton jButton1;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
 }

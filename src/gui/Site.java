@@ -652,7 +652,7 @@ public class Site extends MyInternalFrame {
                 items.add(new ComboItem(rs.getString("siteType"), rs.getString("siteType")));
             }
             Collections.sort(items);
-            items.add(0, null);
+            //items.add(0, null);
             cmbType.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
         } catch (SQLException ex) {
             Logger.getLogger(Site.class.getName()).log(Level.SEVERE, null, ex);
@@ -720,7 +720,7 @@ public class Site extends MyInternalFrame {
             items.add(0, null);
             cmbStation.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
         } catch (SQLException ex) {
-            Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Site.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -746,7 +746,7 @@ public class Site extends MyInternalFrame {
             items.add(0, null);
             cmbLine.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
         } catch (SQLException ex) {
-            Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Site.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -764,7 +764,7 @@ public class Site extends MyInternalFrame {
             items.add(0, null);
             cmbSite.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
         } catch (SQLException ex) {
-            Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Site.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

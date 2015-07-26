@@ -14,6 +14,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
 
 
 /**
@@ -37,6 +39,14 @@ public class Login extends javax.swing.JFrame {
         userTxtName.requestFocusInWindow();
     }
 
+    public JTextField getUserTxtName() {
+        return userTxtName;
+    }
+
+    public JPasswordField getUsertxtPassword() {
+        return usertxtPassword;
+    }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -58,6 +68,11 @@ public class Login extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBounds(new java.awt.Rectangle(350, 100, 0, 0));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Login", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 11))); // NOI18N
 
@@ -77,7 +92,7 @@ public class Login extends javax.swing.JFrame {
 
         userLblName.setText("User id:");
 
-        userTxtName.setText("tom");
+        userTxtName.setText("mtn");
         userTxtName.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 userTxtNameKeyPressed(evt);
@@ -177,6 +192,11 @@ public class Login extends javax.swing.JFrame {
             DoAction();
         }
     }//GEN-LAST:event_userTxtNameKeyPressed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_formWindowClosing
 
     /**
      * fire action perform for {@link #btnLogin}}

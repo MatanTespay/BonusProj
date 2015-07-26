@@ -190,7 +190,7 @@ public class CardDialog extends MyInternalFrame {
                 this.cardNumber = Integer.parseInt(numberItem.getKey().toString());
             }
         } catch (SQLException ex) {
-            Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CardDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -216,7 +216,7 @@ public class CardDialog extends MyInternalFrame {
                 cmbPDate.setSelectedIndex(0);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CardDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
