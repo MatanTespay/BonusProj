@@ -519,11 +519,21 @@ public class Station extends MyInternalFrame {
 
                 // after creating the new station we want to show its new autonumber
                 getStationID = con.prepareStatement(Queries.SELECT_STATION_ID_BY_NAME);
+                getStationID.setString(1, stationName);
                 ResultSet rs = getStationID.executeQuery();
-                this.stationID = rs.getShort("ID");
-                tfStationID.setText(String.valueOf(stationID));
-                //change mode to edit after saving
-                setMode(EDIT_MODE);
+                if (rs.next()) {
+                    this.stationID = rs.getShort("ID");
+                    tfStationID.setText(String.valueOf(stationID));
+                    //change mode to edit after saving
+                    setMode(EDIT_MODE);
+                    setLineTableModel();
+                    pLines.setVisible(true);
+                }else{
+                    JOptionPane.showInternalMessageDialog(this,
+                    "There was an error retrieving the saved \"" + stationName + "\" id.",
+                    "Bummer!",
+                    JOptionPane.PLAIN_MESSAGE);
+                }
                 
             } else {
                 //edit mode
@@ -700,7 +710,8 @@ public class Station extends MyInternalFrame {
             btnSave.setToolTipText("The station must have a name");
             return false;
         }
-        if (platformNum == null || platformNum < 2 || platformNum > 8) {
+        if (platformNum == null || platformNum < 2 || platformNum > 8 || 
+                this.stationName == null || this.tfName.getText().equals("")) {
             btnSave.setToolTipText("The station must have a name");
             return false;
         }
