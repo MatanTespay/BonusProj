@@ -38,7 +38,7 @@ public class Queries {
     public static final String UPDATE_STATION = "UPDATE tblStation SET name = ?, "
             + "platformNum = ?, kiosk = ?, zoneNumber = ? WHERE ID = ?";
 
-    public static final String DELETE_STATION = "DELETE FROM tblStation WHERE stationID = ?";
+    public final static String DELETE_STATION = "DELETE FROM tblStation WHERE ID = ?";
 
     //-------------------------STATION IN LINE----------------------------------
     public static final String SELECT_STATIONS_OF_LINE = "SELECT * FROM tblStationInLine "
