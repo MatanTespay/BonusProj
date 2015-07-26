@@ -800,6 +800,7 @@ public class Line extends MyInternalFrame {
             btnDelete.setToolTipText("Deleting the line is not allowed since it has stations");
             return false;
         }
+        btnDelete.setToolTipText(null);
         return true;
     }
 

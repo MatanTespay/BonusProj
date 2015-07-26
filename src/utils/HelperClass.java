@@ -36,17 +36,8 @@ import core.Flight;
 import core.FlightAttendant;
 import core.Order;
 import core.Pilot;
-import gui.Activity;
-import gui.AddRole;
-import gui.Card;
-import gui.CardLengths;
-import gui.Deposits;
-import gui.Line;
-import gui.Site;
-import gui.SiteTypes;
-import gui.Station;
-import gui.Users;
-import gui.Zones;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * The class provide helper functions used in the the system
@@ -751,6 +742,7 @@ public class HelperClass {
         return result;
     }
 
+    //TODO: DELETE
     public static void setSelectedValue(JComboBox comboBox, String label) {
         ComboItem item;
         for (int i = 0; i < comboBox.getItemCount(); i++) {
@@ -762,6 +754,7 @@ public class HelperClass {
         }
     }
 
+    //TODO: DELETE
     public static void setSelectedValue(JComboBox comboBox, Object key) {
         ComboItem item;
         for (int i = 0; i < comboBox.getItemCount(); i++) {
@@ -770,6 +763,56 @@ public class HelperClass {
                 comboBox.setSelectedIndex(i);
                 break;
             }
+        }
+    }
+
+    public static Object getObjectFromResultSet(ResultSet rs, String type, String colName) throws SQLException {
+        switch (type) {
+            case "Boolean":
+                return rs.getBoolean(colName);
+            case "Byte":
+                return rs.getByte(colName);
+            case "Double":
+                return rs.getDouble(colName);
+            case "Float":
+                return rs.getFloat(colName);
+            case "Integer":
+                return rs.getInt(colName);
+            case "Long":
+                return rs.getLong(colName);
+            case "Short":
+                return rs.getShort(colName);
+            case "String":
+                return rs.getString(colName);
+            case "Timestamp":
+                return rs.getTimestamp(colName);
+            default:
+                return rs.getObject(colName);
+        }
+    }
+    
+    public static Object getObjectFromResultSet(ResultSet rs, String type, int colNumber) throws SQLException {
+        switch (type) {
+            case "Boolean":
+                return rs.getBoolean(colNumber);
+            case "Byte":
+                return rs.getByte(colNumber);
+            case "Double":
+                return rs.getDouble(colNumber);
+            case "Float":
+                return rs.getFloat(colNumber);
+            case "Integer":
+                return rs.getInt(colNumber);
+            case "Long":
+                return rs.getLong(colNumber);
+            case "Short":
+                return rs.getShort(colNumber);
+            case "String":
+                return rs.getString(colNumber);
+            case "Timestamp":
+                return rs.getTimestamp(colNumber);
+            default:
+                return rs.getObject(colNumber);
         }
     }
 }

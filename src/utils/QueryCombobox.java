@@ -32,8 +32,8 @@ public final class QueryCombobox extends DefaultComboBoxModel {
      */
     private final JComboBox<ComboItem> fatherCmb;
     /*
-    the combo item selected
-    */
+     the combo item selected
+     */
     private ComboItem selectedItem;
     /*
      the statement that fills the combobox - 1st col = key, 2nd col = value
@@ -59,7 +59,7 @@ public final class QueryCombobox extends DefaultComboBoxModel {
      * @param stWhere the value of stWhere
      * @throws java.sql.SQLException
      */
-    public QueryCombobox(JComboBox<ComboItem> cmb, JComboBox<ComboItem> fatherCmb, Class keyClass, PreparedStatement stWhere) throws SQLException{
+    public QueryCombobox(JComboBox<ComboItem> cmb, JComboBox<ComboItem> fatherCmb, Class keyClass, PreparedStatement stWhere) throws SQLException {
         this.myCmb = cmb;
         this.fatherCmb = fatherCmb;
         this.st = stWhere;
@@ -110,7 +110,7 @@ public final class QueryCombobox extends DefaultComboBoxModel {
     /*
      combobox that is based dirctly to a DB
      */
-    public QueryCombobox(JComboBox<ComboItem> cmb, Class keyClass, PreparedStatement st) throws SQLException{
+    public QueryCombobox(JComboBox<ComboItem> cmb, Class keyClass, PreparedStatement st) throws SQLException {
         this.myCmb = cmb;
         this.keyClass = keyClass;
         this.st = st;
@@ -131,7 +131,7 @@ public final class QueryCombobox extends DefaultComboBoxModel {
 
         ArrayList<ComboItem> tempOldItems = new ArrayList<>();
         ResultSet rs;
-        
+
         try {
             items.clear();
             rs = st.executeQuery();
@@ -140,26 +140,8 @@ public final class QueryCombobox extends DefaultComboBoxModel {
             int valueColumn = (rs.getMetaData().getColumnCount() == 1) ? 1 : 2;
 
             while (rs.next()) {
-                Object key;
-                String value;
-                value = rs.getObject(valueColumn).toString();
-                switch (getKeyClass().getSimpleName()) {
-                    case "Integer":
-                        key = rs.getInt(keyColumn);
-                        break;
-                    case "Double":
-                        key = rs.getDouble(keyColumn);
-                        break;
-                    case "String":
-                        key = rs.getString(keyColumn);
-                        break;
-                    case "Date":
-                        key = rs.getString(keyColumn);
-                        break;
-                    default:
-                        key = null;
-                        System.out.println("add another class type");
-                }
+                Object key = utils.HelperClass.getObjectFromResultSet(rs, getKeyClass().getSimpleName(), keyColumn);;
+                String value = rs.getObject(valueColumn).toString();
                 addElement(new ComboItem(key, value));
             }
         } catch (SQLException ex) {

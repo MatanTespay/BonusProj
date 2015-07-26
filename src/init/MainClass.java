@@ -1,19 +1,6 @@
 package init;
 
-import exceptions.AddBranchExeption;
-import exceptions.AddCustomerExeption;
-import exceptions.AddEmployeeExeption;
-import exceptions.AddFlightExeption;
-import exceptions.AddFlightToOrderExeption;
-import exceptions.AddPilotOrFlightAttendantExeption;
-import exceptions.AddStopToFlightExeption;
-import exceptions.AddessUpdateExeption;
-import exceptions.CancelOrderExeption;
-import exceptions.ConnectAgentToBranchExeption;
-import exceptions.PayingCustomerExeption;
-import exceptions.addFlightTicketExeption;
 import gui.Login;
-import gui.MainWindow;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,19 +9,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.URL;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Scanner;
-import java.util.TimeZone;
-import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -42,18 +18,6 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import utils.E_Airports;
-import utils.E_Cities;
-import utils.E_LicenseType;
-import core.Address;
-import core.Agent;
-import core.Airplane;
-import core.Branch;
-import core.Customer;
-import core.Employee;
-import core.Flight;
-import core.FlightAttendant;
-import core.Pilot;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -73,7 +37,7 @@ public class MainClass {
     // DB fields
     public static Connection con = null;
     private static final String DB_DRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-    private static final String DB_CONNECTION = "jdbc:sqlserver://localhost:1433;databaseName=LondonU2;user=m;password=1;";
+    private static final String DB_CONNECTION = "jdbc:sqlserver://localhost:1433;databaseName=LondonU2;user=tom;password=1234;";
 
     
     /**

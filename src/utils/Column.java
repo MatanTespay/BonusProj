@@ -13,12 +13,12 @@ public class Column {
 
         private String name;
         private String sqlColumnName;
-        private Class cClass;
+        private Class classType;
 
-        public Column(String name, String sqlName, Class cClass) {
+        public Column(String name, String sqlName, Class classType) {
             this.name = name;
             this.sqlColumnName = sqlName;
-            this.cClass = cClass;
+            this.classType = classType;
         }
 
         /**
@@ -52,15 +52,15 @@ public class Column {
         /**
          * @return the cClass
          */
-        public Class getcClass() {
-            return cClass;
+        public Class getClassType() {
+            return classType;
         }
 
         /**
-         * @param cClass the cClass to set
+         * @param classType the cClass to set
          */
-        public void setcClass(Class cClass) {
-            this.cClass = cClass;
+        public void setClassType(Class classType) {
+            this.classType = classType;
         }
 
         /**
