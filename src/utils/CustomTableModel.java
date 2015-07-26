@@ -98,40 +98,8 @@ public class CustomTableModel extends AbstractTableModel {
             if (colSqlName.equals("#")) {
                 fieldToAdd = rs.getRow() + 1;
             } else {
-                switch (getColumnClass(col).getSimpleName()) {
-                    case "Boolean":
-                        fieldToAdd = rs.getBoolean(colSqlName);
-                        break;
-                    case "Byte":
-                        fieldToAdd = rs.getByte(colSqlName);
-                        break;
-                    case "Double":
-                        fieldToAdd = rs.getDouble(colSqlName);
-                        break;
-                    case "Float":
-                        fieldToAdd = rs.getFloat(colSqlName);
-                        break;
-                    case "Integer":
-                        fieldToAdd = rs.getInt(colSqlName);
-                        break;
-                    case "Long":
-                        fieldToAdd = rs.getLong(colSqlName);
-                        break;
-                    case "Short":
-                        fieldToAdd = rs.getShort(colSqlName);
-                        break;
-                    case "String":
-                        fieldToAdd = rs.getString(colSqlName);
-                        break;
-                    case "Timestamp":
-                        fieldToAdd = rs.getTimestamp(colSqlName);
-                        break;
-                    default:
-                        fieldToAdd = rs.getObject(colSqlName);
-                        System.out.println("Add another class");
-                }
+                rowToAdd[col] = utils.HelperClass.getObjectFromResultSet(rs, getColumnClass(col).getSimpleName(), colSqlName);
             }
-            rowToAdd[col] = fieldToAdd;
         }
         return rowToAdd;
     }
@@ -150,7 +118,43 @@ public class CustomTableModel extends AbstractTableModel {
         }
         rows = tempRows;
         fireTableRowsInserted(0, rows.size());
+        handleSelectionAndButtons();
+        return true;
+    }
 
+    public boolean addRow(Object[] rowToAdd) {
+
+        if (rowToAdd == null) {
+            return false;
+        }
+
+        if (columns.size() != rowToAdd.length) {
+            if (!columns.get(0).getSqlColumnName().equals("#") || columns.size() != rowToAdd.length + 1) {
+                return false;
+            }
+        }
+
+        int i = 0;
+        for (Column col : columns) {
+            if (col.getSqlName().equals("#")) {
+                i++;
+                continue;
+            }
+            if (rowToAdd[i++].getClass() != col.getClassType()) {
+                return false;
+            }
+        }
+
+        if (!rows.add(rowToAdd)) {
+            return false;
+        }
+
+        fireTableRowsInserted(rows.size() - 1, rows.size());
+        handleSelectionAndButtons();
+        return true;
+    }
+
+    private void handleSelectionAndButtons() {
         int lastRowIndex = table.getRowCount() - 1;
         boolean tableNotEmpty = lastRowIndex != -1;
         if (tableNotEmpty) {
@@ -162,8 +166,6 @@ public class CustomTableModel extends AbstractTableModel {
                 button.setEnabled(tableNotEmpty);
             }
         }
-
-        return true;
     }
 
     @Override
@@ -192,9 +194,10 @@ public class CustomTableModel extends AbstractTableModel {
 
     @Override
     public Class getColumnClass(int columnIndex) {
-        if (columns.get(columnIndex).getcClass().getSimpleName().equals("Date")) {
+        if (columns.get(columnIndex).getClassType().getSimpleName().equals("Date")) {
             return String.class;
         }
-        return columns.get(columnIndex).getcClass();
+        return columns.get(columnIndex).getClassType();
     }
+
 }

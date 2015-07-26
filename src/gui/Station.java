@@ -709,6 +709,7 @@ public class Station extends MyInternalFrame {
             btnDelete.setToolTipText("Deleting the station is not allowed since it has lines");
             return false;
         }
+        btnDelete.setToolTipText(null);
         return true;
     }
 }

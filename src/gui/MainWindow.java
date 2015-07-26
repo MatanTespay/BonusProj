@@ -227,6 +227,9 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
                 ifram = new ActivityDialog(e.getActionCommand(), selectedUserType, this);
 
                 break;
+            case "Add Card":
+                ifram = new Card(e.getActionCommand(), selectedUserType);
+                break;
             case "Edit Card":
 //                java.util.Date utilDate = new java.util.Date(1951, 03, 14, 0, 0, 0);
 //                java.util.Date date1970 = new java.util.Date(1970, 01, 01, 0, 0, 0);
@@ -243,9 +246,6 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
                 break;
             case "Edit Station":
                 ifram = new StationDialog(e.getActionCommand(), selectedUserType, this);
-                break;
-            case "Add Card":
-                ifram = new Card(e.getActionCommand(), selectedUserType);
                 break;
             case "Add Card Length":
                 ifram = new CardLengths(e.getActionCommand(), selectedUserType);

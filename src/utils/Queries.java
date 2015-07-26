@@ -55,7 +55,7 @@ public class Queries {
             + "WHERE stationID = ? AND  lineName = ?";
 
     //------------------------------CARD----------------------------------------
-    public static final String SELECT_NEW_CARD = "SELECT TOP 1 number+1 "
+    public static final String SELECT_NEW_CARD = "SELECT TOP 1 number+1 As 'number' "
             + "FROM tblCard ORDER BY number DESC";
     
     public static final String INSERT_CARD = "INSERT INTO tblCard VALUES(?,?)";
@@ -68,7 +68,7 @@ public class Queries {
     public static final String SELECT_PAPER_ISTOURIST = "SELECT isTourist "
             + "FROM tblPaperCard WHERE number = ? and purchaseDate = ?";
     
-    public static final String INSERT_PAPER_CARD = "INSERT INTO tblPaperCard VALUES (?,?,?,?)";
+    public static final String INSERT_PAPER_CARD = "INSERT INTO tblPaperCard VALUES (?,?,?)";
 
     public static final String UPDATE_PAPER_CARD = "UPDATE tblPaperCard "
             + "SET isTourist = ? WHERE number = ? and purchaseDate = ?";
@@ -82,7 +82,7 @@ public class Queries {
     public static final String SELECT_OYSTER_PICTURE = "SELECT picture FROM tblOysterCard "
             + "WHERE number = ? and purchaseDate = ?";
     
-    public static final String INSERT_OYSTER_CARD = "INSERT INTO tblOysterCard VALUES (?,?,?,?)";
+    public static final String INSERT_OYSTER_CARD = "INSERT INTO tblOysterCard VALUES (?,?,?)";
 
     public static final String UPDATE_OYSTER_CARD = "UPDATE tblOysterCard "
             + "SET picture = ? WHERE number = ? and purchaseDate = ?";
