@@ -152,7 +152,7 @@ public class StationDialog extends MyInternalFrame {
             cmbStationName.setModel(new QueryCombobox(cmbStationName, Integer.class, st));
 
         } catch (SQLException ex) {
-            Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
+            //Logger.getLogger(StationDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

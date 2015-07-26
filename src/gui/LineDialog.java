@@ -146,7 +146,7 @@ public class LineDialog extends MyInternalFrame {
             cmbLineName.setModel(new QueryCombobox(cmbLineName, String.class, st));
 
         } catch (SQLException ex) {
-            Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LineDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables

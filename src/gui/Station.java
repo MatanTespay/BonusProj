@@ -17,9 +17,11 @@ import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.chart.NumberAxis;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
@@ -32,6 +34,7 @@ import utils.Column;
 import static utils.Constants.ADD_MODE;
 import static utils.Constants.EDIT_MODE;
 import utils.CustomTableModel;
+import static utils.HelperClass.setSelectedValue;
 import utils.InputType;
 import utils.Queries;
 import utils.QueryCombobox;
@@ -84,17 +87,6 @@ public class Station extends MyInternalFrame {
     private void buildForm() {
 
         try {
-            JComponent comp = this.spnPlatforms.getEditor();
-            JFormattedTextField field = (JFormattedTextField)comp.getComponent(0);
-            DefaultFormatter formatter = (DefaultFormatter)field.getFormatter();
-            formatter.setCommitsOnValidEdit(true);
-            this.spnPlatforms.addChangeListener(new ChangeListener() {
-
-                @Override
-                public void stateChanged(ChangeEvent e) {
-                   platformNum = (Integer)spnPlatforms.getValue();
-                }
-            });
             
             PreparedStatement getAllZones = con.prepareStatement("SELECT * FROM tblZone");
             PreparedStatement getAllLines = con.prepareStatement("SELECT name FROM tblLine");
@@ -530,7 +522,9 @@ public class Station extends MyInternalFrame {
                 ResultSet rs = getStationID.executeQuery();
                 this.stationID = rs.getShort("ID");
                 tfStationID.setText(String.valueOf(stationID));
-
+                //change mode to edit after saving
+                setMode(EDIT_MODE);
+                
             } else {
                 //edit mode
                 updateStation = con.prepareStatement(Queries.UPDATE_STATION);
@@ -555,6 +549,7 @@ public class Station extends MyInternalFrame {
                             JOptionPane.ERROR_MESSAGE);
             }
             System.err.println("Error code: " + e.getErrorCode() + "\nError Message: " + e.getMessage());
+            
         }
     }//GEN-LAST:event_btnSaveActionPerformed
 
@@ -677,7 +672,8 @@ public class Station extends MyInternalFrame {
     public void setDefaults() {
         tfStationID.setText(String.valueOf(stationID));
         tfName.setText(this.stationName);
-//        setSelectedValue(cmbZone, String.valueOf(this.zoneNumber)); //WHAT FOR?
+        //Set the zoneID to the value from the class field and not to index 0.
+        setSelectedValue(cmbZone, String.valueOf(this.zoneNumber)); //WHAT FOR? <- ALL FOR LOVE!
         spnPlatforms.setValue(this.platformNum);
         chbKiosk.setSelected(this.isKiosk);
         cmbLine.setSelectedIndex(0);
@@ -713,6 +709,10 @@ public class Station extends MyInternalFrame {
     }
 
     private boolean isOkToDelete() {
+        if (getMode() == ADD_MODE) {
+            return false;
+        }
+        
         if (tblLines.getModel().getRowCount() > 0) {
             btnDelete.setToolTipText("Deleting the station is not allowed since it has lines");
             return false;

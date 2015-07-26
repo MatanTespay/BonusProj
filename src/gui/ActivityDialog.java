@@ -66,7 +66,7 @@ public class ActivityDialog extends MyInternalFrame {
                 this.cardNumber = Integer.parseInt(numberItem.getKey().toString());
             }
         } catch (SQLException ex) {
-            Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ActivityDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -92,7 +92,7 @@ public class ActivityDialog extends MyInternalFrame {
                 cmbPDate.setSelectedIndex(0);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ActivityDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -121,7 +121,7 @@ public class ActivityDialog extends MyInternalFrame {
                 this.activityDate = (Timestamp)act.getKey();
             }
         } catch (SQLException ex) {
-            Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ActivityDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
