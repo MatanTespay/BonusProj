@@ -701,10 +701,10 @@ public class Station extends MyInternalFrame {
             btnSave.setToolTipText("The station must have a name");
             return false;
         }
-        if (platformNum == null || platformNum < 2 || platformNum > 8 || 
-                this.stationName == null || this.tfName.getText().equals("")) {
         if (platformNum == null || platformNum < utils.Constants.MIN_NUM_OF_PLATFORMS
-                || platformNum > utils.Constants.MAX_NUM_OF_PLATFORMS) {
+                                || platformNum > utils.Constants.MAX_NUM_OF_PLATFORMS || 
+                this.stationName == null || this.tfName.getText().equals("")) {
+        
             btnSave.setToolTipText("The station must have a name");
             return false;
         }
