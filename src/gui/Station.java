@@ -517,8 +517,7 @@ public class Station extends MyInternalFrame {
                     tfStationID.setText(String.valueOf(stationID));
                     //change mode to edit after saving
                     setMode(EDIT_MODE);
-                    setLineTableModel();
-                    pLines.setVisible(true);
+                    setActiveness();
                 }else{
                     JOptionPane.showInternalMessageDialog(this,
                     "There was an error retrieving the saved \"" + stationName + "\" id.",

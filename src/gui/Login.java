@@ -208,6 +208,7 @@ public class Login extends javax.swing.JFrame {
         
         if (isNamePasswordCorrect(pass, userTxtName.getText())) {
 
+            MainClass.setUserData(pass, pass, input);
             /*JOptionPane.showMessageDialog(this,
              "Success! You typed the right password.");*/
             
