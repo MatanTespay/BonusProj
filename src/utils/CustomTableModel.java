@@ -99,23 +99,35 @@ public class CustomTableModel extends AbstractTableModel {
                 fieldToAdd = rs.getRow() + 1;
             } else {
                 switch (getColumnClass(col).getSimpleName()) {
-                    case "Integer":
-                        fieldToAdd = rs.getInt(colSqlName);
+                    case "Boolean":
+                        fieldToAdd = rs.getBoolean(colSqlName);
                         break;
-                    case "String":
-                        fieldToAdd = rs.getString(colSqlName);
+                    case "Byte":
+                        fieldToAdd = rs.getByte(colSqlName);
                         break;
                     case "Double":
                         fieldToAdd = rs.getDouble(colSqlName);
                         break;
-                    case "Date":
+                    case "Float":
+                        fieldToAdd = rs.getFloat(colSqlName);
+                        break;
+                    case "Integer":
+                        fieldToAdd = rs.getInt(colSqlName);
+                        break;
+                    case "Long":
+                        fieldToAdd = rs.getLong(colSqlName);
+                        break;
+                    case "Short":
+                        fieldToAdd = rs.getShort(colSqlName);
+                        break;
+                    case "String":
                         fieldToAdd = rs.getString(colSqlName);
                         break;
-                    case "Boolean":
-                        fieldToAdd = rs.getBoolean(colSqlName);
+                    case "Timestamp":
+                        fieldToAdd = rs.getTimestamp(colSqlName);
                         break;
                     default:
-                        fieldToAdd = null;
+                        fieldToAdd = rs.getObject(colSqlName);
                         System.out.println("Add another class");
                 }
             }

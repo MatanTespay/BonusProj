@@ -45,20 +45,27 @@ public final class Constants {
             + "Choose \'save\' from the menu-bar (File>save)<br>"
             + "To confirm changes.</html>";
 
-    public static boolean ADD_MODE = false;
+    public static final boolean ADD_MODE = false;
     
-    public static boolean EDIT_MODE = true;
+    public static final boolean EDIT_MODE = true;
     
-    public static boolean PAPER = false;
+    public static final boolean PAPER = false;
     
-    public static boolean OYSTER = true;
+    public static final boolean OYSTER = true;
     
-    public static boolean OVERGROUND = false;
+    public static final boolean INGOING = false;
     
-    public static boolean UNDERGROUND = true;
+    public static final boolean OUTGOING = true;
     
-    public static boolean INGOING = false;
+    public static final char UNDERGROUND = 'U';
     
-    public static boolean OUTGOING = true;
+    public static final char OVERGROUND = 'O';
+    
+    public static final short LUNDON_U_FOUNDATION_YEAR = 1863;
+    
+    public static final byte MIN_NUM_OF_PLATFORMS = 2;
+    
+    public static final byte MAX_NUM_OF_PLATFORMS = 8;
+    
 
 }// ~ END OF Class Constants

@@ -7,8 +7,6 @@ package gui;
 
 import init.ComboItem;
 import static init.MainClass.con;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,19 +14,13 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.scene.chart.NumberAxis;
 import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFormattedTextField;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.text.DefaultFormatter;
 import javax.swing.text.PlainDocument;
 import utils.Column;
 import static utils.Constants.ADD_MODE;
@@ -49,8 +41,7 @@ public class Station extends MyInternalFrame {
     private String stationName;
     private Byte platformNum;
     private boolean isKiosk;
-    private int zoneNumber;
-    JTextField editor;
+    private byte zoneNumber;
 
     /**
      * Creates new form Station2
@@ -75,8 +66,8 @@ public class Station extends MyInternalFrame {
         initComponents();
         tfStationID.setText("(auto number)");
         buildForm();
-        this.zoneNumber = 1;
-        this.platformNum = 2;
+        this.zoneNumber = Byte.parseByte(((ComboItem) cmbZone.getItemAt(0)).getKey().toString());
+        this.platformNum = Byte.parseByte(((ComboItem) cmbZone.getItemAt(0)).getKey().toString());
     }
 
     public Station(String title, String type, short stationID, JInternalFrame parent) {
@@ -87,12 +78,12 @@ public class Station extends MyInternalFrame {
     private void buildForm() {
 
         try {
-            
+
             PreparedStatement getAllZones = con.prepareStatement("SELECT * FROM tblZone");
             PreparedStatement getAllLines = con.prepareStatement("SELECT name FROM tblLine");
 
             // set models to comboboxe
-            cmbZone.setModel(new QueryCombobox(cmbZone, String.class, getAllZones));
+            cmbZone.setModel(new QueryCombobox(cmbZone, Byte.class, getAllZones));
             cmbLine.setModel(new QueryCombobox(cmbLine, String.class, getAllLines));
 
             // set visibility and enablement
@@ -429,12 +420,12 @@ public class Station extends MyInternalFrame {
             lineName = value.toString();
 
             deleteSIL = con.prepareStatement(Queries.DELETE_STATION_IN_LINE);
-            deleteSIL.setInt(1, stationID);
+            deleteSIL.setShort(1, stationID);
             deleteSIL.setString(2, lineName);
             deleteSIL.executeUpdate();
-            
+
             ((CustomTableModel) tblLines.getModel()).fillTable();
-            
+
             JOptionPane.showInternalMessageDialog(this,
                     "Line was removed successfully from this station! What a crappy line it was.",
                     "Hooray!",
@@ -464,7 +455,7 @@ public class Station extends MyInternalFrame {
 
     private void cmbZoneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbZoneActionPerformed
         ComboItem zoneItem = (ComboItem) cmbZone.getSelectedItem();
-        this.zoneNumber = Integer.parseInt(zoneItem.getKey().toString());
+        this.zoneNumber = Byte.parseByte(zoneItem.getKey().toString());
     }//GEN-LAST:event_cmbZoneActionPerformed
 
     private void spnPlatformsPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_spnPlatformsPropertyChange
@@ -481,17 +472,17 @@ public class Station extends MyInternalFrame {
             lineName = selectedStation.getKey().toString();
 
             insertSIL = con.prepareStatement(Queries.INSERT_STATION_IN_LINE);
-            insertSIL.setInt(1, stationID);
+            insertSIL.setShort(1, stationID);
             insertSIL.setString(2, lineName);
             insertSIL.executeUpdate();
-            
+
             ((CustomTableModel) tblLines.getModel()).fillTable();
-            
+
             JOptionPane.showInternalMessageDialog(this,
                     "Line was added successfully to this station! Oh yeah!",
                     "Hooray!",
                     JOptionPane.PLAIN_MESSAGE);
-            
+
             btnDelete.setEnabled(isOkToDelete());
 
         } catch (SQLException e) {
@@ -514,7 +505,7 @@ public class Station extends MyInternalFrame {
                 insertStation.setString(1, stationName);
                 insertStation.setByte(2, platformNum);
                 insertStation.setBoolean(3, isKiosk);
-                insertStation.setInt(4, zoneNumber);
+                insertStation.setByte(4, zoneNumber);
                 insertStation.executeUpdate();
 
                 // after creating the new station we want to show its new autonumber
@@ -541,8 +532,8 @@ public class Station extends MyInternalFrame {
                 updateStation.setString(1, stationName);
                 updateStation.setByte(2, platformNum);
                 updateStation.setBoolean(3, isKiosk);
-                updateStation.setInt(4, zoneNumber);
-                updateStation.setInt(5, stationID);
+                updateStation.setByte(4, zoneNumber);
+                updateStation.setShort(5, stationID);
                 updateStation.executeUpdate();
             }
             JOptionPane.showInternalMessageDialog(this,
@@ -559,7 +550,7 @@ public class Station extends MyInternalFrame {
                             JOptionPane.ERROR_MESSAGE);
             }
             System.err.println("Error code: " + e.getErrorCode() + "\nError Message: " + e.getMessage());
-            
+
         }
     }//GEN-LAST:event_btnSaveActionPerformed
 
@@ -587,15 +578,15 @@ public class Station extends MyInternalFrame {
         PreparedStatement deleteStation;
         try {
             deleteStation = con.prepareStatement(Queries.DELETE_STATION);
-            deleteStation.setInt(1, stationID);
+            deleteStation.setShort(1, stationID);
             deleteStation.executeUpdate();
-            
+
             JOptionPane.showInternalMessageDialog(this,
                     "Station was deleted successfully! Who needed it anyway?",
                     "Hooray!",
                     JOptionPane.PLAIN_MESSAGE);
             this.dispose();
-            
+
         } catch (SQLException e) {
             JOptionPane.showInternalMessageDialog(this,
                     "Error code: " + e.getErrorCode() + ". Go figure it yourself!",
@@ -634,24 +625,24 @@ public class Station extends MyInternalFrame {
         ArrayList<Column> cols = new ArrayList<>();
         cols.add(new Column("Name", "name", String.class));
         cols.add(new Column("Color", "colorName", String.class));
-        cols.add(new Column("Foundation year", "foundedYear", Integer.class));
+        cols.add(new Column("Foundation year", "foundedYear", Short.class));
         cols.add(new Column("Type", "lineType", String.class));
-        cols.add(new Column("Length", "lineLength", Double.class));
+        cols.add(new Column("Length", "lineLength", Float.class));
         try {
             PreparedStatement getAllLines = con.prepareStatement(Queries.SELECT_LINES_OF_STATION);
             getAllLines.setInt(1, stationID);
 
             CustomTableModel lineTableModel = new CustomTableModel(tblLines, cols, getAllLines);
             lineTableModel.bindComboBox(cmbLine, 0, 0);
-            
+
             HashSet<JButton> tableButtons = new HashSet<>();
             tableButtons.add(btnRemoveLine);
             tableButtons.add(btnViewLine);
             lineTableModel.bindButtons(tableButtons);
-            
+
             tblLines.setModel(lineTableModel);
             lineTableModel.fillTable();
-            
+
             btnDelete.setEnabled(isOkToDelete());
 
         } catch (SQLException ex) {
@@ -671,7 +662,7 @@ public class Station extends MyInternalFrame {
             this.stationName = rs.getString("name");
             this.platformNum = rs.getByte("platformNum");
             this.isKiosk = rs.getBoolean("Kiosk");
-            this.zoneNumber = rs.getInt("zoneNumber");
+            this.zoneNumber = rs.getByte("zoneNumber");
 
         } catch (SQLException ex) {
             Logger.getLogger(Station.class
@@ -712,6 +703,8 @@ public class Station extends MyInternalFrame {
         }
         if (platformNum == null || platformNum < 2 || platformNum > 8 || 
                 this.stationName == null || this.tfName.getText().equals("")) {
+        if (platformNum == null || platformNum < utils.Constants.MIN_NUM_OF_PLATFORMS
+                || platformNum > utils.Constants.MAX_NUM_OF_PLATFORMS) {
             btnSave.setToolTipText("The station must have a name");
             return false;
         }
@@ -723,7 +716,7 @@ public class Station extends MyInternalFrame {
         if (getMode() == ADD_MODE) {
             return false;
         }
-        
+
         if (tblLines.getModel().getRowCount() > 0) {
             btnDelete.setToolTipText("Deleting the station is not allowed since it has lines");
             return false;
