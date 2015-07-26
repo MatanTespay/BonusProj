@@ -11,14 +11,19 @@ package utils;
  */
 public enum  InputType {
     
-    
-    TEXT("Text"),
-    PASSWORD("Password"),
-    INT("Int"),
-    DOUBLE("Double"),
+    BYTE("Byte"),
+    CHAR1("Char1"),
     DATE("Date"),
+    DOUBLE("Double"),
     EMAIL("Email"),
-    ROLE("ROLE");
+    FLOAT("Float"),
+    INT("Int"),
+    LONG("Long"),
+    PASSWORD("Password"),
+    ROLE("Role"),
+    SHORT("Short"),
+    TEXT("Text"),
+    YEAR_RANGE("INT_RANGE");
 
     private final String Type;
 

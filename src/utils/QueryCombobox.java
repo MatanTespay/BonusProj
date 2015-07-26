@@ -13,8 +13,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.event.ListDataEvent;
@@ -23,7 +21,7 @@ import javax.swing.event.ListDataEvent;
  *
  * @author asus
  */
-public class QueryCombobox extends DefaultComboBoxModel {
+public final class QueryCombobox extends DefaultComboBoxModel {
     /*
      the combobox of the model
      */
@@ -33,9 +31,10 @@ public class QueryCombobox extends DefaultComboBoxModel {
      my father combobox
      */
     private final JComboBox<ComboItem> fatherCmb;
-
+    /*
+    the combo item selected
+    */
     private ComboItem selectedItem;
-
     /*
      the statement that fills the combobox - 1st col = key, 2nd col = value
      */
@@ -52,16 +51,15 @@ public class QueryCombobox extends DefaultComboBoxModel {
     /*
      combobox that depends on another combobox
      */
-
     /**
      *
      * @param cmb the value of cmb
      * @param fatherCmb the value of fatherCmb
      * @param keyClass the value of keyClass
      * @param stWhere the value of stWhere
+     * @throws java.sql.SQLException
      */
-    
-    public QueryCombobox(JComboBox<ComboItem> cmb, JComboBox<ComboItem> fatherCmb, Class keyClass, PreparedStatement stWhere) {
+    public QueryCombobox(JComboBox<ComboItem> cmb, JComboBox<ComboItem> fatherCmb, Class keyClass, PreparedStatement stWhere) throws SQLException{
         this.myCmb = cmb;
         this.fatherCmb = fatherCmb;
         this.st = stWhere;
@@ -73,7 +71,7 @@ public class QueryCombobox extends DefaultComboBoxModel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    ComboItem selectedFatherItem = (ComboItem)getSelectedItem();
+                    ComboItem selectedFatherItem = (ComboItem) getSelectedItem();
                     Object key = selectedFatherItem.getKey();
                     String value = selectedFatherItem.getLabel();
 
@@ -112,7 +110,7 @@ public class QueryCombobox extends DefaultComboBoxModel {
     /*
      combobox that is based dirctly to a DB
      */
-    public QueryCombobox(JComboBox<ComboItem> cmb, Class keyClass, PreparedStatement st) {
+    public QueryCombobox(JComboBox<ComboItem> cmb, Class keyClass, PreparedStatement st) throws SQLException{
         this.myCmb = cmb;
         this.keyClass = keyClass;
         this.st = st;
@@ -126,16 +124,21 @@ public class QueryCombobox extends DefaultComboBoxModel {
         }
     }
 
-    private void fill() {
+    public void fill() throws SQLException {
+        if (st == null) {
+            return;
+        }
+
+        ArrayList<ComboItem> tempOldItems = new ArrayList<>();
         ResultSet rs;
+        
         try {
-            if (st == null) {
-                return;
-            }
+            items.clear();
             rs = st.executeQuery();
+
             int keyColumn = 1;
             int valueColumn = (rs.getMetaData().getColumnCount() == 1) ? 1 : 2;
-            
+
             while (rs.next()) {
                 Object key;
                 String value;
@@ -159,9 +162,10 @@ public class QueryCombobox extends DefaultComboBoxModel {
                 }
                 addElement(new ComboItem(key, value));
             }
-
         } catch (SQLException ex) {
-            Logger.getLogger(HelperClass.class.getName()).log(Level.SEVERE, null, ex);
+            // rollback
+            items = tempOldItems;
+            throw new SQLException(ex);
         }
     }
 

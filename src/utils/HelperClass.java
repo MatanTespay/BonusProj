@@ -36,7 +36,17 @@ import core.Flight;
 import core.FlightAttendant;
 import core.Order;
 import core.Pilot;
-import javax.swing.ListSelectionModel;
+import gui.Activity;
+import gui.AddRole;
+import gui.Card;
+import gui.CardLengths;
+import gui.Deposits;
+import gui.Line;
+import gui.Site;
+import gui.SiteTypes;
+import gui.Station;
+import gui.Users;
+import gui.Zones;
 
 /**
  * The class provide helper functions used in the the system
@@ -250,7 +260,7 @@ public class HelperClass {
             if (branches.isEmpty()) {
                 return;
             }
-            List<ComboItem> tempData = new ArrayList<ComboItem>();
+            List<ComboItem> tempData = new ArrayList<>();
             for (Map.Entry<Integer, Branch> entry : branches.entrySet()) {
                 long integer = entry.getKey().longValue();
                 if (branchToRemove != null && integer == branchToRemove) {
@@ -290,7 +300,7 @@ public class HelperClass {
             if (list.isEmpty()) {
                 return;
             }
-            List<ComboItem> tempData = new ArrayList<ComboItem>();
+            List<ComboItem> tempData = new ArrayList<>();
 
             if (owner != null) {
                 if (owner instanceof Agent) {
@@ -339,7 +349,7 @@ public class HelperClass {
             if (data.isEmpty()) {
                 return;
             }
-            List<ComboItem> tempData = new ArrayList<ComboItem>();
+            List<ComboItem> tempData = new ArrayList<>();
             for (E_Airports e_Airports : data) {
                 if (airPortToRemove != null && airPortToRemove.contains(e_Airports)) {
                     continue;
@@ -366,7 +376,7 @@ public class HelperClass {
 
         try {
             Map<Integer, Flight> flights = MainClass.getIfly().getFlights();
-            List<ComboItem> tempData = new ArrayList<ComboItem>();
+            List<ComboItem> tempData = new ArrayList<>();
             if (flights.isEmpty()) {
                 return;
             }
@@ -405,7 +415,7 @@ public class HelperClass {
             if (employess.isEmpty()) {
                 return;
             }
-            List<ComboItem> pilots = new ArrayList<ComboItem>();
+            List<ComboItem> pilots = new ArrayList<>();
             for (Map.Entry<Integer, Employee> emp : employess.entrySet()) {
                 if (emp.getValue() instanceof Pilot) {
                     Pilot p = ((Pilot) emp.getValue());
@@ -441,7 +451,7 @@ public class HelperClass {
             if (employess.isEmpty()) {
                 return;
             }
-            List<ComboItem> fA = new ArrayList<ComboItem>();
+            List<ComboItem> fA = new ArrayList<>();
 
             for (Map.Entry<Integer, Employee> emp : employess.entrySet()) {
 
@@ -483,7 +493,7 @@ public class HelperClass {
             if (customers.isEmpty()) {
                 return;
             }
-            List<ComboItem> tempData = new ArrayList<ComboItem>();
+            List<ComboItem> tempData = new ArrayList<>();
             for (Map.Entry<String, Customer> entry : customers.entrySet()) {
                 String string = entry.getKey();
                 Customer customer = entry.getValue();
@@ -519,7 +529,7 @@ public class HelperClass {
         if (flightsForSelectedOrder.isEmpty()) {
             return;
         }
-        List<ComboItem> tempData = new ArrayList<ComboItem>();
+        List<ComboItem> tempData = new ArrayList<>();
 
         for (Map.Entry<Integer, Flight> entry : flightsForSelectedOrder.entrySet()) {
 
@@ -544,7 +554,7 @@ public class HelperClass {
         if (emps.isEmpty()) {
             return null;
         }
-        List<ComboItem> tempData = new ArrayList<ComboItem>();
+        List<ComboItem> tempData = new ArrayList<>();
         int idx = 0;
         Long branchNum = null;
 
@@ -571,6 +581,7 @@ public class HelperClass {
      *
      * @param frame the parent frame of the comBoBox
      * @param combo the comBoBox to fill
+     * @param flight
      * @param filter , if true , fill all customers which aren't on the flight,
      * otherswise fill all customers
      */
@@ -582,7 +593,7 @@ public class HelperClass {
                 combo.setModel(new DefaultComboBoxModel());
                 return;
             }
-            List<ComboItem> tempData = new ArrayList<ComboItem>();
+            List<ComboItem> tempData = new ArrayList<>();
 
             for (Map.Entry<String, Customer> entry : passangersForFlightOrder.entrySet()) {
                 String string = entry.getKey();
@@ -661,7 +672,7 @@ public class HelperClass {
     public static void fillAirplaines(JInternalFrame frame, JComboBox combo, Integer number) {
 
         try {
-            List<ComboItem> tempData = new ArrayList<ComboItem>();
+            List<ComboItem> tempData = new ArrayList<>();
             ArrayList<Airplane> airplaines = MainClass.getIfly().getAirplaines(number);
             for (Airplane airplane : airplaines) {
                 String val = String.valueOf(airplane.getAirplaneNumber());
@@ -702,7 +713,7 @@ public class HelperClass {
      */
     public static void setCellWidth(JTable table) {
 
-        TableColumn column = null;
+        TableColumn column;
         for (int i = 0; i < 3; i++) {
             column = table.getColumnModel().getColumn(i);
             if (i == 0) {
@@ -750,8 +761,8 @@ public class HelperClass {
             }
         }
     }
-    
-        public static void setSelectedValue(JComboBox comboBox, Object key) {
+
+    public static void setSelectedValue(JComboBox comboBox, Object key) {
         ComboItem item;
         for (int i = 0; i < comboBox.getItemCount(); i++) {
             item = (ComboItem) comboBox.getItemAt(i);
@@ -760,9 +771,5 @@ public class HelperClass {
                 break;
             }
         }
-    }
-
-    public static void setTableProperties(JTable table) {
-        
     }
 }

@@ -10,14 +10,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Collection;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.TableModelEvent;
-import static javax.swing.event.TableModelEvent.DELETE;
-import static javax.swing.event.TableModelEvent.INSERT;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 
@@ -29,40 +27,32 @@ public class CustomTableModel extends AbstractTableModel {
 
     private final JTable table;
     private final ArrayList<Column> columns;
-    private final PreparedStatement addStatement;
     private final PreparedStatement fillStatement;
-    private final boolean isAddRowFromDB;
+    private Collection<JButton> buttons;
     private ArrayList<Object[]> rows;
-    private Object[] lastRowRemoved;
 
     // for combobox binding
     private int keyColumn;
     private int valueColumn;
 
-    /**
-     * used when table has default data from DB
-     *
-     * @param table
-     * @param columns
-     * @param addStatement
-     * @param fillStatement
+    /*
+     used when table starts empty
      */
-    public CustomTableModel(JTable table, ArrayList<Column> columns, PreparedStatement addStatement, PreparedStatement fillStatement) {
+    public CustomTableModel(JTable table, ArrayList<Column> columns, PreparedStatement fillStatement) {
         this.table = table;
         this.columns = columns;
         this.fillStatement = fillStatement;
-        this.addStatement = addStatement;
-        this.isAddRowFromDB = (addStatement != null);
         this.rows = new ArrayList<>();
+        this.buttons = null;
 
         table.setRowSelectionAllowed(true);
         table.setColumnSelectionAllowed(false);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }
+
     /*
      combobox that depends on a Jtable
      */
-
     public void bindComboBox(JComboBox cmb, int keyColumn, int valueColumn) {
 
         this.keyColumn = keyColumn;
@@ -76,208 +66,92 @@ public class CustomTableModel extends AbstractTableModel {
                 Object key;
                 String value;
                 ComboItem item;
+                try {
 
-                if (e.getType() == INSERT) {
-                    key = getValueAt(e.getFirstRow(), keyColumn);
-                    value = getValueAt(e.getFirstRow(), valueColumn).toString();
-                    item = new ComboItem(key, value);
-                    model.removeElement(item);
-
-                } else if (e.getType() == DELETE) {
-                    key = getLastRowRemoved()[keyColumn];
-                    value = getLastRowRemoved()[valueColumn].toString();
-                    item = new ComboItem(key, value);
-                    model.addElement(item);
+                    model.fill();
+                    for (int row = e.getFirstRow(); row < e.getLastRow(); row++) {
+                        key = getValueAt(row, keyColumn);
+                        value = getValueAt(row, valueColumn).toString();
+                        item = new ComboItem(key, value);
+                        model.removeElement(item);
+                    }
+                    cmb.setSelectedIndex(0);
+                } catch (SQLException ex) {
+                    System.err.println("combobox model fill failed");
                 }
+
             }
         });
     }
-    /*
-     used when table starts empty
-     */
 
-    public CustomTableModel(JTable table, ArrayList<Column> columns, PreparedStatement addStatement) {
-        this(table, columns, addStatement, null);
+    public void bindButtons(Collection<JButton> buttons) {
+        this.buttons = buttons;
     }
 
-    private Object[] makeRowFromStatement(ResultSet rs) {
+    private Object[] makeRowFromStatement(ResultSet rs) throws SQLException {
         Object[] rowToAdd = new Object[getColumnCount()];
         Object fieldToAdd;
         String colSqlName;
-        try {
-            for (int col = 0; col < getColumnCount(); col++) {
-                colSqlName = columns.get(col).getSqlColumnName();
-                if (colSqlName.equals("#")) {
-                    fieldToAdd = rs.getRow()+1;
-                } else {
-                    switch (getColumnClass(col).getSimpleName()) {
-                        case "Integer":
-                            fieldToAdd = rs.getInt(colSqlName);
-                            break;
-                        case "String":
-                            fieldToAdd = rs.getString(colSqlName);
-                            break;
-                        case "Double":
-                            fieldToAdd = rs.getDouble(colSqlName);
-                            break;
-                        case "Date":
-                            fieldToAdd = rs.getString(colSqlName);
-                            break;
-                        case "Boolean":
-                            fieldToAdd = rs.getBoolean(colSqlName);
-                            break;
-                        default:
-                            fieldToAdd = null;
-                            System.out.println("Add another class");
-                    }
-                }
-                rowToAdd[col] = fieldToAdd;
-            }
-            return rowToAdd;
 
-        } catch (SQLException ex) {
-            Logger.getLogger(HelperClass.class.getName()).log(Level.SEVERE, null, ex);
-            return null;
-        }
-    }
-
-    private Object[] makeRowFromInput(Object[] vars) {
-        for (Object var : vars) {
-            if (var == null) {
-                return null;
-            }
-        }
-
-        Object[] newRow = new Object[columns.size()];
-        int colIndex;
-
-        if (columns.get(0).getSqlColumnName().equals("#")) {
-            // auto number to first col
-            if (vars.length != columns.size() - 1) {
-                return null;
-            }
-            newRow[0] = rows.size()+1;
-            colIndex = 1;
-        } else {
-            if (vars.length != columns.size()) {
-                return null;
-            }
-            colIndex = 0;
-        }
-
-        for (Object var : vars) {
-            newRow[colIndex++] = var;
-        }
-        return newRow;
-    }
-
-    private PreparedStatement setVarToStatement(PreparedStatement st, int index, Object var) {
-        try {
-            switch (var.getClass().getSimpleName()) {
-                case "Integer":
-                    addStatement.setInt(index, (Integer) var);
-                    break;
-                case "Double":
-                    addStatement.setDouble(index, (Double) var);
-                    break;
-                case "Boolean":
-                    addStatement.setBoolean(index, (Boolean) var);
-                case "String":
-                case "Date": /* need to check if works on Date too*/
-
-                    addStatement.setString(index, var.toString());
-                    break;
-                default:
-                    System.out.println("need to add another type");
-            }
-            return st;
-        } catch (SQLException ex) {
-            return null;
-        }
-    }
-
-    public void addRow(Object var) {
-        try {
-            if (addStatement != null) {
-                // add row from DB
-                setVarToStatement(addStatement, 1, var);
-                ResultSet rs = addStatement.executeQuery();
-                rs.next();
-                rows.add(makeRowFromStatement(rs));
-
-                fireTableRowsInserted(rows.size() - 1, rows.size() - 1);
-                table.setRowSelectionInterval(rows.size() - 1, rows.size() - 1);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(HelperClass.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    public void addRow(Object[] vars) {
-        try {
-            if (addStatement != null) {
-                // add row from DB
-                for (int i = 0; i < vars.length; i++) {
-                    if (vars[i] != null) {
-                        setVarToStatement(addStatement, i, vars[i]);
-                    }
-                }
-                ResultSet rs = addStatement.executeQuery();
-                rs.next();
-                rows.add(makeRowFromStatement(rs));
+        for (int col = 0; col < getColumnCount(); col++) {
+            colSqlName = columns.get(col).getSqlColumnName();
+            if (colSqlName.equals("#")) {
+                fieldToAdd = rs.getRow() + 1;
             } else {
-                // add row from input
-                rows.add(makeRowFromInput(vars));
-            }
-            fireTableRowsInserted(rows.size() - 1, rows.size() - 1);
-            table.setRowSelectionInterval(rows.size() - 1, rows.size() - 1);
-
-        } catch (SQLException ex) {
-            Logger.getLogger(HelperClass.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    public void removeRow(Object key) {
-        for (int i = 0; i < rows.size(); i++) {
-            if (key.toString().equals(rows.get(i)[0].toString())) {
-                lastRowRemoved = rows.remove(i);
-                fireTableRowsDeleted(i, i);
-                if (i != 1) {
-                    table.setRowSelectionInterval(i - 1, i - 1);
+                switch (getColumnClass(col).getSimpleName()) {
+                    case "Integer":
+                        fieldToAdd = rs.getInt(colSqlName);
+                        break;
+                    case "String":
+                        fieldToAdd = rs.getString(colSqlName);
+                        break;
+                    case "Double":
+                        fieldToAdd = rs.getDouble(colSqlName);
+                        break;
+                    case "Date":
+                        fieldToAdd = rs.getString(colSqlName);
+                        break;
+                    case "Boolean":
+                        fieldToAdd = rs.getBoolean(colSqlName);
+                        break;
+                    default:
+                        fieldToAdd = null;
+                        System.out.println("Add another class");
                 }
-                break;
             }
+            rowToAdd[col] = fieldToAdd;
         }
-    }
-    /*
-     they keys should be the table's left columns in the same order
-     NOT INCLUDING  when 1st column is #
-     */
-
-    public void removeRow(int rowToRemove) {
-        if (rowToRemove != -1) {
-            lastRowRemoved = rows.remove(rowToRemove);
-            fireTableRowsDeleted(rowToRemove, rowToRemove);
-            if (rowToRemove != 0) {
-                table.setRowSelectionInterval(rowToRemove - 1, rowToRemove - 1);
-            }
-        }
+        return rowToAdd;
     }
 
-    public void fillTable() {
-        try {
-            if (fillStatement == null) {
-                return;
-            }
-            ResultSet rs = fillStatement.executeQuery();
-            while (rs.next()) {
-                rows.add(makeRowFromStatement(rs));
-                fireTableRowsInserted(rows.size() - 1, rows.size() - 1);
-            }
+    public boolean fillTable() throws SQLException {
 
-        } catch (SQLException ex) {
-            Logger.getLogger(HelperClass.class.getName()).log(Level.SEVERE, null, ex);
+        if (fillStatement == null) {
+            return false;
         }
+        ArrayList<Object[]> tempRows = new ArrayList<>();
+
+        // retrieve the results and add them to the table
+        ResultSet rs = fillStatement.executeQuery();
+        while (rs.next()) {
+            tempRows.add(makeRowFromStatement(rs));
+        }
+        rows = tempRows;
+        fireTableRowsInserted(0, rows.size());
+
+        int lastRowIndex = table.getRowCount() - 1;
+        boolean tableNotEmpty = lastRowIndex != -1;
+        if (tableNotEmpty) {
+            table.setRowSelectionInterval(lastRowIndex, lastRowIndex);
+        }
+
+        if (buttons != null) {
+            for (JButton button : buttons) {
+                button.setEnabled(tableNotEmpty);
+            }
+        }
+
+        return true;
     }
 
     @Override
@@ -310,12 +184,5 @@ public class CustomTableModel extends AbstractTableModel {
             return String.class;
         }
         return columns.get(columnIndex).getcClass();
-    }
-
-    /**
-     * @return the lastRowRemoved
-     */
-    public Object[] getLastRowRemoved() {
-        return lastRowRemoved;
     }
 }

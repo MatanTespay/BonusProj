@@ -14,10 +14,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JButton;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JSpinner;
+import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.PlainDocument;
@@ -33,9 +38,9 @@ import utils.Queries;
 public class Line extends MyInternalFrame {
 
     private String lineName;
-    private int foundedYear;
-    private String lineType;
-    private Double lineLength;
+    private Short foundedYear;
+    private Character lineType;
+    private Float lineLength;
     private String colorName;
 
     /**
@@ -65,7 +70,7 @@ public class Line extends MyInternalFrame {
         setMode(ADD_MODE);
         initComponents();
         buildForm();
-        this.lineType = "U";
+        this.lineType = 'U';
     }
 
     private void buildForm() {
@@ -74,12 +79,11 @@ public class Line extends MyInternalFrame {
 
             // set models to comboboxes   
             cmbStation.setModel(new QueryCombobox(cmbStation, Integer.class, getAllStations));
-            setStationTblModel();
 
             // set visibility and enablement
             setActiveness();
 
-            // set document listeners to text fields
+            // set document listeners
             tfName.getDocument().addDocumentListener(new DocumentListener() {
 
                 @Override
@@ -92,30 +96,6 @@ public class Line extends MyInternalFrame {
                 public void removeUpdate(DocumentEvent e) {
                     lineName = tfName.getText();
                     btnSave.setEnabled(isOkToSave());
-                }
-
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                }
-            });
-            tfLength.getDocument().addDocumentListener(new DocumentListener() {
-
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    try {
-                        lineLength = Double.valueOf(tfLength.getText());
-                    } catch (NumberFormatException ex) {
-                        lineLength = null;
-                    }
-                }
-
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    try {
-                        lineLength = Double.valueOf(tfLength.getText());
-                    } catch (NumberFormatException ex) {
-                        lineLength = null;
-                    }
                 }
 
                 @Override
@@ -142,12 +122,69 @@ public class Line extends MyInternalFrame {
                 }
             });
 
-            // set document filters to text fields
+            JSpinner.NumberEditor lengthEditor = (JSpinner.NumberEditor) spnLength.getEditor();
+            JTextField lengthTextField = lengthEditor.getTextField();
+            lengthTextField.getDocument().addDocumentListener(new DocumentListener() {
+
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    try {
+                        lineLength = Float.valueOf(lengthTextField.getText());
+                    } catch (NumberFormatException ex) {
+                        lineLength = null;
+                    }
+                    btnSave.setEnabled(isOkToSave());
+
+                }
+
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    try {
+                        lineLength = Float.valueOf(lengthTextField.getText());
+                    } catch (NumberFormatException ex) {
+                        lineLength = null;
+                    }
+                    btnSave.setEnabled(isOkToSave());
+                }
+
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                }
+            });
+
+            JSpinner yearSpinner = (JSpinner) ychFoundationYear.getSpinner();
+            JTextField yearText = (JTextField) yearSpinner.getEditor();
+            yearText.getDocument().addDocumentListener(new DocumentListener() {
+
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    try {
+                        foundedYear = Short.valueOf(yearText.getText());
+                    } catch (NumberFormatException ex) {
+                        foundedYear = null;
+                    }
+                    btnSave.setEnabled(isOkToSave());
+
+                }
+
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    try {
+                        foundedYear = Short.valueOf(yearText.getText());
+                    } catch (NumberFormatException ex) {
+                        foundedYear = null;
+                    }
+                    btnSave.setEnabled(isOkToSave());
+                }
+
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                }
+            });
+
+            // set document filters
             PlainDocument nameDoc = (PlainDocument) tfName.getDocument();
             nameDoc.setDocumentFilter(new utils.MyDocFilter(InputType.TEXT));
-
-            PlainDocument distanceDoc = (PlainDocument) tfLength.getDocument();
-            distanceDoc.setDocumentFilter(new utils.MyDocFilter(InputType.DOUBLE));
 
             PlainDocument colorDoc = (PlainDocument) tfColor.getDocument();
             colorDoc.setDocumentFilter(new utils.MyDocFilter(InputType.TEXT));
@@ -173,7 +210,6 @@ public class Line extends MyInternalFrame {
         ychFoundationYear = new com.toedter.calendar.JYearChooser();
         tfName = new javax.swing.JTextField();
         cmbType = new javax.swing.JComboBox();
-        tfLength = new javax.swing.JTextField();
         lblKm = new javax.swing.JLabel();
         lblLength = new javax.swing.JLabel();
         lblType = new javax.swing.JLabel();
@@ -181,6 +217,7 @@ public class Line extends MyInternalFrame {
         btnSave = new javax.swing.JButton();
         btnDelete = new javax.swing.JButton();
         tfColor = new javax.swing.JTextField();
+        spnLength = new javax.swing.JSpinner();
         pStations = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblStations = new javax.swing.JTable();
@@ -197,12 +234,8 @@ public class Line extends MyInternalFrame {
 
         lblFoundation.setText("Foundation Year");
 
+        ychFoundationYear.setEndYear(new java.util.Date().getYear()+1900);
         ychFoundationYear.setStartYear(1863);
-        ychFoundationYear.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                ychFoundationYearPropertyChange(evt);
-            }
-        });
 
         tfName.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -214,12 +247,6 @@ public class Line extends MyInternalFrame {
         cmbType.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cmbTypeActionPerformed(evt);
-            }
-        });
-
-        tfLength.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                tfLengthPropertyChange(evt);
             }
         });
 
@@ -250,11 +277,7 @@ public class Line extends MyInternalFrame {
             }
         });
 
-        tfColor.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tfColorActionPerformed(evt);
-            }
-        });
+        spnLength.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(1.0001f), Float.valueOf(9.999871E-4f), null, Float.valueOf(0.5f)));
 
         javax.swing.GroupLayout pDetailsLayout = new javax.swing.GroupLayout(pDetails);
         pDetails.setLayout(pDetailsLayout);
@@ -264,39 +287,40 @@ public class Line extends MyInternalFrame {
                 .addContainerGap()
                 .addGroup(pDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pDetailsLayout.createSequentialGroup()
-                        .addComponent(lblFoundation)
-                        .addGap(7, 7, 7))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pDetailsLayout.createSequentialGroup()
                         .addGroup(pDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblColor)
-                            .addComponent(lbName))
-                        .addGap(40, 40, 40)))
-                .addGroup(pDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(ychFoundationYear, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(tfName, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tfColor, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(pDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(pDetailsLayout.createSequentialGroup()
+                                .addComponent(lblFoundation)
+                                .addGap(7, 7, 7))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pDetailsLayout.createSequentialGroup()
+                                .addGroup(pDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lblColor)
+                                    .addComponent(lbName))
+                                .addGap(40, 40, 40)))
+                        .addGroup(pDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(ychFoundationYear, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(tfName, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(tfColor, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(pDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pDetailsLayout.createSequentialGroup()
+                                .addComponent(lblType)
+                                .addGap(20, 20, 20))
+                            .addGroup(pDetailsLayout.createSequentialGroup()
+                                .addComponent(lblLength)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                        .addGroup(pDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(pDetailsLayout.createSequentialGroup()
+                                .addComponent(spnLength, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(lblKm))
+                            .addComponent(cmbType, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pDetailsLayout.createSequentialGroup()
-                        .addComponent(lblType)
-                        .addGap(20, 20, 20))
-                    .addGroup(pDetailsLayout.createSequentialGroup()
-                        .addComponent(lblLength)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                .addGroup(pDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pDetailsLayout.createSequentialGroup()
-                        .addComponent(tfLength, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 175, Short.MAX_VALUE)
+                        .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(lblKm))
-                    .addComponent(cmbType, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pDetailsLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         pDetailsLayout.setVerticalGroup(
@@ -310,11 +334,11 @@ public class Line extends MyInternalFrame {
                     .addComponent(lbName))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(tfLength, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblLength)
                     .addComponent(lblKm)
                     .addComponent(lblColor)
-                    .addComponent(tfColor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(tfColor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(spnLength, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(ychFoundationYear, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -413,7 +437,7 @@ public class Line extends MyInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(pStations, javax.swing.GroupLayout.PREFERRED_SIZE, 495, Short.MAX_VALUE)
+                    .addComponent(pStations, javax.swing.GroupLayout.PREFERRED_SIZE, 496, Short.MAX_VALUE)
                     .addComponent(pDetails, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -431,7 +455,7 @@ public class Line extends MyInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnViewStationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewStationActionPerformed
-        int stationID = Integer.parseInt(tblStations.getModel().getValueAt(tblStations.getSelectedRow(), 0).toString());
+        short stationID = Short.parseShort(tblStations.getModel().getValueAt(tblStations.getSelectedRow(), 0).toString());
         Station newFrame = new Station(evt.getActionCommand(), getSelectedUserType(), stationID, this);
         openChildFrame(newFrame);
     }//GEN-LAST:event_btnViewStationActionPerformed
@@ -439,17 +463,18 @@ public class Line extends MyInternalFrame {
     private void btnRemoveStationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveStationActionPerformed
         PreparedStatement deleteSIL;
         Object value;
-        int stationID;
+        short stationID;
 
         try {
             value = tblStations.getModel().getValueAt(tblStations.getSelectedRow(), 0);
-            stationID = Integer.parseInt(value.toString());
-            ((CustomTableModel) tblStations.getModel()).removeRow(tblStations.getSelectedRow());
+            stationID = Short.parseShort(value.toString());
 
             deleteSIL = con.prepareStatement(Queries.DELETE_STATION_IN_LINE);
-            deleteSIL.setInt(1, stationID);
+            deleteSIL.setShort(1, stationID);
             deleteSIL.setString(2, lineName);
             deleteSIL.executeUpdate();
+
+            ((CustomTableModel) tblStations.getModel()).fillTable();
 
             JOptionPane.showInternalMessageDialog(this,
                     "Satation was removed successfully from this line! What a crappy station it was.",
@@ -459,16 +484,24 @@ public class Line extends MyInternalFrame {
             btnDelete.setEnabled(isOkToDelete());
 
         } catch (SQLException e) {
-            JOptionPane.showInternalMessageDialog(this,
-                    "Error code: " + e.getErrorCode() + ". Go figure it yourself!",
-                    "Bummer!",
-                    JOptionPane.ERROR_MESSAGE);
-            System.err.println("Error code: " + e.getErrorCode() + "\nError Message: " + e.getMessage());
+            switch (e.getErrorCode()) {
+                case 547:
+                    JOptionPane.showInternalMessageDialog(this,
+                            "This station can not be renoved from this line. There are 2 possibilities:\n"
+                            + "1. Activites have already been made in this line in this station.\n"
+                            + "2. There are nearby sites related to this line in this station.\n\n"
+                            + "Please check the above in order to continue.",
+                            "Bummer!",
+                            JOptionPane.ERROR_MESSAGE);
+                    break;
+                default:
+                    System.err.println("Error code: " + e.getErrorCode() + "\nError Message: " + e.getMessage());
+            }
         }
     }//GEN-LAST:event_btnRemoveStationActionPerformed
 
     private void cmbStationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbStationActionPerformed
-
+        btnAddStation.setEnabled(cmbStation.getItemCount() != 0);
     }//GEN-LAST:event_cmbStationActionPerformed
 
     private void tfNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfNameActionPerformed
@@ -481,29 +514,26 @@ public class Line extends MyInternalFrame {
         }
     }//GEN-LAST:event_tfNameActionPerformed
 
-    private void ychFoundationYearPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_ychFoundationYearPropertyChange
-        this.foundedYear = ychFoundationYear.getYear();
-    }//GEN-LAST:event_ychFoundationYearPropertyChange
-
     private void cmbTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbTypeActionPerformed
         String strType = (String) cmbType.getModel().getSelectedItem();
-        this.lineType = (strType.equals("Overground")) ? "O" : "U";
+        this.lineType = (strType.equals("Overground")) ? 'O' : 'U';
     }//GEN-LAST:event_cmbTypeActionPerformed
 
     private void btnAddStationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddStationActionPerformed
         ComboItem selectedStation;
-        int stationID;
+        short stationID;
         PreparedStatement insertSIL;
 
         try {
             selectedStation = (ComboItem) ((QueryCombobox) cmbStation.getModel()).getSelectedItem();
-            stationID = Integer.valueOf(selectedStation.getKey().toString());
-            ((CustomTableModel) tblStations.getModel()).addRow(stationID);
+            stationID = Short.valueOf(selectedStation.getKey().toString());
 
             insertSIL = con.prepareStatement(Queries.INSERT_STATION_IN_LINE);
-            insertSIL.setInt(1, stationID);
+            insertSIL.setShort(1, stationID);
             insertSIL.setString(2, lineName);
             insertSIL.executeUpdate();
+
+            ((CustomTableModel) tblStations.getModel()).fillTable();
 
             JOptionPane.showInternalMessageDialog(this,
                     "Satation was added successfully to this line! Oh yeah!",
@@ -524,18 +554,18 @@ public class Line extends MyInternalFrame {
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         PreparedStatement insertLine;
         PreparedStatement insertColor;
-        PreparedStatement updateColor;
         PreparedStatement updateLine;
+        PreparedStatement updateColor;
 
         try {
             con.setAutoCommit(false);
             if (getMode() == ADD_MODE) {
                 insertLine = con.prepareStatement(Queries.INSERT_LINE);
                 insertLine.setString(1, lineName);
-                insertLine.setInt(2, foundedYear);
-                insertLine.setString(3, lineType);
+                insertLine.setShort(2, foundedYear);
+                insertLine.setString(3, lineType.toString());
                 if (lineLength != null) {
-                    insertLine.setDouble(4, lineLength);
+                    insertLine.setFloat(4, lineLength);
                 } else {
                     insertLine.setNull(4, java.sql.Types.DOUBLE);
                 }
@@ -546,41 +576,51 @@ public class Line extends MyInternalFrame {
                 insertColor.setString(2, lineName);
                 insertColor.executeUpdate();
 
-                con.commit();
-                JOptionPane.showInternalMessageDialog(this,
-                        "Line was added successfully!",
-                        "Hooray!",
-                        JOptionPane.PLAIN_MESSAGE);
             } else {
-                // view mode
-                updateColor = con.prepareStatement(Queries.UPDATE_LINE);
-                updateColor.setString(1, lineName);
-                updateColor.setInt(2, foundedYear);
-                updateColor.setString(3, lineType);
-                updateColor.setDouble(4, lineLength);
-                updateColor.executeUpdate();
+                // edit mode
+                updateLine = con.prepareStatement(Queries.UPDATE_LINE);
 
-                updateLine = con.prepareStatement(Queries.UPDATE_COLOR);
-                updateLine.setString(1, colorName);
-                updateLine.setString(2, lineName);
+                updateLine.setShort(1, foundedYear);
+                updateLine.setString(2, lineType.toString());
+                if (lineLength != null) {
+                    updateLine.setFloat(3, lineLength);
+                } else {
+                    updateLine.setNull(3, java.sql.Types.DOUBLE);
+                }
+                updateLine.setString(4, lineName);
                 updateLine.executeUpdate();
 
-                con.commit();
-                JOptionPane.showInternalMessageDialog(this,
-                        "Line was updated successfully!",
-                        "Hooray!",
-                        JOptionPane.PLAIN_MESSAGE);
+                updateColor = con.prepareStatement(Queries.UPDATE_COLOR);
+                updateColor.setString(1, colorName);
+                updateColor.setString(2, lineName);
+                updateColor.executeUpdate();
             }
+            con.commit();
+            JOptionPane.showInternalMessageDialog(this,
+                    "Line was added successfully!",
+                    "Hooray!",
+                    JOptionPane.PLAIN_MESSAGE);
 
             setMode(EDIT_MODE);
             setActiveness();
         } catch (SQLException e) {
             switch (e.getErrorCode()) {
-                case 515:
-                    JOptionPane.showInternalMessageDialog(this,
-                            "Line name \"" + lineName + "\" has already been taken.",
-                            "Bummer!",
-                            JOptionPane.ERROR_MESSAGE);
+                case 2627:
+                    if (getMode() == ADD_MODE && e.getMessage().contains("tblLine")) {
+                        JOptionPane.showInternalMessageDialog(this,
+                                "Sorry but the name \"" + lineName + "\" is already taken. Please be original.",
+                                "Bummer!",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+
+                    if (e.getMessage().contains("tblColor")) {
+                        JOptionPane.showInternalMessageDialog(this,
+                                "Sorry but the color \"" + colorName + "\" is already taken. Please be original.",
+                                "Bummer!",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+
+                    break;
                 default:
                     JOptionPane.showInternalMessageDialog(this,
                             "Error code: " + e.getErrorCode() + ". Go figure it yourself!",
@@ -590,16 +630,8 @@ public class Line extends MyInternalFrame {
             System.err.println("Error code: " + e.getErrorCode() + "\nError Message: " + e.getMessage());
             if (con != null) {
                 try {
-                    JOptionPane.showInternalMessageDialog(this,
-                            "Transaction is being rolled back. You're screwed! Haha!",
-                            "Bummer!",
-                            JOptionPane.ERROR_MESSAGE);
                     con.rollback();
                 } catch (SQLException excep) {
-                    JOptionPane.showInternalMessageDialog(this,
-                            "Error code: " + e.getErrorCode() + ". Go figure it yourself!",
-                            "Bummer!",
-                            JOptionPane.ERROR_MESSAGE);
                     System.err.println("Error code: " + e.getErrorCode() + "\nError Message: " + e.getMessage());
                 }
             }
@@ -636,14 +668,6 @@ public class Line extends MyInternalFrame {
         }
     }//GEN-LAST:event_btnDeleteActionPerformed
 
-    private void tfLengthPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_tfLengthPropertyChange
-
-    }//GEN-LAST:event_tfLengthPropertyChange
-
-    private void tfColorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfColorActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tfColorActionPerformed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddStation;
@@ -663,45 +687,39 @@ public class Line extends MyInternalFrame {
     private javax.swing.JLabel lblType;
     private javax.swing.JPanel pDetails;
     private javax.swing.JPanel pStations;
+    private javax.swing.JSpinner spnLength;
     private javax.swing.JTable tblStations;
     private javax.swing.JTextField tfColor;
-    private javax.swing.JTextField tfLength;
     private javax.swing.JTextField tfName;
     private com.toedter.calendar.JYearChooser ychFoundationYear;
     // End of variables declaration//GEN-END:variables
 
     private void setStationTblModel() {
         ArrayList<Column> cols = new ArrayList<>();
-        cols
-                .add(new Column("ID", "ID", Integer.class
-                        ));
-        cols.add(
-                new Column("Name", "Name", String.class
-                ));
-        cols.add(
-                new Column("Platforms", "platformNum", Integer.class
-                ));
-        cols.add(
-                new Column("Kiosk", "Kiosk", Boolean.class
-                ));
-        cols.add(
-                new Column("Zone", "zoneNumber", Integer.class
-                ));
+        cols.add(new Column("ID", "ID", Short.class));
+        cols.add(new Column("Name", "Name", String.class));
+        cols.add(new Column("Platforms", "platformNum", Short.class));
+        cols.add(new Column("Kiosk", "Kiosk", Boolean.class));
+        cols.add(new Column("Zone", "zoneNumber", Integer.class));
 
         PreparedStatement getAllStations;
         CustomTableModel stationTblModel;
 
         try {
-            getAllStations = con.prepareStatement("Select * From tblStationInLine "
-                    + "As SIL join tblStation As S on SIL.stationID = S.ID WHERE SIL.lineName = ?");
+            getAllStations = con.prepareStatement(Queries.SELECT_STATIONS_OF_LINE);
             getAllStations.setString(1, lineName);
-            PreparedStatement addStation = con.prepareStatement("Select * From tblStation WHERE ID = ?");
 
-            stationTblModel = new CustomTableModel(tblStations, cols, addStation, getAllStations);
+            stationTblModel = new CustomTableModel(tblStations, cols, getAllStations);
             stationTblModel.bindComboBox(cmbStation, 0, 1);
-            stationTblModel.fillTable();
-            tblStations.setModel(stationTblModel);
             
+            HashSet<JButton> tableButtons = new HashSet<>();
+            tableButtons.add(btnRemoveStation);
+            tableButtons.add(btnViewStation);
+            stationTblModel.bindButtons(tableButtons);
+            
+            tblStations.setModel(stationTblModel);
+            stationTblModel.fillTable();
+
             btnDelete.setEnabled(isOkToDelete());
         } catch (SQLException ex) {
 
@@ -717,10 +735,10 @@ public class Line extends MyInternalFrame {
 
             rs.next();
             this.colorName = rs.getString(5)/*color name*/;
-            this.foundedYear = rs.getInt("foundedYear");
-            this.lineLength = (rs.getDouble("lineLength") != 0) ? rs.getDouble("lineLength") : null;
+            this.foundedYear = rs.getShort("foundedYear");
+            this.lineLength = (rs.getFloat("lineLength") != 0) ? rs.getFloat("lineLength") : null;
             this.lineName = rs.getString("name");
-            this.lineType = rs.getString("lineType");
+            this.lineType = rs.getString("lineType").charAt(0);
 
         } catch (SQLException ex) {
             Logger.getLogger(Line.class.getName()).log(Level.SEVERE, null, ex);
@@ -731,18 +749,23 @@ public class Line extends MyInternalFrame {
         tfName.setText(this.lineName);
         tfColor.setText(this.colorName);
         ychFoundationYear.setYear(this.foundedYear);
-        cmbType.setSelectedItem((this.lineType.equals("O")) ? "Overground" : "Underground");
-        tfLength.setText(String.valueOf(this.lineLength));
+        cmbType.setSelectedItem((this.lineType.equals('O')) ? "Overground" : "Underground");
+
+        double minLength = Double.valueOf(((SpinnerNumberModel) spnLength.getModel()).getMinimum().toString());
+        spnLength.setValue((lineLength != null) ? lineLength : minLength);
     }
 
     private void setActiveness() {
         if (getMode() == ADD_MODE) {
             tfName.setEnabled(true);
             pStations.setVisible(false);
+            btnDelete.setVisible(false);
         } else {
             // edit mode
             tfName.setEnabled(false);
+            setStationTblModel();
             pStations.setVisible(true);
+            btnDelete.setVisible(true);
         }
         btnSave.setEnabled(isOkToSave());
         btnSave.setEnabled(isOkToDelete());
@@ -750,24 +773,32 @@ public class Line extends MyInternalFrame {
 
     private boolean isOkToSave() {
         if (lineName == null || lineName.isEmpty()) {
-            // saving is not allowed without line name
-            btnSave.setToolTipText("The line must have a name and a color");
+            btnSave.setToolTipText("The line must have a name");
             return false;
         }
         if (colorName == null || colorName.isEmpty()) {
-            // saving is not allowed without color name
-            btnSave.setToolTipText("The line must have a name and a color");
+            btnSave.setToolTipText("The line must have a color");
+            return false;
+        }
+
+        if (foundedYear == null || foundedYear < ychFoundationYear.getMinimum() || foundedYear > ychFoundationYear.getMaximum()) {
+            btnSave.setToolTipText("The line's foundation year must be netween 1863 and the current year");
+            return false;
+        }
+
+        if (lineLength == null || lineLength <= 0) {
+            btnSave.setToolTipText("The line's length must be a positive number");
             return false;
         }
         btnSave.setToolTipText(null);
         return true;
     }
-    
-    private boolean isOkToDelete(){
-        if (tblStations.getModel().getRowCount() > 0){
+
+    private boolean isOkToDelete() {
+        if (tblStations.getModel().getRowCount() > 0) {
             btnDelete.setToolTipText("Deleting the line is not allowed since it has stations");
             return false;
-        } 
+        }
         return true;
     }
 
