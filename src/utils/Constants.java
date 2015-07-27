@@ -57,6 +57,10 @@ public final class Constants {
     
     public static final boolean OUTGOING = true;
     
+    public static final boolean INSERT = false;
+    
+    public static final boolean DELETE = true;
+    
     public static final char UNDERGROUND = 'U';
     
     public static final char OVERGROUND = 'O';
