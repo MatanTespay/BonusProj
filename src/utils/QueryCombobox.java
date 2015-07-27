@@ -186,9 +186,10 @@ public final class QueryCombobox extends DefaultComboBoxModel {
         Collections.sort(items);
         int index = getIndexOf(object);
         fireIntervalAdded(this, index, index);
-        if (items.size() == 1 && items == null) {
-            setSelectedItem(object);
-        }
+        setSelectedItem(object);
+//        if (items.size() == 1 && items == null) {
+//            setSelectedItem(object);
+//        }
     }
 
     @Override
