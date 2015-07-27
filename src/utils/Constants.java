@@ -46,28 +46,34 @@ public final class Constants {
             + "To confirm changes.</html>";
 
     public static final boolean ADD_MODE = false;
-
+    
     public static final boolean EDIT_MODE = true;
-
+    
     public static final boolean PAPER = false;
-
+    
     public static final boolean OYSTER = true;
-
+    
     public static final boolean INGOING = false;
-
+    
     public static final boolean OUTGOING = true;
-
+    
+    public static final boolean INSERT = false;
+    
+    public static final boolean DELETE = true;
+    
     public static final char UNDERGROUND = 'U';
-
+    
     public static final char OVERGROUND = 'O';
-
+    
     public static final short LUNDON_U_FOUNDATION_YEAR = 1863;
-
+    
     public static final byte MIN_NUM_OF_PLATFORMS = 2;
-
+    
     public static final byte MAX_NUM_OF_PLATFORMS = 8;
-
-    public static final Double MAX_DISTANCE_OF_EXIT = 2.0;
-
+    
     public static final Double MIN_DISTANCE_OF_EXIT = 0.0;
+    
+    public static final Double MAX_DISTANCE_OF_EXIT = 0.0;
+    
+    
 }// ~ END OF Class Constants

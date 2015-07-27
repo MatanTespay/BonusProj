@@ -7,7 +7,6 @@ package gui;
 
 import init.ComboItem;
 import static init.MainClass.con;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -26,8 +25,10 @@ public class CardDialog extends MyInternalFrame {
     long cardNumber;
     Timestamp purchaseDate;
     MainWindow mainWindow;
+
     /**
      * Creates new form CardDialog
+     *
      * @param title
      * @param type
      * @param parent
@@ -38,6 +39,8 @@ public class CardDialog extends MyInternalFrame {
         this.mainWindow = parent;
         cmbPDate.setEnabled(false);
         fillCmbCard();
+        cmbPDate.setVisible(false);
+        lblDate.setVisible(false);
     }
 
     /**
@@ -56,7 +59,7 @@ public class CardDialog extends MyInternalFrame {
         bntOK = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
 
-        lblNumber.setText("Caed Number:");
+        lblNumber.setText("Card Number:");
 
         lblDate.setText("Purchase Date");
 
@@ -105,7 +108,7 @@ public class CardDialog extends MyInternalFrame {
                         .addComponent(lblDate)
                         .addGap(18, 18, 18)
                         .addComponent(cmbPDate, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -134,7 +137,7 @@ public class CardDialog extends MyInternalFrame {
             ComboItem cardItem = (ComboItem) cmbCard.getSelectedItem();
             cardNumber = Integer.parseInt(cardItem.getKey().toString());
             cmbPDate.setEnabled(true);
-            fillcmbPDate(cardNumber);
+//            fillcmbPDate(cardNumber);
         } catch (NullPointerException ex) {
             // no item is chosen
             cmbPDate.setEnabled(false);
@@ -142,23 +145,22 @@ public class CardDialog extends MyInternalFrame {
     }//GEN-LAST:event_cmbCardActionPerformed
 
     private void cmbPDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbPDateActionPerformed
-        // TODO add your handling code here:
-        if (cmbPDate.getSelectedItem() == null) {
-            return;
-        }
-        ComboItem purchaseDateItem = (ComboItem) cmbPDate.getSelectedItem();
-        this.purchaseDate = Timestamp.valueOf(purchaseDateItem.getKey().toString());
-        
+//        if (cmbPDate.getSelectedItem() == null) {
+//            return;
+//        }
+//        ComboItem purchaseDateItem = (ComboItem) cmbPDate.getSelectedItem();
+//        this.purchaseDate = Timestamp.valueOf(purchaseDateItem.getKey().toString());
+
     }//GEN-LAST:event_cmbPDateActionPerformed
 
     private void bntOKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bntOKActionPerformed
         // TODO add your handling code here:
-        if (this.purchaseDate != null && this.cardNumber > 0) {
-
+//        if (this.purchaseDate != null && this.cardNumber > 0) {
+        if (this.cardNumber > 0) {
             this.setVisible(false);
             mainWindow.desktop.remove(this);
-            
-            Card c = new Card(title, getSelectedUserType(),this.cardNumber,this.purchaseDate);
+
+            Card c = new Card(title, getSelectedUserType(), this.cardNumber);
             mainWindow.createFrame(c);
         }
     }//GEN-LAST:event_bntOKActionPerformed
@@ -194,31 +196,31 @@ public class CardDialog extends MyInternalFrame {
         }
     }
 
-    private void fillcmbPDate(long cardNumber) {
-        PreparedStatement st;
-        ResultSet rs;
-        try {
-            st = con.prepareStatement("SELECT C.purchaseDate FROM tblCard As C WHERE C.number = ?");
-            st.setLong(1, cardNumber);
-            rs = st.executeQuery();
-
-            ArrayList<ComboItem> items = new ArrayList<>();
-            while (rs.next()) {
-                items.add(new ComboItem(rs.getTimestamp("purchaseDate"), rs.getTimestamp("purchaseDate").toString()));
-            }
-            if (!items.isEmpty()) {
-                Collections.sort(items);
-
-                cmbPDate.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
-
-                ComboItem purchaseDateItem = (ComboItem) cmbPDate.getSelectedItem();
-                this.purchaseDate = Timestamp.valueOf(purchaseDateItem.getKey().toString());
-                cmbPDate.setSelectedIndex(0);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(CardDialog.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
+//    private void fillcmbPDate(long cardNumber) {
+//        PreparedStatement st;
+//        ResultSet rs;
+//        try {
+//            st = con.prepareStatement("SELECT C.purchaseDate FROM tblCard As C WHERE C.number = ?");
+//            st.setLong(1, cardNumber);
+//            rs = st.executeQuery();
+//
+//            ArrayList<ComboItem> items = new ArrayList<>();
+//            while (rs.next()) {
+//                items.add(new ComboItem(rs.getTimestamp("purchaseDate"), rs.getTimestamp("purchaseDate").toString()));
+//            }
+//            if (!items.isEmpty()) {
+//                Collections.sort(items);
+//
+//                cmbPDate.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
+//
+//                ComboItem purchaseDateItem = (ComboItem) cmbPDate.getSelectedItem();
+//                this.purchaseDate = Timestamp.valueOf(purchaseDateItem.getKey().toString());
+//                cmbPDate.setSelectedIndex(0);
+//            }
+//        } catch (SQLException ex) {
+//            Logger.getLogger(CardDialog.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bntOK;
     private javax.swing.JButton btnCancel;

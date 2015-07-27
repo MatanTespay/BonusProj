@@ -38,7 +38,7 @@
                       <Component id="cmbPDate" min="-2" pref="167" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace pref="19" max="32767" attributes="0"/>
+              <EmptySpace pref="21" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -68,7 +68,7 @@
   <SubComponents>
     <Component class="javax.swing.JLabel" name="lblNumber">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Caed Number:"/>
+        <Property name="text" type="java.lang.String" value="Card Number:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="lblDate">
