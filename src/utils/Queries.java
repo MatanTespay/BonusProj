@@ -57,17 +57,20 @@ public class Queries {
     //------------------------------CARD----------------------------------------
     public static final String SELECT_NEW_CARD = "SELECT TOP 1 number+1 As 'number' "
             + "FROM tblCard ORDER BY number DESC";
-    
-    public static final String INSERT_CARD = "INSERT INTO tblCard VALUES(?,?)";
-    
+
+    public static final String SELECT_CARD = "SELECT * FROM tblCard "
+            + "WHERE number = ? and purchaseDate = ?";
+
+    public static final String INSERT_CARD = "INSERT INTO tblCard VALUES(?,?,?)";
+
     public static final String DELETE_CARD = "DELETE FROM tblCard WHERE number = ? "
             + "and purchaseDate = ?";
     //---------------------------PAPER CARD-------------------------------------
     public static final String SELECT_ALL_PAPER_CARDS = "SELECT * FROM tblPaperCard";
-    
+
     public static final String SELECT_PAPER_ISTOURIST = "SELECT isTourist "
-            + "FROM tblPaperCard WHERE number = ? and purchaseDate = ?";
-    
+            + "FROM tblPaperCard WHERE number = ?";
+
     public static final String INSERT_PAPER_CARD = "INSERT INTO tblPaperCard VALUES (?,?,?)";
 
     public static final String UPDATE_PAPER_CARD = "UPDATE tblPaperCard "
@@ -78,10 +81,10 @@ public class Queries {
 
     //---------------------------OYSTER CARD------------------------------------
     public static final String SELECT_ALL_OYSTER_CARDS = "SELECT * FROM tblOysterCard";
-    
+
     public static final String SELECT_OYSTER_PICTURE = "SELECT picture FROM tblOysterCard "
-            + "WHERE number = ? and purchaseDate = ?";
-    
+            + "WHERE number = ?";
+
     public static final String INSERT_OYSTER_CARD = "INSERT INTO tblOysterCard VALUES (?,?,?)";
 
     public static final String UPDATE_OYSTER_CARD = "UPDATE tblOysterCard "
@@ -91,21 +94,38 @@ public class Queries {
             + "and cardPurchaseDate = ? and zoneNumber = ? and cardLength = ?";
 
     //-------------------------PAPER_CARD_AREAS---------------------------------
-    public static final String SELECT_PAPER_PROGRAMS_AND_LENGTH_OF_CARD = "SELECT * "
-            + "FROM tblPaperCardAreas As PCA join tblCardLengths As CL on "
-            + "PCA.cardLength = CL.lengthDescription WHERE PCA.cardNumber = ? "
-            + "and PCA.cardPurchaseDate = ?";
+    public static final String SELECT_PAPER_PROGRAMS = "SELECT *, case "
+            + "when PCA.cardLength='1' then DATEADD(dd,1,PCA.cardPurchaseDate) "
+            + "when PCA.cardLength='2' then DATEADD(dd,3,PCA.cardPurchaseDate) "
+            + "when PCA.cardLength='3' then DATEADD(dd,7,PCA.cardPurchaseDate) "
+            + "when PCA.cardLength='4' then DATEADD(mm,1,PCA.cardPurchaseDate) "
+            + "when PCA.cardLength='5' then DATEADD(mm,3,PCA.cardPurchaseDate) "
+            + "when PCA.cardLength='6' then DATEADD(yyyy,1,PCA.cardPurchaseDate) "
+            + "end as 'expirationDate' "
+            + "FROM tblPaperCardAreas PCA "
+            + "WHERE cardNumber = ?";
 
     public static final String INSERT_PAPER_PROGRAM = "INSERT INTO tblPaperCardAreas "
             + "VALUES (?,?,?,?)";
 
-    //-------------------------OYSTER_CARD_AREAS--------------------------------
-    public static final String SELECT_OYSTER_PROGRAMS_AND_LENGTHS_OF_CARD
-            = "SELECT * FROM tblOysterCardAreas As OCA join tblCardLengths As CL "
-            + "on OCA.cardLength = CL.lengthDescription WHERE OCA.cardNumber = ? "
-            + "and OCA.cardPurchaseDate = ?";
+    public static final String DELETE_PAPER_PROGRAM = "DELETE FROM tblPaperCardAreas "
+            + "WHERE cardNumber=? and cardPurchaseDate = ? and zoneNumber = ?";
 
+    //-------------------------OYSTER_CARD_AREAS--------------------------------
+    public static final String SELECT_OYSTER_PROGRAMS = "SELECT *, case "
+            + "when OCA.cardLength='1' then DATEADD(dd,1,OCA.cardPurchaseDate) "
+            + "when OCA.cardLength='2' then DATEADD(dd,3,OCA.cardPurchaseDate) "
+            + "when OCA.cardLength='3' then DATEADD(dd,7,OCA.cardPurchaseDate) "
+            + "when OCA.cardLength='4' then DATEADD(mm,1,OCA.cardPurchaseDate) "
+            + "when OCA.cardLength='5' then DATEADD(mm,3,OCA.cardPurchaseDate) "
+            + "when OCA.cardLength='6' then DATEADD(yyyy,1,OCA.cardPurchaseDate) "
+            + "end as 'expirationDate' "
+            + "FROM tblPaperCardAreas OCA "
+            + "WHERE cardNumber = ?";
 
     public static final String INSERT_OYSTER_PROGRAM = "INSERT INTO tblOysterCardAreas "
             + "VALUES (?,?,?,?)";
+
+    public static final String DELETE_OYSTER_PROGRAM = "DELETE FROM tblOysterCardAreas "
+            + "WHERE cardNumber=? and cardPurchaseDate = ? and zoneNumber = ?";
 }

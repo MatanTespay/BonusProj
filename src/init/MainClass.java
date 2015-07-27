@@ -113,8 +113,8 @@ public class MainClass {
         isSaved = state;
     }
 
-    public static void setUserData(String type, String Name, char[] pass) {
-        user = IFly.getUserObject(type, Name, pass);
+    public static void setUserData(String type, String name, char[] pass) {
+        user = new AbstractMap.SimpleEntry<>(name, pass);
     }
 
     public static AbstractMap.SimpleEntry getUserData() {

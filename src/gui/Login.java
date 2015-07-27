@@ -211,7 +211,7 @@ public class Login extends javax.swing.JFrame {
             /*JOptionPane.showMessageDialog(this,
              "Success! You typed the right password.");*/
             
-
+            MainClass.setUserData(null, userTxtName.getText(), input);
             StringBuilder sb = new StringBuilder();
             sb.append("London Underground - ").append(this.selectedUserType).append(" Mode");
             //MainClass.getCurrentUser().put((String) userTypeComboBox.getSelectedItem(), input.toString());
