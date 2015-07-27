@@ -54,12 +54,11 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         this.login = log;
         selectedUserType = userType;
         initComponents();
-        int inset = 100;
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        setBounds(300, 40,
-                866,
-                668);
-
+        //int inset = 100;
+        //Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        setBounds(0, 0,900,750);
+        
+        this.setLocationRelativeTo(null);
         desktop = new JDesktopPane();
         //desktop.add(panel);
         pane = new DesktopScrollPane(desktop);
@@ -260,7 +259,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
                 ifram = new LineDialog(e.getActionCommand(), selectedUserType, this);
                 break;
             case "Add Site":
-                ifram = new Site(e.getActionCommand(), selectedUserType, 2);
+                ifram = new Site(e.getActionCommand(), selectedUserType, 22);
                 break;
             case "Edit Site":
                 ifram = new SiteDialog(e.getActionCommand(), selectedUserType, this);

@@ -11,7 +11,7 @@ package utils;
  */
 public class Queries {
 
-    //----------------------------LINE & COLOR----------------------------------  
+    //<editor-fold defaultstate="collapsed" desc="LINE & COLOR">
     public static final String SELECT_LINE_AND_COLOR = "SELECT * FROM tblLine As L "
             + "join tblLineColor As LC on L.name = LC.lineName WHERE L.name = ?";
 
@@ -27,8 +27,9 @@ public class Queries {
 
     // note: deleting a line automatically deletes the color
     public static final String DELETE_LINE = "DELETE FROM tblLine WHERE name = ?";
+//</editor-fold>
 
-    //------------------------------STATION-------------------------------------
+    //<editor-fold defaultstate="collapsed" desc="STATION">
     public static final String SELECT_STATION_ID_BY_NAME = "SELECT ID FROM tblStation As S WHERE S.name = ?";
 
     public static final String SELECT_STATION = "SELECT * FROM tblStation WHERE ID = ?";
@@ -39,8 +40,9 @@ public class Queries {
             + "platformNum = ?, kiosk = ?, zoneNumber = ? WHERE ID = ?";
 
     public final static String DELETE_STATION = "DELETE FROM tblStation WHERE ID = ?";
+//</editor-fold>
 
-    //-------------------------STATION IN LINE----------------------------------
+    //<editor-fold defaultstate="collapsed" desc="STATION IN LINE">
     public static final String SELECT_STATIONS_OF_LINE = "SELECT * FROM tblStationInLine "
             + "As SIL join tblStation As S on SIL.stationID = S.ID WHERE SIL.lineName = ?";
 
@@ -53,8 +55,9 @@ public class Queries {
 
     public static final String DELETE_STATION_IN_LINE = "DELETE FROM tblStationInLine "
             + "WHERE stationID = ? AND  lineName = ?";
+//</editor-fold>
 
-    //------------------------------CARD----------------------------------------
+    //<editor-fold defaultstate="collapsed" desc="CARD">
     public static final String SELECT_NEW_CARD = "SELECT TOP 1 number+1 As 'number' "
             + "FROM tblCard ORDER BY number DESC";
 
@@ -65,7 +68,9 @@ public class Queries {
 
     public static final String DELETE_CARD = "DELETE FROM tblCard WHERE number = ? "
             + "and purchaseDate = ?";
-    //---------------------------PAPER CARD-------------------------------------
+//</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="PAPER CARD">
     public static final String SELECT_ALL_PAPER_CARDS = "SELECT * FROM tblPaperCard";
 
     public static final String SELECT_PAPER_ISTOURIST = "SELECT isTourist "
@@ -78,8 +83,9 @@ public class Queries {
 
     public static final String DELETE_PAPER_CARD = "DELETE FROM tblPaperCard WHERE cardNumber = ? "
             + "and cardPurchaseDate = ? and zoneNumber = ? and cardLength = ?";
+//</editor-fold>
 
-    //---------------------------OYSTER CARD------------------------------------
+    //<editor-fold defaultstate="collapsed" desc="OYSTER CARD">
     public static final String SELECT_ALL_OYSTER_CARDS = "SELECT * FROM tblOysterCard";
 
     public static final String SELECT_OYSTER_PICTURE = "SELECT picture FROM tblOysterCard "
@@ -92,8 +98,9 @@ public class Queries {
 
     public static final String DELETE_OYSTER_CARD = "DELETE FROM tblPaperCard WHERE cardNumber = ? "
             + "and cardPurchaseDate = ? and zoneNumber = ? and cardLength = ?";
+//</editor-fold>
 
-    //-------------------------PAPER_CARD_AREAS---------------------------------
+    //<editor-fold defaultstate="collapsed" desc="PAPER_CARD_AREAS">
     public static final String SELECT_PAPER_PROGRAMS = "SELECT *, case "
             + "when PCA.cardLength='1' then DATEADD(dd,1,PCA.cardPurchaseDate) "
             + "when PCA.cardLength='2' then DATEADD(dd,3,PCA.cardPurchaseDate) "
@@ -110,8 +117,9 @@ public class Queries {
 
     public static final String DELETE_PAPER_PROGRAM = "DELETE FROM tblPaperCardAreas "
             + "WHERE cardNumber=? and cardPurchaseDate = ? and zoneNumber = ?";
+//</editor-fold>
 
-    //-------------------------OYSTER_CARD_AREAS--------------------------------
+    //<editor-fold defaultstate="collapsed" desc="OYSTER_CARD_AREAS">
     public static final String SELECT_OYSTER_PROGRAMS = "SELECT *, case "
             + "when OCA.cardLength='1' then DATEADD(dd,1,OCA.cardPurchaseDate) "
             + "when OCA.cardLength='2' then DATEADD(dd,3,OCA.cardPurchaseDate) "
@@ -128,4 +136,24 @@ public class Queries {
 
     public static final String DELETE_OYSTER_PROGRAM = "DELETE FROM tblOysterCardAreas "
             + "WHERE cardNumber=? and cardPurchaseDate = ? and zoneNumber = ?";
+//</editor-fold>
+
+    // <editor-fold desc="SITE" defaultstate="collapsed">
+    public static final String SELECT_SFS_BY_SITEID = "SELECT * FROM tblSiteFromSite As SFS \n"
+            + "  join tblSite As S on SFS.siteID2 = S.ID and s.ID in(\n"
+            + "  SELECT sfs.siteID1 FROM tblSiteFromSite As SFS  where sfs.siteID2 = ?)";
+
+    public static final String SELECT_SITE_BY_SITEID = "Select * From tblSite As S WHERE S.ID = ?";
+    
+    public static final String SELECT_AllSITES = "Select * From tblSite";
+    
+    public static final String SELECT_SFE_BY_SITEID = "Select * From tblSiteFromExit As SFE "
+            + "join tblStation As S on SFE.stationID = S.ID WHERE SFE.siteID = ? ";
+    public static final String SELECT_LINE_NAME_FOR_STATION_NAME = "SELECT SIL.lineName FROM tblStationInLine SIL\n" 
+            + "JOIN tblStation s on sil.stationID = s.ID WHERE s.name = ?";
+    /*
+    SELECT SIL.lineName FROM tblStationInLine "
+                    + "As SIL WHERE SIL.stationID = ?
+    */
+// </editor-fold>   
 }
