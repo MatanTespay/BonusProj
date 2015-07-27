@@ -38,6 +38,8 @@ import core.Order;
 import core.Pilot;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Calendar;
 
 /**
  * The class provide helper functions used in the the system
@@ -790,7 +792,7 @@ public class HelperClass {
                 return rs.getObject(colName);
         }
     }
-    
+
     public static Object getObjectFromResultSet(ResultSet rs, String type, int colNumber) throws SQLException {
         switch (type) {
             case "Boolean":
@@ -814,5 +816,32 @@ public class HelperClass {
             default:
                 return rs.getObject(colNumber);
         }
+    }
+
+    public static Timestamp getExpirationDate(Timestamp date, char length) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+
+        switch (length) {
+            case '1':
+                cal.add(Calendar.DATE, 1);
+                break;
+            case '2':
+                cal.add(Calendar.DATE, 3);
+                break;
+            case '3':
+                cal.add(Calendar.WEEK_OF_YEAR, 1);
+                break;
+            case '4':
+                cal.add(Calendar.MONTH, 1);
+                break;
+            case '5':
+                cal.add(Calendar.MONTH, 3);
+                break;
+            case '6':
+                cal.add(Calendar.YEAR, 1);
+                break;
+        }
+        return new Timestamp(cal.getTimeInMillis());
     }
 }

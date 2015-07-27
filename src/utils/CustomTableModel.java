@@ -27,7 +27,7 @@ public class CustomTableModel extends AbstractTableModel {
 
     private final JTable table;
     private final ArrayList<Column> columns;
-    private final PreparedStatement fillStatement;
+    private PreparedStatement fillStatement;
     private Collection<JButton> buttons;
     private ArrayList<Object[]> rows;
 
@@ -95,11 +95,10 @@ public class CustomTableModel extends AbstractTableModel {
 
         for (int col = 0; col < getColumnCount(); col++) {
             colSqlName = columns.get(col).getSqlColumnName();
-            if (colSqlName.equals("#")) {
-                fieldToAdd = rs.getRow() + 1;
-            } else {
-                rowToAdd[col] = utils.HelperClass.getObjectFromResultSet(rs, getColumnClass(col).getSimpleName(), colSqlName);
-            }
+            fieldToAdd = (colSqlName.equals("#")) ? rs.getRow() + 1
+                    : utils.HelperClass.getObjectFromResultSet(
+                            rs, getColumnClass(col).getSimpleName(), colSqlName);
+            rowToAdd[col] = fieldToAdd;
         }
         return rowToAdd;
     }
@@ -129,17 +128,15 @@ public class CustomTableModel extends AbstractTableModel {
         }
 
         if (columns.size() != rowToAdd.length) {
-            if (!columns.get(0).getSqlColumnName().equals("#") || columns.size() != rowToAdd.length + 1) {
-                return false;
-            }
+            return false;
+        }
+
+        if (rowToAdd[0].equals("#")) {
+            rowToAdd[0] = rows.size() + 1;
         }
 
         int i = 0;
         for (Column col : columns) {
-            if (col.getSqlName().equals("#")) {
-                i++;
-                continue;
-            }
             if (rowToAdd[i++].getClass() != col.getClassType()) {
                 return false;
             }
@@ -149,9 +146,30 @@ public class CustomTableModel extends AbstractTableModel {
             return false;
         }
 
-        fireTableRowsInserted(rows.size() - 1, rows.size());
+        fireTableRowsInserted(rows.size(), rows.size());
         handleSelectionAndButtons();
         return true;
+    }
+
+    public Object[] getRow(int rowIndex) {
+        return rows.get(rowIndex);
+    }
+
+    public boolean removeRow(int row) {
+        if (rows.isEmpty()) {
+            return false;
+        }
+
+        try {
+
+            rows.remove(row);
+            fireTableRowsDeleted(row, row);
+            handleSelectionAndButtons();
+            return true;
+
+        } catch (IndexOutOfBoundsException e) {
+            return false;
+        }
     }
 
     private void handleSelectionAndButtons() {
@@ -166,6 +184,18 @@ public class CustomTableModel extends AbstractTableModel {
                 button.setEnabled(tableNotEmpty);
             }
         }
+    }
+
+    public ArrayList<Object[]> getData() {
+        return rows;
+    }
+
+    public PreparedStatement getFillStatement() {
+        return this.fillStatement;
+    }
+
+    public void setPreparedStatement(PreparedStatement st) {
+        this.fillStatement = st;
     }
 
     @Override
