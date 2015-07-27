@@ -23,7 +23,7 @@ import java.util.logging.Logger;
  */
 public class CardDialog extends MyInternalFrame {
 
-    int cardNumber;
+    long cardNumber;
     Timestamp purchaseDate;
     MainWindow mainWindow;
     /**
@@ -194,12 +194,12 @@ public class CardDialog extends MyInternalFrame {
         }
     }
 
-    private void fillcmbPDate(int cardNumber) {
+    private void fillcmbPDate(long cardNumber) {
         PreparedStatement st;
         ResultSet rs;
         try {
             st = con.prepareStatement("SELECT C.purchaseDate FROM tblCard As C WHERE C.number = ?");
-            st.setInt(1, cardNumber);
+            st.setLong(1, cardNumber);
             rs = st.executeQuery();
 
             ArrayList<ComboItem> items = new ArrayList<>();
