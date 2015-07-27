@@ -1,6 +1,7 @@
 package init;
 
 import gui.Login;
+import gui.MainWindow;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,7 +14,7 @@ import java.text.ParseException;
 import java.util.AbstractMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+import com.alee.laf.WebLookAndFeel; 
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -59,7 +60,7 @@ public class MainClass {
          */
 //        try {
 //            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-//                if ("Nimbus".equals(info.getName())) {
+//                if ("maven.com.seaglasslookandfeel.seaglasslookandfeel".equals(info.getName())) {
 //                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
 //                    break;
 //                }
@@ -73,20 +74,22 @@ public class MainClass {
 //        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
 //            java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 //        }
-        try {
-            // Set cross-platform Java L&F (also called "Metal")
-            UIManager.setLookAndFeel(
-                    UIManager.getCrossPlatformLookAndFeelClassName());
-        } catch (UnsupportedLookAndFeelException e) {
-            // handle exception
-        } catch (ClassNotFoundException e) {
-            // handle exception
-        } catch (InstantiationException e) {
-            // handle exception
-        } catch (IllegalAccessException e) {
-            // handle exception
-        }
+//        try {
+//            // Set cross-platform Java L&F (also called "Metal")
+//            UIManager.setLookAndFeel(
+//                    UIManager.getCrossPlatformLookAndFeelClassName());
+//        } catch (UnsupportedLookAndFeelException e) {
+//            // handle exception
+//        } catch (ClassNotFoundException e) {
+//            // handle exception
+//        } catch (InstantiationException e) {
+//            // handle exception
+//        } catch (IllegalAccessException e) {
+//            // handle exception
+//        }
 
+        WebLookAndFeel.install(true); 
+        WebLookAndFeel.setDecorateAllWindows(true);
         //</editor-fold>
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
