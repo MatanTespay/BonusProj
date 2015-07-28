@@ -12,8 +12,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.event.ListDataEvent;
 
@@ -47,10 +49,14 @@ public final class QueryCombobox extends DefaultComboBoxModel {
      the items of the model
      */
     private ArrayList<ComboItem> items;
-
+    /**
+     * button the need to correspond to the comboBox state
+     */
+    private Collection<JButton> buttons;
     /*
      combobox that depends on another combobox
      */
+
     /**
      *
      * @param cmb the value of cmb
@@ -71,15 +77,25 @@ public final class QueryCombobox extends DefaultComboBoxModel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    ComboItem selectedFatherItem = (ComboItem) getSelectedItem();
+                    QueryCombobox fatherModel = (QueryCombobox) fatherCmb.getModel();
+                    ComboItem selectedFatherItem = (ComboItem) fatherModel.getSelectedItem();
+
+                    //ComboItem selectedFatherItem = (ComboItem) getSelectedItem();
                     Object key = selectedFatherItem.getKey();
                     String value = selectedFatherItem.getLabel();
 
-                    if (keyClass.equals(Integer.class)) {
-                        st.setInt(1, (Integer) key);
-                    } else if (keyClass.equals(String.class)) {
-                        st.setString(1, value);
-                    }
+                    HelperClass.setPSParamByType(st, key, value);
+
+//                    if (keyClass.equals(Integer.class)) {
+//                        st.setInt(1, (Integer) key);
+//                    } else if (keyClass.equals(String.class)) {
+//                        st.setString(1, value);
+//                    } else if (keyClass.equals(Short.class)) {
+//                        st.setString(1, value);
+//                    }
+                    //update this combo after father changes
+                    fill();
+
 
                 } catch (SQLException ex) {
 
@@ -92,11 +108,15 @@ public final class QueryCombobox extends DefaultComboBoxModel {
             Object key = selectedFatherItem.getKey();
             String value = selectedFatherItem.getLabel();
 
-            if (fatherModel.getKeyClass().equals(Integer.class)) {
-                st.setInt(1, (int) key);
-            } else if (fatherModel.getKeyClass().equals(String.class)) {
-                st.setString(1, value);
-            }
+            HelperClass.setPSParamByType(st, key, value);
+
+//            if (fatherModel.getKeyClass().equals(Integer.class)) {
+//                st.setInt(1, (int) key);
+//            } else if (fatherModel.getKeyClass().equals(String.class)) {
+//                st.setString(1, value);
+//            } else if (fatherModel.getKeyClass().equals(Short.class)) {
+//                st.setString(1, value);
+//            }
         } catch (SQLException ex) {
 
         }
@@ -105,6 +125,14 @@ public final class QueryCombobox extends DefaultComboBoxModel {
         if (items.size() > 0) {
             selectedItem = items.get(0);
         }
+    }
+
+    public void bindButtons(Collection<JButton> buttons) {
+        this.buttons = buttons;
+    }
+
+    public JComboBox<ComboItem> getFatherCmb() {
+        return fatherCmb;
     }
 
     /*
@@ -144,6 +172,7 @@ public final class QueryCombobox extends DefaultComboBoxModel {
                 String value = rs.getObject(valueColumn).toString();
                 addElement(new ComboItem(key, value));
             }
+
         } catch (SQLException ex) {
             // rollback
             items = tempOldItems;
@@ -157,9 +186,10 @@ public final class QueryCombobox extends DefaultComboBoxModel {
         Collections.sort(items);
         int index = getIndexOf(object);
         fireIntervalAdded(this, index, index);
-        if (items.size() == 1 && items == null) {
-            setSelectedItem(object);
-        }
+        setSelectedItem(object);
+//        if (items.size() == 1 && items == null) {
+//            setSelectedItem(object);
+//        }
     }
 
     @Override

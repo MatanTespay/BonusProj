@@ -71,5 +71,9 @@ public final class Constants {
     
     public static final byte MAX_NUM_OF_PLATFORMS = 8;
     
-
+    public static final Double MIN_DISTANCE_OF_EXIT = 0.0;
+    
+    public static final Double MAX_DISTANCE_OF_EXIT = 0.0;
+    
+    
 }// ~ END OF Class Constants

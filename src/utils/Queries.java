@@ -144,4 +144,18 @@ public class Queries {
 
     //-------------------------------ZONE---------------------------------------
     public static final String SELECT_ALL_ZONES = "SELECT * FROM tblZone";
+    
+    public static final String SELECT_SFS_BY_SITEID = "SELECT * FROM tblSiteFromSite As SFS \n"
+            + "  join tblSite As S on SFS.siteID2 = S.ID and s.ID in(\n"
+            + "  SELECT sfs.siteID1 FROM tblSiteFromSite As SFS  where sfs.siteID2 = ?)";
+
+    //------------------------------- SITE ---------------------------------------
+    public static final String SELECT_SITE_BY_SITEID = "Select * From tblSite As S WHERE S.ID = ?";
+    
+    public static final String SELECT_AllSITES = "Select * From tblSite";
+    
+    public static final String SELECT_SFE_BY_SITEID = "Select * From tblSiteFromExit As SFE "
+            + "join tblStation As S on SFE.stationID = S.ID WHERE SFE.siteID = ? ";
+    public static final String SELECT_LINE_NAME_FOR_STATION_NAME = "SELECT SIL.lineName FROM tblStationInLine SIL\n" 
+            + "JOIN tblStation s on sil.stationID = s.ID WHERE s.name = ?";
 }

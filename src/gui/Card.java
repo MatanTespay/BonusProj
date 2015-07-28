@@ -23,7 +23,6 @@ import java.sql.Blob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -472,6 +471,10 @@ public class Card extends MyInternalFrame {
         if (getMode() == ADD_MODE) {
             // add mode - the table is UNBOUNDED to the DB
             tblModel.removeRow(selectedRow);
+            JOptionPane.showInternalMessageDialog(this,
+                            "Program was successfully removed from the card!",
+                            "Hooray!",
+                            JOptionPane.PLAIN_MESSAGE);
             return;
         }
 
@@ -482,7 +485,7 @@ public class Card extends MyInternalFrame {
                 if (isCardBounded) {
                     // card have already been used, therefore the program cannot be removed
                     JOptionPane.showInternalMessageDialog(this,
-                            "You have already used the card. Are you trying to cheat me?!!",
+                            "You have already used the card.\nAre you trying to cheat me?!!",
                             "Bummer!",
                             JOptionPane.ERROR_MESSAGE);
                     return;

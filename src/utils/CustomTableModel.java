@@ -97,8 +97,7 @@ public class CustomTableModel extends AbstractTableModel {
         for (int col = 0; col < getColumnCount(); col++) {
             colSqlName = columns.get(col).getSqlColumnName();
             fieldToAdd = (colSqlName.equals("#")) ? rs.getRow() + 1
-                    : utils.HelperClass.getObjectFromResultSet(
-                            rs, getColumnClass(col).getSimpleName(), colSqlName);
+                    : utils.HelperClass.getObjectFromResultSet(rs, getColumnClass(col).getSimpleName(), colSqlName);
             rowToAdd[col] = fieldToAdd;
         }
         return rowToAdd;
