@@ -590,11 +590,6 @@ public class Line extends MyInternalFrame {
                 }
                 updateLine.setString(4, lineName);
                 updateLine.executeUpdate();
-
-                updateColor = con.prepareStatement(Queries.UPDATE_COLOR);
-                updateColor.setString(1, colorName);
-                updateColor.setString(2, lineName);
-                updateColor.executeUpdate();
             }
             con.commit();
             JOptionPane.showInternalMessageDialog(this,

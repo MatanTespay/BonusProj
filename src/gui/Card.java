@@ -472,9 +472,9 @@ public class Card extends MyInternalFrame {
             // add mode - the table is UNBOUNDED to the DB
             tblModel.removeRow(selectedRow);
             JOptionPane.showInternalMessageDialog(this,
-                            "Program was successfully removed from the card!",
-                            "Hooray!",
-                            JOptionPane.PLAIN_MESSAGE);
+                    "Program was successfully removed from the card!",
+                    "Hooray!",
+                    JOptionPane.PLAIN_MESSAGE);
             return;
         }
 
@@ -498,21 +498,21 @@ public class Card extends MyInternalFrame {
                             JOptionPane.WARNING_MESSAGE);
                 }
             }
-            
+
             // the card is loaded with more than 1 program OR was not in use
-            Object[] rowToRemove =  tblModel.getRow(selectedRow);
-            Timestamp purchase = (Timestamp)rowToRemove[1];
+            Object[] rowToRemove = tblModel.getRow(selectedRow);
+            Timestamp purchase = (Timestamp) rowToRemove[1];
             byte zone = Byte.parseByte(rowToRemove[3].toString());
             char length = rowToRemove[4].toString().charAt(0);
 
             PreparedStatement deleteProgram = (cardType == PAPER) ? con.prepareStatement(Queries.DELETE_PAPER_PROGRAM)
                     : con.prepareStatement(Queries.DELETE_OYSTER_PROGRAM);
-            
+
             deleteProgram.setLong(1, cardNumber);
             deleteProgram.setTimestamp(2, purchase);
             deleteProgram.setByte(3, zone);
             deleteProgram.setString(4, String.valueOf(length));
-            
+
             deleteProgram.executeUpdate();
             tblModel.fillTable();
 
@@ -612,7 +612,7 @@ public class Card extends MyInternalFrame {
                     + "cause the deletion of the card.\n"
                     + "Are you sure you want to exit?",
                     "Bummer!", JOptionPane.YES_NO_OPTION,
-                    JOptionPane.ERROR_MESSAGE, null, null, null);
+                    JOptionPane.WARNING_MESSAGE, null, null, null);
             if (choice == JOptionPane.OK_OPTION) {
                 deleteCard();
             }
@@ -773,7 +773,7 @@ public class Card extends MyInternalFrame {
             getZonesToAdd = (cardType == PAPER)
                     ? con.prepareCall(Queries.PAPER_PROGRAM_ZONES_TO_ADD, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY)
                     : con.prepareCall(Queries.OYSTER_PROGRAM_ZONES_TO_ADD, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            
+
             getZonesToAdd.setByte(1, maxZoneNumber);
             getZonesToAdd.setLong(2, cardNumber);
             getZonesToAdd.setTimestamp(3, purchase);
@@ -811,9 +811,12 @@ public class Card extends MyInternalFrame {
                 this.cardType = OYSTER;
 
                 Blob blob = rs.getBlob("picture");
-                int blobLength = (int) blob.length();
-                byte[] blobAsBytes = blob.getBytes(1, blobLength);
-                this.oldPicture = this.picture = getScaledImage(blobAsBytes);
+                if(blob != null)
+                {
+                    int blobLength = (int) blob.length();
+                    byte[] blobAsBytes = blob.getBytes(1, blobLength);
+                    this.oldPicture = this.picture = getScaledImage(blobAsBytes);
+                }
 
             } else {
                 // result set is empty - the card is Paper
@@ -983,8 +986,9 @@ public class Card extends MyInternalFrame {
                 insertOysterCard.setLong(1, cNumber);
                 insertOysterCard.setTimestamp(2, getToday());
 
-                Image pic = picture.getImage();
-                if (pic != null) {
+                
+                if (picture != null) {
+                    Image pic = picture.getImage();
                     BufferedImage bi = getBufferedImage(pic);
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     ImageIO.write(bi, "PNG", baos);
@@ -1093,10 +1097,10 @@ public class Card extends MyInternalFrame {
         rs.next();
         return rs.getBoolean(1);
     }
-    
+
     /*
-        delete card from 3 tables as 1 transaction
-    */
+     delete card from 3 tables as 1 transaction
+     */
     private void deleteCard() {
         PreparedStatement deleteCard;
         PreparedStatement deletePaperProgram;
@@ -1116,7 +1120,7 @@ public class Card extends MyInternalFrame {
 
                 deletePaperProgram.executeUpdate();
                 deleteCard.executeUpdate();
-                
+
             } else {
                 // oyster card
                 deleteOysterProgram = con.prepareStatement(Queries.DELETE_ALL_OYSTER_PROGRAMS_OF_CARD);
@@ -1124,7 +1128,7 @@ public class Card extends MyInternalFrame {
 
                 deleteOysterProgram.executeUpdate();
                 deleteCard.executeUpdate();
-                
+
             }
             con.setAutoCommit(true);
 
