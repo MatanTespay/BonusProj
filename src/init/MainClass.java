@@ -88,8 +88,8 @@ public class MainClass {
 //            // handle exception
 //        }
 
-        WebLookAndFeel.install(true); 
-        WebLookAndFeel.setDecorateAllWindows(true);
+        //WebLookAndFeel.install(true); 
+        //WebLookAndFeel.setDecorateAllWindows(true);
         //</editor-fold>
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {

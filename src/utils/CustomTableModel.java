@@ -48,7 +48,7 @@ public class CustomTableModel extends AbstractTableModel {
         table.setRowSelectionAllowed(true);
         table.setColumnSelectionAllowed(false);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        HelperClass.resizeColumnWidth(table);
+        //HelperClass.resizeColumnWidth(table);
     }
 
     /*

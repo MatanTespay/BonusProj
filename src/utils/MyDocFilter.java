@@ -50,6 +50,7 @@ public class MyDocFilter extends DocumentFilter {
         if (text.isEmpty()) {
             return true;
         }
+        Double d;
         try {
             switch (type) {
                 case BYTE:
@@ -90,6 +91,14 @@ public class MyDocFilter extends DocumentFilter {
                         return false;
                     }
                     break;
+                case NAME:
+                    if (!HelperClass.isNameOk(text.trim())) {
+                        Toolkit.getDefaultToolkit().beep();
+                        return false;
+                    }
+                    break;
+
+
             }
             return true;
         } catch (NumberFormatException e) {

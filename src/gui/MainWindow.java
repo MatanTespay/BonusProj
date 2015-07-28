@@ -259,7 +259,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
                 ifram = new LineDialog(e.getActionCommand(), selectedUserType, this);
                 break;
             case "Add Site":
-                ifram = new Site(e.getActionCommand(), selectedUserType, 22);
+                ifram = new Site(e.getActionCommand(), selectedUserType);
                 break;
             case "Edit Site":
                 ifram = new SiteDialog(e.getActionCommand(), selectedUserType, this);

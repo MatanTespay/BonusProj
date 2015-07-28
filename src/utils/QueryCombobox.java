@@ -96,6 +96,12 @@ public final class QueryCombobox extends DefaultComboBoxModel {
                     //update this combo after father changes
                     fill();
 
+                    if (items.size() > 0) {
+                        myCmb.setEnabled(true);
+                        
+                    } else {
+                        myCmb.setEnabled(false);
+                    }
 
                 } catch (SQLException ex) {
 
@@ -172,6 +178,7 @@ public final class QueryCombobox extends DefaultComboBoxModel {
                 String value = rs.getObject(valueColumn).toString();
                 addElement(new ComboItem(key, value));
             }
+            
 
         } catch (SQLException ex) {
             // rollback
@@ -324,4 +331,23 @@ public final class QueryCombobox extends DefaultComboBoxModel {
         return keyClass;
     }
 
+//    private void handleSelectionAndButtons() {
+//
+//        if (getSize() > 0) {
+//
+//            if (buttons != null) {
+//                for (JButton button : buttons) {
+//                    button.setEnabled(true);
+//                }
+//            }
+//        } else {
+//
+//            if (buttons != null) {
+//                for (JButton button : buttons) {
+//                    button.setEnabled(false);
+//                }
+//            }
+//        }
+//
+//    }
 }

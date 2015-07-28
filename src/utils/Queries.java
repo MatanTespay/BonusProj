@@ -145,18 +145,45 @@ public class Queries {
 
     //-------------------------------ZONE---------------------------------------
     public static final String SELECT_ALL_ZONES = "SELECT * FROM tblZone";
-    
-    public static final String SELECT_SFS_BY_SITEID = "SELECT * FROM tblSiteFromSite As SFS \n"
-            + "  join tblSite As S on SFS.siteID2 = S.ID and s.ID in(\n"
-            + "  SELECT sfs.siteID1 FROM tblSiteFromSite As SFS  where sfs.siteID2 = ?)";
+
+    public static final String SELECT_SFS_BY_SITEID = "  SELECT * FROM tblSiteFromSite As sfs1  \n"
+            + "  join tblSite As S on sfs1.siteID2 = S.ID and s.ID\n"
+            + "   in(   SELECT sfs.siteID2 FROM tblSiteFromSite As SFS   ) where sfs1.siteID1 = ?";
 
     //------------------------------- SITE ---------------------------------------
     public static final String SELECT_SITE_BY_SITEID = "Select * From tblSite As S WHERE S.ID = ?";
-    
-    public static final String SELECT_AllSITES = "Select * From tblSite";
-    
+
+    public static final String SELECT_SITEID_BY_NAME = "Select * From tblSite As S WHERE S.NAME = ?";
+
+    public static final String SELECT_ALL_SITES = "Select * From tblSite";
+
+    public static final String SELECT_LINE_NAME_FOR_STATION_NAME = "SELECT SIL.lineName FROM tblStationInLine SIL\n"
+            + "JOIN tblStation s on sil.stationID = s.ID WHERE s.name = ?";
+    public static final String SELECT_ONLY_STATION_WITH_LINES = "SELECT distinct [ID],[name] "
+            + "FROM tblStation s join tblStationInLine sil "
+            + "on s.ID = sil.stationID";
+
+    public static final String INSERT_SITE = "INSERT INTO tblSite VALUES (?,?,?,?)";
+
+    public static final String DELETE_SITE = "DELETE FROM tblSite WHERE ID = ?";
+
+    public static final String UPDATE_SITE = "UPDATE tblSite  SET [name] = ?"
+            + "  ,[siteDescription] = ?  ,[foundedYear] = ?  ,[siteType] = ? "
+            + " WHERE ID = ?";
+
+    //------------------------------- SITE FROM EXIT---------------------------------------
+    public static final String INSERT_SFE = "INSERT INTO tblSiteFromExit VALUES (?,?,?,?)";
+
     public static final String SELECT_SFE_BY_SITEID = "Select * From tblSiteFromExit As SFE "
             + "join tblStation As S on SFE.stationID = S.ID WHERE SFE.siteID = ? ";
-    public static final String SELECT_LINE_NAME_FOR_STATION_NAME = "SELECT SIL.lineName FROM tblStationInLine SIL\n" 
-            + "JOIN tblStation s on sil.stationID = s.ID WHERE s.name = ?";
+
+    //------------------------------- SITE FROM SITE---------------------------------------
+    public static final String INSERT_SFS = "INSERT INTO tblSiteFromSite VALUES (?,?,?)";
+
+    public static final String DELETE_SFE = "DELETE FROM [LondonU2].[dbo].[tblSiteFromExit] "
+            + "where siteID = ? and stationID = ? and lineName = ?";
+    public static final String DELETE_SFS = "DELETE FROM [LondonU2].[dbo].[tblSiteFromSite] \n"
+            + "      WHERE siteID1 = ? and siteID2 = ?";
+ 
+
 }

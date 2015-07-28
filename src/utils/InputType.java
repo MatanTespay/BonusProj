@@ -23,7 +23,8 @@ public enum  InputType {
     ROLE("Role"),
     SHORT("Short"),
     TEXT("Text"),
-    YEAR_RANGE("INT_RANGE");
+    YEAR_RANGE("INT_RANGE"),
+    NAME("Name");
 
     private final String Type;
 
