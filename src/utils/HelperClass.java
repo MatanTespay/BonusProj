@@ -42,11 +42,13 @@ import java.sql.PreparedStatement;
 import java.awt.Component;
 
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.Vector;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumnModel;
 
 /**
  * The class provide helper functions used in the the system
@@ -852,42 +854,41 @@ public class HelperClass {
         return new Timestamp(cal.getTimeInMillis());
     }
 
-    
     public static void setPSParamByType(PreparedStatement ps, Object key, String value) throws SQLException {
         switch (key.getClass().getSimpleName()) {
             case "Boolean":
-               ps.setBoolean(1, Boolean.valueOf(value));
+                ps.setBoolean(1, Boolean.valueOf(value));
                 break;
             case "Byte":
-               ps.setByte(1, Byte.valueOf(value));
-                 break;
+                ps.setByte(1, Byte.valueOf(value));
+                break;
             case "Double":
                 ps.setDouble(1, Double.valueOf(value));
-                 break;
+                break;
             case "Float":
-              ps.setFloat(1, Float.valueOf(value));
-                 break;
+                ps.setFloat(1, Float.valueOf(value));
+                break;
             case "Integer":
                 ps.setInt(1, Integer.valueOf(value));
-                 break;
+                break;
             case "Long":
-               ps.setLong(1, Long.valueOf(value));
-                 break;
+                ps.setLong(1, Long.valueOf(value));
+                break;
             case "Short":
-               ps.setString(1, String.valueOf(value)); //case of station, need to check
-                 break;
+                ps.setString(1, String.valueOf(value)); //case of station, need to check
+                break;
             case "String":
-               ps.setString(1, value);
-                 break;
+                ps.setString(1, value);
+                break;
             case "Timestamp":
-             ps.setTimestamp(1, Timestamp.valueOf(value));
-                 break;
+                ps.setTimestamp(1, Timestamp.valueOf(value));
+                break;
             default:
-             ps.setObject(1, value);
+                ps.setObject(1, value);
 
         }
     }
-    
+
     public static void resizeColumnWidth(JTable table) {
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
@@ -910,5 +911,31 @@ public class HelperClass {
             }
         }
     }
-    
+
+    public static DefaultTableModel buildTableModel(ResultSet rs)
+            throws SQLException {
+
+        ResultSetMetaData metaData = rs.getMetaData();
+
+        // names of columns
+        Vector<String> columnNames = new Vector<>();
+        int columnCount = metaData.getColumnCount();
+        for (int column = 1; column <= columnCount; column++) {
+            columnNames.add(metaData.getColumnName(column));
+        }
+
+        // data of the table
+        Vector<Vector<Object>> data = new Vector<>();
+        while (rs.next()) {
+            Vector<Object> vector = new Vector<>();
+            for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
+                vector.add(rs.getObject(columnIndex));
+            }
+            data.add(vector);
+        }
+
+        return new DefaultTableModel(data, columnNames);
+
+    }
+
 }
