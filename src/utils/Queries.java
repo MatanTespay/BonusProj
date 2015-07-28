@@ -63,8 +63,11 @@ public class Queries {
 
     public static final String INSERT_CARD = "INSERT INTO tblCard VALUES(?,?,?)";
 
-    public static final String DELETE_CARD = "DELETE FROM tblCard WHERE number = ? "
-            + "and purchaseDate = ?";
+    public static final String DELETE_CARD = "DELETE FROM tblCard WHERE number = ?";
+
+    public static final String IS_CARD_BOUNDED = "SELECT CASE WHEN EXISTS "
+            + "(SELECT * FROM tblActivity WHERE cardNumber = ?) "
+            + "THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END";
     //---------------------------PAPER CARD-------------------------------------
     public static final String SELECT_ALL_PAPER_CARDS = "SELECT * FROM tblPaperCard";
 
@@ -74,10 +77,7 @@ public class Queries {
     public static final String INSERT_PAPER_CARD = "INSERT INTO tblPaperCard VALUES (?,?,?)";
 
     public static final String UPDATE_PAPER_CARD = "UPDATE tblPaperCard "
-            + "SET isTourist = ? WHERE number = ? and purchaseDate = ?";
-
-    public static final String DELETE_PAPER_CARD = "DELETE FROM tblPaperCard WHERE cardNumber = ? "
-            + "and cardPurchaseDate = ? and zoneNumber = ? and cardLength = ?";
+            + "SET isTourist = ? WHERE number = ?";
 
     //---------------------------OYSTER CARD------------------------------------
     public static final String SELECT_ALL_OYSTER_CARDS = "SELECT * FROM tblOysterCard";
@@ -88,10 +88,7 @@ public class Queries {
     public static final String INSERT_OYSTER_CARD = "INSERT INTO tblOysterCard VALUES (?,?,?)";
 
     public static final String UPDATE_OYSTER_CARD = "UPDATE tblOysterCard "
-            + "SET picture = ? WHERE number = ? and purchaseDate = ?";
-
-    public static final String DELETE_OYSTER_CARD = "DELETE FROM tblPaperCard WHERE cardNumber = ? "
-            + "and cardPurchaseDate = ? and zoneNumber = ? and cardLength = ?";
+            + "SET picture = ? WHERE number = ?";
 
     //-------------------------PAPER CARD AREAS---------------------------------
     public static final String SELECT_PAPER_PROGRAMS = "SELECT TOP 1 *, case "
@@ -110,9 +107,16 @@ public class Queries {
             + "VALUES (?,?,?,?)";
 
     public static final String DELETE_PAPER_PROGRAM = "DELETE FROM tblPaperCardAreas "
-            + "WHERE cardNumber=? and cardPurchaseDate = ? and zoneNumber = ?";
+            + "WHERE cardNumber=? and cardPurchaseDate = ? and zoneNumber <= ? and cardLength = ?";
 
-    //-------------------------OYSTER CARD AREAS--------------------------------
+    public static final String PAPER_PROGRAM_ZONES_TO_ADD = "SELECT * FROM tblZone "
+            + "WHERE number <= ? and number not in (SELECT zoneNumber FROM "
+            + "tblPaperCardAreas WHERE cardNumber = ? and cardPurchaseDate = ?)";
+    
+    public static final String DELETE_ALL_PAPER_PROGRAMS_OF_CARD = "DELETE FROM "
+            + "tblPaperCardAreas WHERE cardNumber = ?";
+    
+//-------------------------OYSTER CARD AREAS--------------------------------
     public static final String SELECT_OYSTER_PROGRAMS = "SELECT TOP 1 *, case "
             + "when OCA.cardLength='1' then DATEADD(dd,1,OCA.cardPurchaseDate) "
             + "when OCA.cardLength='2' then DATEADD(dd,3,OCA.cardPurchaseDate) "
@@ -121,7 +125,7 @@ public class Queries {
             + "when OCA.cardLength='5' then DATEADD(mm,3,OCA.cardPurchaseDate) "
             + "when OCA.cardLength='6' then DATEADD(yyyy,1,OCA.cardPurchaseDate) "
             + "end as 'expirationDate' "
-            + "FROM tblPaperCardAreas OCA "
+            + "FROM tblOysterCardAreas OCA "
             + "WHERE cardNumber = ? "
             + "ORDER BY zoneNumber DESC";
 
@@ -129,9 +133,15 @@ public class Queries {
             + "VALUES (?,?,?,?)";
 
     public static final String DELETE_OYSTER_PROGRAM = "DELETE FROM tblOysterCardAreas "
-            + "WHERE cardNumber=? and cardPurchaseDate = ? and zoneNumber = ?";
+            + "WHERE cardNumber=? and cardPurchaseDate = ? and zoneNumber <= ? and cardLength = ?";
+
+    public static final String OYSTER_PROGRAM_ZONES_TO_ADD = "SELECT * FROM tblZone "
+            + "WHERE number <= ? and number not in (SELECT zoneNumber FROM "
+            + "tblOysterCardAreas WHERE cardNumber = ? and cardPurchaseDate = ?)";
     
+    public static final String DELETE_ALL_OYSTER_PROGRAMS_OF_CARD = "DELETE FROM "
+            + "tblOysterCardAreas WHERE cardNumber = ?";
+
     //-------------------------------ZONE---------------------------------------
-    
     public static final String SELECT_ALL_ZONES = "SELECT * FROM tblZone";
 }
