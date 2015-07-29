@@ -11,8 +11,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import javafx.scene.control.ComboBox;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.TableModelEvent;
@@ -62,7 +64,7 @@ public class CustomTableModel extends AbstractTableModel {
                 QueryCombobox model = (QueryCombobox) cmb.getModel();
                 Object key;
                 String value;
-                ComboItem item;
+                ComboItem item;             
                 try {
 
                     model.fill();
@@ -76,6 +78,7 @@ public class CustomTableModel extends AbstractTableModel {
                 } catch (SQLException ex) {
                     System.err.println("combobox model fill failed");
                 }
+                
 
             }
         });

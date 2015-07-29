@@ -29,10 +29,12 @@ public final class QueryCombobox extends DefaultComboBoxModel {
      */
 
     private final JComboBox<ComboItem> myCmb;
+
     /*
      my father combobox
      */
     private final JComboBox<ComboItem> fatherCmb;
+
     /*
      the combo item selected
      */
@@ -84,8 +86,12 @@ public final class QueryCombobox extends DefaultComboBoxModel {
                     Object key = selectedFatherItem.getKey();
                     String value = selectedFatherItem.getLabel();
 
-                    HelperClass.setPSParamByType(st, key, value);
-
+                   
+                    HelperClass.setPSParamByType(st, key, value, 1);
+                    
+                   
+                    
+                    
 //                    if (keyClass.equals(Integer.class)) {
 //                        st.setInt(1, (Integer) key);
 //                    } else if (keyClass.equals(String.class)) {
@@ -98,7 +104,7 @@ public final class QueryCombobox extends DefaultComboBoxModel {
 
                     if (items.size() > 0) {
                         myCmb.setEnabled(true);
-                        
+
                     } else {
                         myCmb.setEnabled(false);
                     }
@@ -114,7 +120,7 @@ public final class QueryCombobox extends DefaultComboBoxModel {
             Object key = selectedFatherItem.getKey();
             String value = selectedFatherItem.getLabel();
 
-            HelperClass.setPSParamByType(st, key, value);
+            HelperClass.setPSParamByType(st, key, value, 1);
 
 //            if (fatherModel.getKeyClass().equals(Integer.class)) {
 //                st.setInt(1, (int) key);
@@ -178,7 +184,6 @@ public final class QueryCombobox extends DefaultComboBoxModel {
                 String value = rs.getObject(valueColumn).toString();
                 addElement(new ComboItem(key, value));
             }
-            
 
         } catch (SQLException ex) {
             // rollback
@@ -331,23 +336,8 @@ public final class QueryCombobox extends DefaultComboBoxModel {
         return keyClass;
     }
 
-//    private void handleSelectionAndButtons() {
-//
-//        if (getSize() > 0) {
-//
-//            if (buttons != null) {
-//                for (JButton button : buttons) {
-//                    button.setEnabled(true);
-//                }
-//            }
-//        } else {
-//
-//            if (buttons != null) {
-//                for (JButton button : buttons) {
-//                    button.setEnabled(false);
-//                }
-//            }
-//        }
-//
-//    }
+    public JComboBox<ComboItem> getMyCmb() {
+        return myCmb;
+    }
+
 }
