@@ -946,7 +946,7 @@ public class Site extends MyInternalFrame {
 
             if (result == 1) {
                 JOptionPane.showInternalMessageDialog(this,
-                    "Conection " + siteName + " - " + siteItem.getLabel() + " was saved successfully.",
+                    "Near site : "  + siteItem.getLabel() + " was saved successfully.",
                     "Hooray!",
                     JOptionPane.PLAIN_MESSAGE);
 
@@ -954,15 +954,23 @@ public class Site extends MyInternalFrame {
 
             } else {
                 JOptionPane.showInternalMessageDialog(this,
-                    "There was some errors adding the connection\n"
+                    "There was some errors adding the site\n"
                     + "Between " +  siteName + " and " + siteItem.getLabel()
                     + "Please Dont try later.",
                     "Bummer!",
                     JOptionPane.ERROR_MESSAGE);
             }
 
-        } catch (SQLException | NullPointerException ex) {
-            Logger.getLogger(Site.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            switch (ex.getErrorCode()) {
+                case 2627:
+                    JOptionPane.showInternalMessageDialog(this,
+                            "This site  already exists. Please be original and pick another option.",
+                            "Bummer!",
+                            JOptionPane.ERROR_MESSAGE);
+
+                    Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }//GEN-LAST:event_btnAddNearSiteActionPerformed
 
@@ -978,7 +986,7 @@ public class Site extends MyInternalFrame {
     }
 
     private boolean isOkToSave() {
-        if (siteName == null || lineName.isEmpty() || description == null) {
+        if (siteName == null || lineName == null || lineName.isEmpty() || description == null) {
             return false;
         }
 
@@ -1084,7 +1092,8 @@ public class Site extends MyInternalFrame {
             nearByExitsModel = new CustomTableModel(tblNearbyExits, cols, q_getNearExits);
             HashSet<JButton> tableButtons = new HashSet<>();
             tableButtons.add(this.btnRemoveExit);
-            nearByExitsModel.bindComboBox(cmbStation, 0, 1);
+            //nearByExitsModel.bindComboBox(cmbStation, 0, 1);
+            
             nearByExitsModel.bindButtons(tableButtons);
             this.tblNearbyExits.setModel(nearByExitsModel);
             nearByExitsModel.fillTable();
@@ -1123,7 +1132,7 @@ public class Site extends MyInternalFrame {
             nearBySiteModel = new CustomTableModel(tblNearbySites, cols, q_getNearSites);
             HashSet<JButton> tableButtons = new HashSet<>();
             tableButtons.add(this.btnRemoveSite);
-            nearBySiteModel.bindComboBox(cmbNearSite, 0, 1);
+            //nearBySiteModel.bindComboBox(cmbNearSite, 0, 1);
             nearBySiteModel.bindButtons(tableButtons);
             this.tblNearbySites.setModel(nearBySiteModel);
             nearBySiteModel.fillTable();
@@ -1154,19 +1163,11 @@ public class Site extends MyInternalFrame {
         try {
 
             PreparedStatement getAllStations = con.prepareStatement(utils.Queries.SELECT_ONLY_STATION_WITH_LINES);
-
+            QueryCombobox cqb = new QueryCombobox(cmbStation, Short.class, getAllStations);
             // set models to comboboxes   
-            cmbStation.setModel(new QueryCombobox(cmbStation, Short.class, getAllStations));
+            cmbStation.setModel(cqb);
+            cmbStation.setSelectedIndex(0);
 
-//            s = con.createStatement();
-//            rs = s.executeQuery("SELECT ID, siteName FROM tblStation");
-//            ArrayList<ComboItem> items = new ArrayList<>();
-//            while (rs.next()) {
-//                items.add(new ComboItem(rs.getInt("ID"), rs.getString("siteName")));
-//            }
-//            Collections.sort(items);
-//            items.add(0, null);
-//            cmbStation.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
         } catch (SQLException ex) {
             Logger.getLogger(Site.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1181,24 +1182,7 @@ public class Site extends MyInternalFrame {
             HashSet<JButton> tableButtons = new HashSet<>();
             qCb.bindButtons(tableButtons);
             cmbLine.setModel(qCb);
-
-//            if (stationID == 0) {
-//                // show all lines
-//                st = con.prepareStatement("SELECT lineName FROM tblStationInLine");
-//            } else {
-//                st = con.prepareStatement("SELECT SIL.lineName FROM tblStationInLine "
-//                        + "As SIL WHERE SIL.stationID = ?");
-//                st.setInt(1, stationID);
-//            }
-//            rs = st.executeQuery();
-//
-//            ArrayList<ComboItem> items = new ArrayList<>();
-//            while (rs.next()) {
-//                items.add(new ComboItem(rs.getString("lineName"), rs.getString("lineName")));
-//            }
-//            Collections.sort(items);
-//            items.add(0, null);
-//            cmbLine.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
+            cmbLine.setSelectedIndex(0);
         } catch (SQLException ex) {
             Logger.getLogger(Site.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1212,7 +1196,7 @@ public class Site extends MyInternalFrame {
 
             // set models to comboboxes   
             cmbNearSite.setModel(new QueryCombobox(cmbNearSite, Short.class, getAllSites));
-
+            cmbNearSite.setSelectedIndex(0);
 //            s = con.createStatement();
 //            rs = s.executeQuery("SELECT ID, siteName FROM tblSite");
 //            ArrayList<ComboItem> items = new ArrayList<>();

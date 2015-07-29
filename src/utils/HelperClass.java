@@ -863,37 +863,37 @@ public class HelperClass {
         return new Timestamp(cal.getTimeInMillis());
     }
 
-    public static void setPSParamByType(PreparedStatement ps, Object key, String value) throws SQLException {
+    public static void setPSParamByType(PreparedStatement ps, Object key, String value, int paramIdx) throws SQLException {
         switch (key.getClass().getSimpleName()) {
             case "Boolean":
-                ps.setBoolean(1, Boolean.valueOf(value));
+                ps.setBoolean(paramIdx, Boolean.valueOf(value));
                 break;
             case "Byte":
-                ps.setByte(1, Byte.valueOf(value));
+                ps.setByte(paramIdx, Byte.valueOf(value));
                 break;
             case "Double":
-                ps.setDouble(1, Double.valueOf(value));
+                ps.setDouble(paramIdx, Double.valueOf(value));
                 break;
             case "Float":
-                ps.setFloat(1, Float.valueOf(value));
+                ps.setFloat(paramIdx, Float.valueOf(value));
                 break;
             case "Integer":
-                ps.setInt(1, Integer.valueOf(value));
+                ps.setInt(paramIdx, Integer.valueOf(value));
                 break;
             case "Long":
-                ps.setLong(1, Long.valueOf(value));
+                ps.setLong(paramIdx, Long.valueOf(value));
                 break;
             case "Short":
-                ps.setString(1, String.valueOf(value)); //case of station, need to check
+                ps.setString(paramIdx, String.valueOf(value)); //case of station, need to check
                 break;
             case "String":
-                ps.setString(1, value);
+                ps.setString(paramIdx, value);
                 break;
             case "Timestamp":
-                ps.setTimestamp(1, Timestamp.valueOf(value));
+                ps.setTimestamp(paramIdx, Timestamp.valueOf(value));
                 break;
             default:
-                ps.setObject(1, value);
+                ps.setObject(paramIdx, value);
 
         }
     }

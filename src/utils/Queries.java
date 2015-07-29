@@ -153,6 +153,7 @@ public class Queries {
 
     public static final String SELECT_LINE_NAME_FOR_STATION_NAME = "SELECT SIL.lineName FROM tblStationInLine SIL\n"
             + "JOIN tblStation s on sil.stationID = s.ID WHERE s.name = ?";
+   
     public static final String SELECT_ONLY_STATION_WITH_LINES = "SELECT distinct [ID],[name] "
             + "FROM tblStation s join tblStationInLine sil "
             + "on s.ID = sil.stationID";

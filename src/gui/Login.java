@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package gui;
+
 import java.sql.*;
 import init.MainClass;
 
@@ -14,19 +15,23 @@ import java.util.logging.Logger;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
-
 /**
-*
- *The class represents the screen which enable users to login the system , redirect the user to the {@link gui.MainWindow}
-@author Matan
-*/
+ *
+ * The class represents the screen which enable users to login the system ,
+ * redirect the user to the {@link gui.MainWindow}
+ *
+ * @author Matan
+ */
 public class Login extends javax.swing.JFrame {
 
     private static String OK = "ok";
 //    private static IFly IFlylog;
     String selectedUserType = null;
+    boolean isSignIn;
+
     /**
      * Creates new form Login
      */
@@ -36,6 +41,9 @@ public class Login extends javax.swing.JFrame {
         btnLogin.setActionCommand(OK);
 //        IFlylog = MainClass.getIfly();
         userTxtName.requestFocusInWindow();
+        isSignIn = true;
+        rbSignIn.setSelected(true);
+        btnLogin.setText("Sign In");
     }
 
     public JTextField getUserTxtName() {
@@ -45,7 +53,6 @@ public class Login extends javax.swing.JFrame {
     public JPasswordField getUsertxtPassword() {
         return usertxtPassword;
     }
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -56,12 +63,15 @@ public class Login extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        bgLogin = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
         usertxtPassword = new javax.swing.JPasswordField();
         btnLogin = new javax.swing.JButton();
         userLblName = new javax.swing.JLabel();
         userTxtName = new javax.swing.JTextField();
         userLblPassword = new javax.swing.JLabel();
+        rbSignUp = new javax.swing.JRadioButton();
+        rbSignIn = new javax.swing.JRadioButton();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
 
@@ -89,7 +99,7 @@ public class Login extends javax.swing.JFrame {
             }
         });
 
-        userLblName.setText("User id:");
+        userLblName.setText("User Name");
 
         userTxtName.setText("mtn");
         userTxtName.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -99,6 +109,22 @@ public class Login extends javax.swing.JFrame {
         });
 
         userLblPassword.setText("Password:");
+
+        bgLogin.add(rbSignUp);
+        rbSignUp.setText("Sign Up");
+        rbSignUp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rbSignUpActionPerformed(evt);
+            }
+        });
+
+        bgLogin.add(rbSignIn);
+        rbSignIn.setText("Sign In");
+        rbSignIn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rbSignInActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -110,27 +136,34 @@ public class Login extends javax.swing.JFrame {
                     .addComponent(userLblPassword)
                     .addComponent(userLblName))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(userTxtName)
-                        .addComponent(usertxtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(rbSignIn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(rbSignUp))
+                    .addComponent(userTxtName, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(usertxtPassword, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                        .addGap(22, 22, 22)
+                        .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(rbSignUp)
+                    .addComponent(rbSignIn))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(userLblName)
                     .addComponent(userTxtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(userLblPassword)
                     .addComponent(usertxtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/london-underground-logo.jpg"))); // NOI18N
@@ -158,7 +191,7 @@ public class Login extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -194,8 +227,26 @@ public class Login extends javax.swing.JFrame {
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         // TODO add your handling code here:
-        
+
     }//GEN-LAST:event_formWindowClosing
+
+    private void rbSignUpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbSignUpActionPerformed
+        // TODO add your handling code here:
+        JRadioButton choice = (JRadioButton) evt.getSource();
+        if (choice != null && choice.isSelected()) {
+            isSignIn = false;
+            btnLogin.setText("Sign Up");
+        }
+    }//GEN-LAST:event_rbSignUpActionPerformed
+
+    private void rbSignInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbSignInActionPerformed
+        // TODO add your handling code here:
+        JRadioButton choice = (JRadioButton) evt.getSource();
+        if (choice != null && choice.isSelected()) {
+            isSignIn = true;
+            btnLogin.setText("Sign In");
+        }
+    }//GEN-LAST:event_rbSignInActionPerformed
 
     /**
      * fire action perform for {@link #btnLogin}}
@@ -203,39 +254,109 @@ public class Login extends javax.swing.JFrame {
     private void DoAction() {
         char[] input = usertxtPassword.getPassword();
         String pass = usertxtPassword.getText();
-        
-        
-        if (isNamePasswordCorrect(pass, userTxtName.getText())) {
 
-            MainClass.setUserData(pass, pass, input);
-            /*JOptionPane.showMessageDialog(this,
-             "Success! You typed the right password.");*/
-            
-            MainClass.setUserData(null, userTxtName.getText(), input);
-            StringBuilder sb = new StringBuilder();
-            sb.append("London Underground - ").append(this.selectedUserType).append(" Mode");
-            //MainClass.getCurrentUser().put((String) userTypeComboBox.getSelectedItem(), input.toString());
-            
-            setVisible(false);
-            userTxtName.setText(null);
-            usertxtPassword.setText(null);
-            new MainWindow(sb.toString(), this.selectedUserType,this).setVisible(true);
-            //dispose();
-            //MainClass.SerializeIfly();
-            
+        if (isSignIn) {
+
+            if (isNamePasswordCorrect(pass, userTxtName.getText())) {
+
+                /*JOptionPane.showMessageDialog(this,
+                 "Success! You typed the right password.");*/
+                MainClass.setUserData(null, userTxtName.getText(), input);
+                StringBuilder sb = new StringBuilder();
+                sb.append("London Underground - ").append(this.selectedUserType).append(" Mode");
+                //MainClass.getCurrentUser().put((String) userTypeComboBox.getSelectedItem(), input.toString());
+
+                setVisible(false);
+                userTxtName.setText(null);
+                usertxtPassword.setText(null);
+                new MainWindow(sb.toString(), this.selectedUserType, this).setVisible(true);
+                //dispose();
+                //MainClass.SerializeIfly();
+
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "Invalid password or User Name. Try again.",
+                        "Error Message",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+
+            //Zero out the possible password, for security.
+            Arrays.fill(input, '0');
+
+            resetFocus(0);
         } else {
-            JOptionPane.showMessageDialog(this,
-                    "Invalid password or User Name. Try again.",
-                    "Error Message",
-                    JOptionPane.ERROR_MESSAGE);
+            try {
+
+                char[] adminPassword = new char[5];
+
+                PreparedStatement stmt;
+                ResultSet rs;
+                String q;
+
+                q = "SELECT username FROM tblUser u WHERE u.username=? ";
+                stmt = MainClass.con.prepareStatement(q);
+
+                String name = userTxtName.getText();
+                stmt.setString(1, name);
+                rs = stmt.executeQuery();
+
+                if (rs.next()) {
+                    JOptionPane.showMessageDialog(this,
+                            "User name alredy exist, try another one",
+                            "Error Message",
+                            JOptionPane.ERROR_MESSAGE);
+
+                } else {
+
+                    String insertTableSQL = "INSERT INTO tblUser"
+                            + "(UserName, Password, RoleID ) VALUES"
+                            + "(?,?,?)";
+
+                    int RoleID = 4; // customer role
+                    stmt = MainClass.con.prepareStatement(insertTableSQL);
+                    stmt.setString(1, name);
+                    stmt.setString(2, pass);
+                    stmt.setInt(3, RoleID);
+                    // execute insert SQL stetement                
+                    int result = stmt.executeUpdate();
+                    if (result == 1) {
+
+                        MainClass.setUserData(null, userTxtName.getText(), input);
+                        StringBuilder sb = new StringBuilder();
+                        this.selectedUserType = "Customer";
+                        
+                        sb.append("London Underground - ").append(this.selectedUserType).append(" Mode");
+                        //MainClass.getCurrentUser().put((String) userTypeComboBox.getSelectedItem(), input.toString());
+
+                        setVisible(false);
+                        userTxtName.setText(null);
+                        usertxtPassword.setText(null);
+                        new MainWindow(sb.toString(), this.selectedUserType, this).setVisible(true);
+
+                    } else {
+                        JOptionPane.showMessageDialog(this,
+                                "There was an error siging up.\n"
+                                + "Don't try again, just give up",
+                                "Error Message",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            } catch (SQLException ex) {
+                switch (ex.getErrorCode()) {
+                    case 2627:
+                        JOptionPane.showMessageDialog(this,
+                                "User name or password or User Name. Try again.",
+                                "Error Message",
+                                JOptionPane.ERROR_MESSAGE);
+                        break;
+                }
+
+                Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+
+            }
         }
 
-        //Zero out the possible password, for security.
-        Arrays.fill(input, '0');
-
-        resetFocus(0);
-
-        
+        ///
     }
 
     /**
@@ -243,29 +364,28 @@ public class Login extends javax.swing.JFrame {
      */
     private boolean isNamePasswordCorrect(String pass, String name) {
         try {
-          
+
             char[] adminPassword = new char[5];
-           
+
             PreparedStatement stmt;
             //stmt = MainClass.con.prepareStatement("SELECT username,password FROM tblUser join WHERE username=? AND password=?");
-            String q = "SELECT username, password , RoleName " +
-            "FROM tblUser u join tblRole r on u.RoleID = r.RoleID " +
-            "WHERE u.username=? and u.password=?";
+            String q = "SELECT username, password , RoleName "
+                    + "FROM tblUser u join tblRole r on u.RoleID = r.RoleID "
+                    + "WHERE u.username=? and u.password=?";
             stmt = MainClass.con.prepareStatement(q);
-            
+
             stmt.setString(1, name);
             stmt.setString(2, pass);
             ResultSet rs = stmt.executeQuery();
-            
+
             if (rs.next()) {
                 this.selectedUserType = rs.getString("RoleName");
-                return true;   
+                return true;
+            } else {
+                Arrays.fill(adminPassword, '0');
+                return false;
             }
-            else{
-                Arrays.fill(adminPassword, '0');            
-                return false; 
-            }
-         
+
         } catch (SQLException ex) {
             Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
             return false;
@@ -273,26 +393,28 @@ public class Login extends javax.swing.JFrame {
     }
 
     /**
-     * reset focus in the window 
+     * reset focus in the window
      */
     public void resetFocus(int i) {
         //(i == 0) ?  usertxtPassword.requestFocusInWindow() : usertxtPassword.requestFocusInWindow();
-        
+
         if (i == 0) {
             userTxtName.requestFocusInWindow();
-           
-        }
-        else   {
-             usertxtPassword.requestFocusInWindow();
+
+        } else {
+            usertxtPassword.requestFocusInWindow();
         }
     }
-    
-    
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup bgLogin;
     private javax.swing.JButton btnLogin;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JRadioButton rbSignIn;
+    private javax.swing.JRadioButton rbSignUp;
     private javax.swing.JLabel userLblName;
     private javax.swing.JLabel userLblPassword;
     private javax.swing.JTextField userTxtName;
