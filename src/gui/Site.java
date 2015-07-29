@@ -92,7 +92,7 @@ public class Site extends MyInternalFrame {
         exitDistance = -1;
         nearSiteDistance = -1;
         buildForm();
-
+        cmbType.setSelectedIndex(0);
     }
 
     private void buildForm() {
@@ -1064,8 +1064,10 @@ public class Site extends MyInternalFrame {
 
             s = con.prepareCall("Select * From tblSiteType");
             cmbType.setModel(new QueryCombobox(cmbType, String.class, s));
-            ComboItem typeItem = (ComboItem) cmbType.getSelectedItem();
-            this.type = (String) typeItem.getKey();
+            
+//            ComboItem typeItem = (ComboItem) cmbType.getSelectedItem();
+//            this.type = (String) typeItem.getKey();
+            
 //            rs = s.executeQuery();
 //            ArrayList<ComboItem> items = new ArrayList<>();
 //            while (rs.next()) {
@@ -1244,7 +1246,7 @@ public class Site extends MyInternalFrame {
         tfName.setText(this.siteName);
         ychFoundation.setYear(this.foundedYear);
         setSelectedValue(cmbType, this.type);
-
+        
         taDescription.setText(this.description);
     }
 
