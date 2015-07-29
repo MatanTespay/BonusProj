@@ -71,9 +71,13 @@ public final class Constants {
     
     public static final byte MAX_NUM_OF_PLATFORMS = 8;
     
-    public static final Double MIN_DISTANCE_OF_EXIT = 0.0;
+    public static final Double MIN_SFE_DISTANCE = 0.0;
     
-    public static final Double MAX_DISTANCE_OF_EXIT = 0.0;
+    public static final Double MAX_SFE_DISTANCE = 2.0;
+    
+    public static final Double MIN_SFS_DISTANCE = 0.0;
+    
+    public static final Double MAX_SFS_DISTANCE = 5.0;
     
     
 }// ~ END OF Class Constants

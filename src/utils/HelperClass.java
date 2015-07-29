@@ -111,6 +111,25 @@ public class HelperClass {
     }
 
     /**
+     * validates if the value is name 
+     *
+     * @param s the value to validate
+     * @return true if value is ok ; false otherwise
+     */
+    public static boolean isNameOk(String s) {
+
+        //^(?=.*[a-zA-Z])(?=[-' '_]+)(?=.*\d)(?=.*(_|[^\w])).+$
+        //\b(?:\w+\W+){1}(?=[-' '_]+(?:\w+\W+))\b.
+        //
+        //Pattern pattern = Pattern.compile("[a-zA-Z]+([' '-_]?)[a-zA-Z]+");
+        Pattern pattern = Pattern.compile("[a-zA-Z0-9_' '-]+");
+        boolean result;
+
+        result = pattern.matcher(s).matches();
+        return result;
+    }
+    
+    /**
      * validates if the value is date
      *
      * @param dateToValidate value to validate

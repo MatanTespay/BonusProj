@@ -19,7 +19,7 @@ import utils.QueryCombobox;
 public class SiteDialog extends MyInternalFrame {
 
     MainWindow mainWindow;
-    int siteID;
+    short siteID;
 
     /**
      * Creates new form SiteDialog
@@ -37,7 +37,7 @@ public class SiteDialog extends MyInternalFrame {
         if (item == null) {
             return;
         }
-        this.siteID = ((Integer)item.getKey());
+        this.siteID = ((Short)item.getKey());
     }
 
     private void fillCmbSite() {
@@ -45,7 +45,7 @@ public class SiteDialog extends MyInternalFrame {
         try {
             st = con.prepareStatement("SELECT ID,name FROM tblSite");
 
-            cmbSide.setModel(new QueryCombobox(cmbSide, Integer.class, st));
+            cmbSide.setModel(new QueryCombobox(cmbSide, Short.class, st));
 
         } catch (SQLException ex) {
             JOptionPane.showInternalMessageDialog(this,
@@ -135,7 +135,7 @@ public class SiteDialog extends MyInternalFrame {
     private void cmbSideActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbSideActionPerformed
 
         ComboItem item = (ComboItem) cmbSide.getSelectedItem();
-        this.siteID = ((Integer) item.getKey());
+        this.siteID = ((Short) item.getKey());
     }//GEN-LAST:event_cmbSideActionPerformed
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
