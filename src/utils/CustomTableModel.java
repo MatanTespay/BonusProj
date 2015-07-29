@@ -44,11 +44,7 @@ public class CustomTableModel extends AbstractTableModel {
         this.fillStatement = fillStatement;
         this.rows = new ArrayList<>();
         this.buttons = null;
-
-        table.setRowSelectionAllowed(true);
-        table.setColumnSelectionAllowed(false);
-        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        //HelperClass.resizeColumnWidth(table);
+        organizeTable();
     }
 
     /*
@@ -196,6 +192,13 @@ public class CustomTableModel extends AbstractTableModel {
 
     public void setPreparedStatement(PreparedStatement st) {
         this.fillStatement = st;
+    }
+
+    private void organizeTable() {
+        table.setRowSelectionAllowed(true);
+        table.setColumnSelectionAllowed(false);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        HelperClass.resizeColumnWidth(table);
     }
 
     @Override

@@ -10,7 +10,6 @@ import init.CloseAction;
 import init.MainClass;
 
 import java.awt.Dimension;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -56,8 +55,8 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         initComponents();
         //int inset = 100;
         //Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        setBounds(0, 0,900,750);
-        
+        setBounds(0, 0, 900, 750);
+
         this.setLocationRelativeTo(null);
         desktop = new JDesktopPane();
         //desktop.add(panel);
@@ -143,12 +142,25 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
             aMenu.add(submenu);
             aMenu.addSeparator();
 
+            submenu = addMenuToMenuBar("Queries", KeyEvent.VK_A);
+            addMenuItem(submenu, "Remote Sites", KeyEvent.VK_B);
+            addMenuItem(submenu, "Unused Paper Cards", KeyEvent.VK_A);
+            addMenuItem(submenu, "Main Stations", KeyEvent.VK_A);
+            addMenuItem(submenu, "Most Active Stations", KeyEvent.VK_A);
+            addMenuItem(submenu, "Cards That Have Activity Issues", KeyEvent.VK_A);
+            addMenuItem(submenu, "Very Active Oyster Cards", KeyEvent.VK_A);
+            addMenuItem(submenu, "Profitable Deposit Years", KeyEvent.VK_A);
+            aMenu.add(submenu);
+            aMenu.addSeparator();
+
             submenu = addMenuToMenuBar("Station", KeyEvent.VK_A);
             addMenuItem(submenu, "Add Station", KeyEvent.VK_B);
             addMenuItem(submenu, "Edit Station", KeyEvent.VK_A);
             aMenu.add(submenu);
             aMenu.addSeparator();
             addMenuItem(aMenu, "Export/Import CSV", KeyEvent.VK_B);
+            aMenu.addSeparator();
+
             //</editor-fold>
         }
     }
@@ -217,24 +229,15 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
                 saveIfly();
                 break;
             case "Add Activity":
-
                 ifram = new Activity(e.getActionCommand(), selectedUserType);
-
                 break;
             case "Edit Activity":
-
                 ifram = new ActivityDialog(e.getActionCommand(), selectedUserType, this);
-
                 break;
             case "Add Card":
                 ifram = new Card(e.getActionCommand(), selectedUserType);
                 break;
             case "Edit Card":
-//                java.util.Date utilDate = new java.util.Date(1951, 03, 14, 0, 0, 0);
-//                java.util.Date date1970 = new java.util.Date(1970, 01, 01, 0, 0, 0);
-//                java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime() - date1970.getTime());
-//
-//                ifram = new Card(e.getActionCommand(), selectedUserType, 1, sqlDate);
                 ifram = new CardDialog(e.getActionCommand(), selectedUserType, this);
                 break;
             case "Add Role":
@@ -270,52 +273,15 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
             case "Export/Import CSV":
                 ifram = new ExportImportCsv(e.getActionCommand(), selectedUserType);
                 break;
-//            case "Update customer Details":
-//                ifram = new UpdateCustomerDetails(e.getActionCommand(), selectedUserType);
-//                break;
-//            case "Update Paying Customer":
-//                ifram = new UpdatePayingCustomer(e.getActionCommand(), selectedUserType);
-//                break;
-//            case "Add Stop To Flight":
-//                ifram = new AddStop(e.getActionCommand(), selectedUserType);
-//                break;
-//            case "Add Pilot To Flight":
-//            case "Add FlightAttendant To Flight":
-//                ifram = new addPilotOrFlightAttendantToFlight(e.getActionCommand(), selectedUserType);
-//                break;
-//            case "Add Flight Order":
-//                ifram = new AddFlightOrder(e.getActionCommand(), selectedUserType);
-//                break;
-//            case "Remove Order":
-//                ifram = new RemoveOrder(e.getActionCommand(), selectedUserType);
-//                break;
-//            case "Add Flight Ticket":
-//                ifram = new addViewFlightTicket(e.getActionCommand(), selectedUserType);
-//                break;
-//            case "View orders":
-//                ifram = new ViewOrders(e.getActionCommand(), selectedUserType);
-//                break;
-//            case "View flights":
-//                ifram = new ViewFlights(e.getActionCommand(), selectedUserType);
-//                break;
-//            case "View tickets":
-//                ifram = new ViewTickets(e.getActionCommand(), selectedUserType);
-//                break;
-//            case "Get All Super Agents":
-//            case "Employee Of The Month":
-//            case "Get All This Summer Work Employees Sorted By Seniority":
-//            case "Get Branches Agents Sorted By Rating":
-//            case "Get The Top X Popular Flights":
-//            case "Get The Most Profitable Order":
-//            case "Get All Orders Of Most Profitable Customer":
-//            case "Get All Summer Flights Sorted By Number Of Stops":
-//            case "Get All This Summer Flights By Location":
-//            case "Get Potential Customers For Branch":
-//            case "Get Potential Customers For Agents":
-//            case "Get Fligedithts Sorted By Occupancy":
-//            case "Find The Best Flight Back":
-//                ifram = new ViewQueries(e.getActionCommand(), selectedUserType);
-//                break;
+            case "Remote Sites":
+            case "Unused Paper Cards":
+            case "Main Stations":
+            case "Most Active Stations":
+            case "Cards That Have Activity Issues":
+            case "Very Active Oyster Cards":
+            case "Profitable Deposit Years":
+                ifram = new QueryForm(e.getActionCommand(), selectedUserType);
+                break;
         }
 
         createFrame(ifram);
