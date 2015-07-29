@@ -5,8 +5,6 @@
  */
 package gui;
 
-import com.microsoft.sqlserver.jdbc.SQLServerException;
-import init.ComboItem;
 import init.InputValidator;
 import init.MainClass;
 import static init.MainClass.con;

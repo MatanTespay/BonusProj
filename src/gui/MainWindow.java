@@ -189,12 +189,12 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         }
     }
 
-    private void saveIfly() {
-        if (!MainClass.getIsIflySaved()) {
-            MainClass.SerializeIfly();
-            MainClass.setIsIflySaved(true);
-        }
-    }
+//    private void saveIfly() {
+//        if (!MainClass.getIsIflySaved()) {
+//            MainClass.SerializeIfly();
+//            MainClass.setIsIflySaved(true);
+//        }
+//    }
 
 //    private Object createInternalFrameClass(String className, List<Object> params) {
 //        try {
@@ -229,7 +229,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         switch (e.getActionCommand()) {
 
             case "Save":
-                saveIfly();
+//                saveIfly();
                 break;
             case "Add Activity":
                 ifram = new Activity(e.getActionCommand(), selectedUserType);
@@ -386,31 +386,31 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         // TODO add your handling code here:
-        if (!MainClass.getIsIflySaved()) {
-            int result = JOptionPane.showConfirmDialog(
-                    this,
-                    "Save changes before exit ?",
-                    "Closing",
-                    JOptionPane.YES_NO_CANCEL_OPTION);
-
-            if (result == JOptionPane.YES_OPTION) {
-                //MainClass.SerializeIfly();
-                saveIfly();
-                login.setVisible(true);
-                login.resetFocus(0);
-                this.setVisible(false);
-                //} else if (result == JOptionPane.CANCEL_OPTION) {
-
-            } else if (result == JOptionPane.NO_OPTION) {
-                MainClass.deserializeIfly();
-                login.setVisible(true);
-                login.resetFocus(0);
-                this.setVisible(false);
-            }
-
-            MainClass.setIsIflySaved(true);
-            return;
-        }
+//        if (!MainClass.getIsIflySaved()) {
+//            int result = JOptionPane.showConfirmDialog(
+//                    this,
+//                    "Save changes before exit ?",
+//                    "Closing",
+//                    JOptionPane.YES_NO_CANCEL_OPTION);
+//
+//            if (result == JOptionPane.YES_OPTION) {
+//                //MainClass.SerializeIfly();
+//                saveIfly();
+//                login.setVisible(true);
+//                login.resetFocus(0);
+//                this.setVisible(false);
+//                //} else if (result == JOptionPane.CANCEL_OPTION) {
+//
+//            } else if (result == JOptionPane.NO_OPTION) {
+//                MainClass.deserializeIfly();
+//                login.setVisible(true);
+//                login.resetFocus(0);
+//                this.setVisible(false);
+//            }
+//
+//            MainClass.setIsIflySaved(true);
+//            return;
+//        }
 
         login.getUserTxtName().setText("mtn");
         login.getUsertxtPassword().setText("1234");

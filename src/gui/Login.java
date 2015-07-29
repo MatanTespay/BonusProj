@@ -5,7 +5,6 @@
  */
 package gui;
 import java.sql.*;
-import init.IFly;
 import init.MainClass;
 
 import java.awt.event.KeyEvent;
@@ -26,7 +25,7 @@ import javax.swing.JTextField;
 public class Login extends javax.swing.JFrame {
 
     private static String OK = "ok";
-    private static IFly IFlylog;
+//    private static IFly IFlylog;
     String selectedUserType = null;
     /**
      * Creates new form Login
@@ -35,7 +34,7 @@ public class Login extends javax.swing.JFrame {
         initComponents();
         usertxtPassword.setActionCommand(OK);
         btnLogin.setActionCommand(OK);
-        IFlylog = MainClass.getIfly();
+//        IFlylog = MainClass.getIfly();
         userTxtName.requestFocusInWindow();
     }
 

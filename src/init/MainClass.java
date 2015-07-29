@@ -44,7 +44,7 @@ public class MainClass {
     /**
      * The main object for the program
      */
-    private static IFly IFly;
+//    private static IFly IFly;
     private static boolean isSaved = true;
     //private static HashMap<String,String> currentUser;
     private static AbstractMap.SimpleEntry user;
@@ -96,25 +96,25 @@ public class MainClass {
             @Override
 			public void run() {
         
-                IFly = init.IFly.getInstance();                    //SerializeIfly();
-                deserializeIfly();
+//                IFly = init.IFly.getInstance();                    //SerializeIfly();
+//                deserializeIfly();
                 con = getDBConnection();
                 new Login().setVisible(true);
             }
         });
     }//END OF ~ main
 
-    public static IFly getIfly() {
-        return IFly;
-    }
-
-    public static boolean getIsIflySaved() {
-        return isSaved;
-    }
-
-    public static void setIsIflySaved(boolean  state) {
-        isSaved = state;
-    }
+//    public static IFly getIfly() {
+//        return IFly;
+//    }
+//
+//    public static boolean getIsIflySaved() {
+//        return isSaved;
+//    }
+//
+//    public static void setIsIflySaved(boolean  state) {
+//        isSaved = state;
+//    }
 
     public static void setUserData(String type, String name, char[] pass) {
         user = new AbstractMap.SimpleEntry<>(name, pass);
@@ -128,68 +128,68 @@ public class MainClass {
      *
      * serialize data
      */
-    public static void SerializeIfly() {
-
-        try {
-            outputStream = new ObjectOutputStream(new FileOutputStream("IFly.ser"));
-            outputStream.writeObject(IFly);
-
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(MainClass.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(MainClass.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            if (outputStream != null) {
-                try {
-                    outputStream.close();
-                } catch (IOException ex) {
-                    Logger.getLogger(MainClass.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-            }
-        }
-    }
+//    public static void SerializeIfly() {
+//
+//        try {
+//            outputStream = new ObjectOutputStream(new FileOutputStream("IFly.ser"));
+//            outputStream.writeObject(IFly);
+//
+//        } catch (FileNotFoundException ex) {
+//            Logger.getLogger(MainClass.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (IOException ex) {
+//            Logger.getLogger(MainClass.class.getName()).log(Level.SEVERE, null, ex);
+//        } finally {
+//            if (outputStream != null) {
+//                try {
+//                    outputStream.close();
+//                } catch (IOException ex) {
+//                    Logger.getLogger(MainClass.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//
+//            }
+//        }
+//    }
 
     /**
      * deserialize data
      */
-    public static void deserializeIfly() {
-
-        try {
-            File file = new File("IFly.ser");
-            if (file.exists()) {
-                inputStream = new ObjectInputStream(new FileInputStream(file));
-                IFly = (IFly) inputStream.readObject();
-            }else{
-                IFly.resetNewIfly();
-            }
-
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(MainClass.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showInternalConfirmDialog(null, ex.getMessage(), "Error", JOptionPane.PLAIN_MESSAGE, JOptionPane.ERROR_MESSAGE);
-
-        } catch (ClassNotFoundException | IOException ex) {
-            Logger.getLogger(MainClass.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showInternalConfirmDialog(null, ex.getMessage(), "Error", JOptionPane.PLAIN_MESSAGE, JOptionPane.ERROR_MESSAGE);
-
-        } catch (Exception ex) {
-            JOptionPane.showInternalConfirmDialog(null, ex.getMessage(), "Error", JOptionPane.PLAIN_MESSAGE, JOptionPane.ERROR_MESSAGE);
-
-        } finally {
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (FileNotFoundException ex) {
-                    Logger.getLogger(MainClass.class.getName()).log(Level.SEVERE, null, ex);
-                    JOptionPane.showInternalConfirmDialog(null, ex.getMessage(), "Error", JOptionPane.PLAIN_MESSAGE, JOptionPane.ERROR_MESSAGE);
-
-                } catch (IOException ex) {
-                    Logger.getLogger(MainClass.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-            }
-        }
-    }
+//    public static void deserializeIfly() {
+//
+//        try {
+//            File file = new File("IFly.ser");
+//            if (file.exists()) {
+//                inputStream = new ObjectInputStream(new FileInputStream(file));
+//                IFly = (IFly) inputStream.readObject();
+//            }else{
+//                IFly.resetNewIfly();
+//            }
+//
+//        } catch (FileNotFoundException ex) {
+//            Logger.getLogger(MainClass.class.getName()).log(Level.SEVERE, null, ex);
+//            JOptionPane.showInternalConfirmDialog(null, ex.getMessage(), "Error", JOptionPane.PLAIN_MESSAGE, JOptionPane.ERROR_MESSAGE);
+//
+//        } catch (ClassNotFoundException | IOException ex) {
+//            Logger.getLogger(MainClass.class.getName()).log(Level.SEVERE, null, ex);
+//            JOptionPane.showInternalConfirmDialog(null, ex.getMessage(), "Error", JOptionPane.PLAIN_MESSAGE, JOptionPane.ERROR_MESSAGE);
+//
+//        } catch (Exception ex) {
+//            JOptionPane.showInternalConfirmDialog(null, ex.getMessage(), "Error", JOptionPane.PLAIN_MESSAGE, JOptionPane.ERROR_MESSAGE);
+//
+//        } finally {
+//            if (inputStream != null) {
+//                try {
+//                    inputStream.close();
+//                } catch (FileNotFoundException ex) {
+//                    Logger.getLogger(MainClass.class.getName()).log(Level.SEVERE, null, ex);
+//                    JOptionPane.showInternalConfirmDialog(null, ex.getMessage(), "Error", JOptionPane.PLAIN_MESSAGE, JOptionPane.ERROR_MESSAGE);
+//
+//                } catch (IOException ex) {
+//                    Logger.getLogger(MainClass.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//
+//            }
+//        }
+//    }
     
     public static Connection getDBConnection() {
  

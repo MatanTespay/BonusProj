@@ -147,7 +147,6 @@ public class Queries {
             + "tblOysterCardAreas WHERE cardNumber = ?";
 
     //------------------------------- SITE ---------------------------------------
-    
     public static final String SELECT_SITEID_BY_NAME = "Select * From tblSite As S WHERE S.NAME = ?";
 
     public static final String SELECT_ALL_SITES = "Select * From tblSite";
@@ -179,10 +178,10 @@ public class Queries {
             + "join tblStation As S on SFE.stationID = S.ID WHERE SFE.siteID = ? ";
 
     //------------------------------- SITE FROM SITE---------------------------------------
-    public static final String SELECT_SFS_BY_SITEID = "SELECT * FROM tblSiteFromSite As SFS\n" +
-"          join tblSite As S on SFS.siteID2 = S.ID and s.ID in(\n" +
-"          SELECT sfs.siteID2 FROM tblSiteFromSite As SFS)  where sfs.siteID1 = ?";
-    
+    public static final String SELECT_SFS_BY_SITEID = "SELECT * FROM tblSiteFromSite As SFS\n"
+            + "          join tblSite As S on SFS.siteID2 = S.ID and s.ID in(\n"
+            + "          SELECT sfs.siteID2 FROM tblSiteFromSite As SFS)  where sfs.siteID1 = ?";
+
     public static final String INSERT_SFS = "INSERT INTO tblSiteFromSite VALUES (?,?,?)";
 
     public static final String DELETE_SFS = "DELETE FROM [LondonU2].[dbo].[tblSiteFromSite] \n"
@@ -195,6 +194,12 @@ public class Queries {
 
     public static final String DELETE_LENGTH = "DELETE FROM tblCardLengths WHERE "
             + "cardLength = ?";
+
+    //------------------------ GENERAL PARAMETERS ------------------------------
+    public static final String SELECT_ALL_DEPOSITS = "SELECT * FROM tblGeneralParameters";
+    
+    public static final String NEXT_DEPOSIT_YEAR = "SELECT MAX(depositEndYear)+1 "
+            + "as 'next year' FROM tblGeneralParameters";
 
     //-------------------------- OTHER QUERIES ---------------------------------
     public static final String QUERY1 = "select S.siteType, AVG(S.foundedYear) as 'average founded year',\n"
