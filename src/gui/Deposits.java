@@ -6,14 +6,19 @@
 package gui;
 
 import static init.MainClass.con;
-import init.MyTableModel;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.JSpinner;
+import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import static utils.Constants.EDIT_MODE;
 import utils.HelperClass;
 import utils.Queries;
@@ -24,10 +29,9 @@ import utils.Queries;
  */
 public class Deposits extends MyInternalFrame {
 
-    private int fromYear;
-    private int toYear;
-    private double price;
-    private final String[] DepositColumns = new String[]{"Start Year", "End Year", "Price"};
+    private Short fromYear;
+    private Short toYear;
+    private Short price;
 
     /**
      * Creates new form GeneralParameters
@@ -39,22 +43,104 @@ public class Deposits extends MyInternalFrame {
         super(title, type);
         setMode(EDIT_MODE);
         initComponents();
+
+        btnDelete.setEnabled(false);
+        btnUpdate.setEnabled(false);
+
+        // set document listeners
+        JSpinner toYearSpinner = (JSpinner) ychTo.getSpinner();
+        JTextField toYearText = (JTextField) toYearSpinner.getEditor();
+        toYearText.getDocument().addDocumentListener(new DocumentListener() {
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                toYear = Short.valueOf(toYearText.getText());
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                toYear = Short.valueOf(toYearText.getText());
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+            }
+        });
+
+        JSpinner fromYearSpinner = (JSpinner) ychFrom.getSpinner();
+        JTextField fromYearText = (JTextField) fromYearSpinner.getEditor();
+        toYearText.getDocument().addDocumentListener(new DocumentListener() {
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                try {
+                    fromYear = Short.valueOf(toYearText.getText());
+                } catch (NumberFormatException ex) {
+                    fromYear = null;
+                }
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                try {
+                    fromYear = Short.valueOf(toYearText.getText());
+                } catch (NumberFormatException ex) {
+                    fromYear = null;
+                }
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+            }
+        });
+
+        JSpinner.NumberEditor priceEditor = (JSpinner.NumberEditor) spnPrice.getEditor();
+        JTextField priceTextField = priceEditor.getTextField();
+        priceTextField.getDocument().addDocumentListener(new DocumentListener() {
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                try{
+                    price = Short.parseShort(priceTextField.getText());
+                } catch (NumberFormatException ex){
+                    price = null;
+                }
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                try{
+                    price = Short.parseShort(priceTextField.getText());
+                } catch (NumberFormatException ex){
+                    price = null;
+                }
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+            }
+        });
+
+        // set year choosers
+        initYearChoosers();
+
+        // set table model and listener
         fillDeposits();
+        tblDeposits.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 
-        try {
-            Statement s = con.createStatement();
-            ResultSet rs = s.executeQuery(Queries.NEXT_DEPOSIT_YEAR);
-            rs.next();
-            int nextDepositYear = rs.getInt("next year");
-            ychFrom.setStartYear(nextDepositYear);
-            ychTo.setStartYear(nextDepositYear + 1);
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                boolean isRowSelected = tblDeposits.getSelectedRow() != -1;
+                btnDelete.setEnabled(isRowSelected);
+                btnUpdate.setEnabled(isRowSelected);
 
-            ychFrom.setYear(nextDepositYear);
-            ychTo.setYear(nextDepositYear + 1);
-            ychFrom.setEnabled(false);
-        } catch (SQLException e) {
-            System.err.println("Error code: " + e.getErrorCode() + "\nError Message: " + e.getMessage());
-        }
+                if (isRowSelected) {
+                    int selectedRow = tblDeposits.getSelectedRow();
+                    tfValueToUpdate.setText(tblDeposits.getModel().getValueAt(selectedRow, 2).toString());
+                }
+            }
+        });
+
     }
 
     /**
@@ -66,39 +152,83 @@ public class Deposits extends MyInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        ychTo = new com.toedter.calendar.JYearChooser();
-        tfDeposit = new javax.swing.JTextField();
+        pAddDeposit = new javax.swing.JPanel();
         lblFrom = new javax.swing.JLabel();
-        lblTo = new javax.swing.JLabel();
+        ychFrom = new com.toedter.calendar.JYearChooser();
+        ychTo = new com.toedter.calendar.JYearChooser();
+        btnAdd = new javax.swing.JButton();
         lblIs = new javax.swing.JLabel();
-        lblDepositFees = new javax.swing.JLabel();
+        lblTo = new javax.swing.JLabel();
+        spnPrice = new javax.swing.JSpinner();
+        pDepositHistory = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblDeposits = new javax.swing.JTable();
-        btnRemove = new javax.swing.JButton();
-        btnSubmit = new javax.swing.JButton();
-        btnCancel = new javax.swing.JButton();
-        btnCreate = new javax.swing.JButton();
-        ychFrom = new com.toedter.calendar.JYearChooser();
+        btnDelete = new javax.swing.JButton();
+        tfValueToUpdate = new javax.swing.JTextField();
+        btnUpdate = new javax.swing.JButton();
 
-        ychTo.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                ychToPropertyChange(evt);
-            }
-        });
-
-        tfDeposit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tfDepositActionPerformed(evt);
-            }
-        });
+        pAddDeposit.setBorder(javax.swing.BorderFactory.createTitledBorder("Add Deposit"));
+        pAddDeposit.setName(""); // NOI18N
 
         lblFrom.setText("Deposit from");
 
-        lblTo.setText("to");
+        ychFrom.setEndYear(Short.MAX_VALUE);
+
+        ychTo.setEndYear(Short.MAX_VALUE);
+
+        btnAdd.setText("Add");
+        btnAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddActionPerformed(evt);
+            }
+        });
 
         lblIs.setText("is");
 
-        lblDepositFees.setText("Deposit Fees");
+        lblTo.setText("to");
+
+        spnPrice.setModel(new javax.swing.SpinnerNumberModel(Short.valueOf((short)0), Short.valueOf((short)0), Short.valueOf((short)32767), Short.valueOf((short)1)));
+
+        javax.swing.GroupLayout pAddDepositLayout = new javax.swing.GroupLayout(pAddDeposit);
+        pAddDeposit.setLayout(pAddDepositLayout);
+        pAddDepositLayout.setHorizontalGroup(
+            pAddDepositLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pAddDepositLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(pAddDepositLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pAddDepositLayout.createSequentialGroup()
+                        .addComponent(lblFrom)
+                        .addGap(12, 12, 12)
+                        .addComponent(ychFrom, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(lblTo)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(ychTo, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(lblIs)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(spnPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnAdd, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+        pAddDepositLayout.setVerticalGroup(
+            pAddDepositLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pAddDepositLayout.createSequentialGroup()
+                .addGap(16, 16, 16)
+                .addGroup(pAddDepositLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(pAddDepositLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(lblIs)
+                        .addComponent(spnPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lblTo)
+                    .addComponent(lblFrom)
+                    .addComponent(ychTo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ychFrom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnAdd)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        pDepositHistory.setBorder(javax.swing.BorderFactory.createTitledBorder("Deposit History"));
 
         tblDeposits.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -113,187 +243,194 @@ public class Deposits extends MyInternalFrame {
         ));
         jScrollPane1.setViewportView(tblDeposits);
 
-        btnRemove.setText("Remove");
-        btnRemove.addActionListener(new java.awt.event.ActionListener() {
+        btnDelete.setText("Remove");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRemoveActionPerformed(evt);
+                btnDeleteActionPerformed(evt);
             }
         });
 
-        btnSubmit.setText("Save");
-
-        btnCancel.setText("Cancel");
-
-        btnCreate.setText("Add");
-        btnCreate.addActionListener(new java.awt.event.ActionListener() {
+        btnUpdate.setText("Update");
+        btnUpdate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCreateActionPerformed(evt);
+                btnUpdateActionPerformed(evt);
             }
         });
+
+        javax.swing.GroupLayout pDepositHistoryLayout = new javax.swing.GroupLayout(pDepositHistory);
+        pDepositHistory.setLayout(pDepositHistoryLayout);
+        pDepositHistoryLayout.setHorizontalGroup(
+            pDepositHistoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pDepositHistoryLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pDepositHistoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addGroup(pDepositHistoryLayout.createSequentialGroup()
+                        .addComponent(btnDelete)
+                        .addGap(106, 106, 106)
+                        .addComponent(tfValueToUpdate)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
+        pDepositHistoryLayout.setVerticalGroup(
+            pDepositHistoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pDepositHistoryLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(pDepositHistoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnDelete)
+                    .addComponent(btnUpdate)
+                    .addComponent(tfValueToUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGap(303, 303, 303)
-                                .addComponent(tfDeposit, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(30, 30, 30))
-                            .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 348, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addComponent(lblFrom)
-                                                .addGap(18, 18, 18)
-                                                .addComponent(ychFrom, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(6, 6, 6)
-                                                .addComponent(lblTo))
-                                            .addComponent(lblDepositFees))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(ychTo, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(lblIs)))
-                                .addGap(29, 29, 29)))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(btnCreate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnRemove, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(pAddDeposit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(pDepositHistory, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(lblTo)
-                    .addComponent(lblFrom)
-                    .addComponent(ychTo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(lblIs)
-                        .addComponent(tfDeposit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(btnCreate)
-                    .addComponent(ychFrom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(26, 26, 26)
-                .addComponent(lblDepositFees)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnRemove))
+                .addComponent(pAddDeposit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnCancel)
-                    .addComponent(btnSubmit))
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addComponent(pDepositHistory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
-        PreparedStatement st;
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+
+        int choice = JOptionPane.showInternalOptionDialog(this,
+                "Removing a deposit from the past will result consistency issues.\n"
+                + "Are yaur sure you want to proceed?",
+                "Bummer!", JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE, null, null, null);
+        if (choice == JOptionPane.NO_OPTION) {
+            return;
+        }
 
         try {
 
-            fromYear = ychFrom.getYear();
-            toYear = ychTo.getYear();
-
-            st = con.prepareStatement("DELETE FROM tblGeneralParameters WHERE "
-                    + "depositStartYear = ? and depositEndYear = ?");
+            PreparedStatement st = con.prepareStatement(Queries.DELETE_DEPOSIT);
             st.setInt(1, fromYear);
             st.setInt(2, toYear);
             st.executeUpdate();
 
+            initYearChoosers();
             fillDeposits();
-        } catch (SQLException ex) {
-            Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_btnRemoveActionPerformed
 
-    private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
+            JOptionPane.showInternalMessageDialog(this,
+                    "Deposit was removed successfully.",
+                    "Hooray!",
+                    JOptionPane.PLAIN_MESSAGE);
+
+        } catch (SQLException ex) {
+            Logger.getLogger(Deposits.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnDeleteActionPerformed
+
+    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         PreparedStatement st;
 
         try {
 
-            fromYear = ychFrom.getYear();
-            toYear = ychTo.getYear();
-            this.price = Double.parseDouble(tfDeposit.getText());
-
-            st = con.prepareStatement("INSERT INTO tblGeneralParameters VALUES (?,?,?)");
+            st = con.prepareStatement(Queries.INSERT_DEPOSIT);
             st.setInt(1, fromYear);
             st.setInt(2, toYear);
             st.setDouble(3, this.price);
             st.executeUpdate();
+
+            initYearChoosers();
             fillDeposits();
+
+            JOptionPane.showInternalMessageDialog(this,
+                    "Deposit was added successfully.",
+                    "Hooray!",
+                    JOptionPane.PLAIN_MESSAGE);
 
         } catch (SQLException | NullPointerException ex) {
 //            Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_btnCreateActionPerformed
+    }//GEN-LAST:event_btnAddActionPerformed
 
-    private void ychToPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_ychToPropertyChange
-        this.toYear = ychTo.getYear();
-    }//GEN-LAST:event_ychToPropertyChange
+    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
+        try {
 
-    private void tfDepositActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfDepositActionPerformed
-        this.price = Double.valueOf(tfDeposit.getText());
-    }//GEN-LAST:event_tfDepositActionPerformed
+            PreparedStatement st = con.prepareStatement(Queries.UPDATE_DEPOSIT);
+            st.setShort(1, price);
+            st.setInt(1, fromYear);
+            st.setInt(2, toYear);
+            st.executeUpdate();
+
+            initYearChoosers();
+            fillDeposits();
+
+            JOptionPane.showInternalMessageDialog(this,
+                    "Deposit was updated successfully.",
+                    "Hooray!",
+                    JOptionPane.PLAIN_MESSAGE);
+
+        } catch (SQLException ex) {
+            Logger.getLogger(Deposits.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnUpdateActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnCancel;
-    private javax.swing.JButton btnCreate;
-    private javax.swing.JButton btnRemove;
-    private javax.swing.JButton btnSubmit;
+    private javax.swing.JButton btnAdd;
+    private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnUpdate;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel lblDepositFees;
     private javax.swing.JLabel lblFrom;
     private javax.swing.JLabel lblIs;
     private javax.swing.JLabel lblTo;
+    private javax.swing.JPanel pAddDeposit;
+    private javax.swing.JPanel pDepositHistory;
+    private javax.swing.JSpinner spnPrice;
     private javax.swing.JTable tblDeposits;
-    private javax.swing.JTextField tfDeposit;
+    private javax.swing.JTextField tfValueToUpdate;
     private com.toedter.calendar.JYearChooser ychFrom;
     private com.toedter.calendar.JYearChooser ychTo;
     // End of variables declaration//GEN-END:variables
-
-    private void fillFields() {
-        PreparedStatement st;
-        ResultSet rs;
-        try {
-            st = con.prepareStatement("Select * From tblGeneralParameters As GP "
-                    + "WHERE GP.depositStartYear = ? and GP.depositEndYear = ?");
-            st.setInt(1, this.fromYear);
-            st.setInt(2, this.toYear);
-            rs = st.executeQuery();
-
-            rs.next();
-            ychFrom.setYear(rs.getInt("depositStartYear"));
-            ychTo.setYear(rs.getInt("depositEndYear"));
-            tfDeposit.setText(rs.getString("price"));
-        } catch (SQLException ex) {
-            Logger.getLogger(Deposits.class
-                    .getName()).log(Level.SEVERE, null, ex);
-        }
-    }
 
     private void fillDeposits() {
         try {
             Statement s = con.createStatement();
             ResultSet rs = s.executeQuery(Queries.SELECT_ALL_DEPOSITS);
             tblDeposits.setModel(HelperClass.buildTableModel(rs));
-        } catch (SQLException e){
-            
+        } catch (SQLException e) {
+
+        }
+    }
+
+    private void initYearChoosers() {
+        try {
+            Statement s = con.createStatement();
+            ResultSet rs = s.executeQuery(Queries.NEXT_DEPOSIT_YEAR);
+            rs.next();
+            int nextDepositYear = rs.getInt("next year");
+
+            ychFrom.setStartYear(nextDepositYear);
+            ychTo.setStartYear(nextDepositYear + 1);
+
+            ychFrom.setYear(nextDepositYear);
+            ychTo.setYear(nextDepositYear + 1);
+
+            ychFrom.setEnabled(false);
+        } catch (SQLException e) {
+            System.err.println("Error code: " + e.getErrorCode() + "\nError Message: " + e.getMessage());
         }
     }
 }

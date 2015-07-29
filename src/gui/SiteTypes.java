@@ -19,6 +19,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import static utils.Constants.EDIT_MODE;
+import utils.Queries;
 
 /**
  *
@@ -149,7 +150,7 @@ public class SiteTypes extends MyInternalFrame {
         try {
             siteType = tfType.getText();
 
-            st = con.prepareStatement("INSERT INTO tblSiteType VALUES (?)");
+            st = con.prepareStatement(Queries.INSERT_SYTE_TYPE);
             st.setString(1, siteType);
             st.executeUpdate();
             fillTypes();
@@ -167,8 +168,7 @@ public class SiteTypes extends MyInternalFrame {
         try {
             typeItem = (ComboItem)(lsttypes.getSelectedValue());
             siteType = (String)typeItem.getKey();
-            st = con.prepareStatement("DELETE FROM tblSiteType WHERE "
-                + "siteType = ?");
+            st = con.prepareStatement(Queries.DELETE_SITE_TYPE);
             st.setString(1, siteType);
             st.executeUpdate();
 
@@ -196,7 +196,7 @@ public class SiteTypes extends MyInternalFrame {
         ResultSet rs;
         try {
             s = con.createStatement();
-            rs = s.executeQuery("Select * From tblSiteType");
+            rs = s.executeQuery(Queries.SELECT_ALL_SITE_TYPES);
 
             Set<ComboItem> items = new TreeSet<>();
             while (rs.next()) {

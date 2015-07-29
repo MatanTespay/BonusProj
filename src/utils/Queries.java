@@ -187,6 +187,14 @@ public class Queries {
     public static final String DELETE_SFS = "DELETE FROM [LondonU2].[dbo].[tblSiteFromSite] \n"
             + "      WHERE siteID1 = ? and siteID2 = ?";
 
+    //---------------------------- SITE TYPES ----------------------------------
+    public static final String SELECT_ALL_SITE_TYPES = "SELECT * FROM tblSiteType";
+
+    public static final String INSERT_SYTE_TYPE = "INSERT INTO tblSiteType VALUES (?)";
+
+    public static final String DELETE_SITE_TYPE = "DELETE FROM tblSiteType WHERE "
+            + "siteType = ?";
+
     //-------------------------- CARD LENGTHS ----------------------------------
     public static final String SELECT_ALL_LENGTHS = "SELECT * FROM tblCardLengths";
 
@@ -194,12 +202,23 @@ public class Queries {
 
     public static final String DELETE_LENGTH = "DELETE FROM tblCardLengths WHERE "
             + "cardLength = ?";
+    
+    public static final String UPDATE_LENGTH = "UPDATE tblCardLengths SET "
+            + "lengthDescription = ? WHERE cardLength = ?";
 
     //------------------------ GENERAL PARAMETERS ------------------------------
     public static final String SELECT_ALL_DEPOSITS = "SELECT * FROM tblGeneralParameters";
-    
+
     public static final String NEXT_DEPOSIT_YEAR = "SELECT MAX(depositEndYear)+1 "
             + "as 'next year' FROM tblGeneralParameters";
+
+    public static final String INSERT_DEPOSIT = "INSERT INTO tblGeneralParameters VALUES (?,?,?)";
+
+    public static final String DELETE_DEPOSIT = "DELETE FROM tblGeneralParameters WHERE "
+            + "depositStartYear = ? and depositEndYear = ?";
+    
+    public static final String UPDATE_DEPOSIT = "UPDATE tblGeneralParameters "
+            + "SET price = ? WHERE depositStartYear = ? and depositEndYear = ?";
 
     //-------------------------- OTHER QUERIES ---------------------------------
     public static final String QUERY1 = "select S.siteType, AVG(S.foundedYear) as 'average founded year',\n"

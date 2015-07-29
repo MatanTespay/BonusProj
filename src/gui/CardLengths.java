@@ -6,16 +6,21 @@
 package gui;
 
 import static init.MainClass.con;
-import init.MyTableModel;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.JSpinner;
+import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import static utils.Constants.EDIT_MODE;
+import utils.HelperClass;
 import utils.Queries;
 
 /**
@@ -24,10 +29,10 @@ import utils.Queries;
  */
 public class CardLengths extends MyInternalFrame {
 
-//    private int length;
-//    private String description;
+    private Short length;
+    private String description;
     private char sign = '1';
-//    private String period;
+    private String period;
 
     /**
      * Creates new form CardLength
@@ -41,7 +46,51 @@ public class CardLengths extends MyInternalFrame {
         initComponents();
         fillLengths();
         tfDescription.setEnabled(false);
-        
+
+        JSpinner.NumberEditor lengthEditor = (JSpinner.NumberEditor) spnLength.getEditor();
+        JTextField lengthTextField = lengthEditor.getTextField();
+        lengthTextField.getDocument().addDocumentListener(new DocumentListener() {
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                try {
+                    length = Short.parseShort(lengthTextField.getText());
+                } catch (NumberFormatException ex) {
+                    length = null;
+                }
+                updateDescription();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                try {
+                    length = Short.parseShort(lengthTextField.getText());
+                } catch (NumberFormatException ex) {
+                    length = null;
+                }
+                updateDescription();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+            }
+        });
+
+        tblLengths.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                boolean isRowSelected = tblLengths.getSelectedRow() != -1;
+                btnRemove.setEnabled(isRowSelected);
+                btnUpdate.setEnabled(isRowSelected);
+
+                if (isRowSelected) {
+                    int selectedRow = tblLengths.getSelectedRow();
+                    tfValueToUpdate.setText(tblLengths.getModel().getValueAt(selectedRow, 2).toString());
+                }
+            }
+        });
+
     }
 
     /**
@@ -53,33 +102,23 @@ public class CardLengths extends MyInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        lblLength = new javax.swing.JLabel();
-        spnLength = new javax.swing.JSpinner();
-        tfDescription = new javax.swing.JTextField();
-        lblDescription = new javax.swing.JLabel();
-        btnAdd = new javax.swing.JButton();
-        jPanel1 = new javax.swing.JPanel();
+        pExistingLengths = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblLengths = new javax.swing.JTable();
-        btnDelete = new javax.swing.JButton();
-        cmbPeriod = new javax.swing.JComboBox();
+        btnRemove = new javax.swing.JButton();
+        btnUpdate = new javax.swing.JButton();
+        tfValueToUpdate = new javax.swing.JTextField();
+        pAddLength = new javax.swing.JPanel();
+        lblLength = new javax.swing.JLabel();
         cmbSign = new javax.swing.JComboBox();
         lblLength1 = new javax.swing.JLabel();
+        spnLength = new javax.swing.JSpinner();
+        cmbPeriod = new javax.swing.JComboBox();
+        lblDescription = new javax.swing.JLabel();
+        tfDescription = new javax.swing.JTextField();
+        btnAdd = new javax.swing.JButton();
 
-        lblLength.setText("Sign");
-
-        spnLength.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
-
-        lblDescription.setText("Description");
-
-        btnAdd.setText("Add");
-        btnAdd.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddActionPerformed(evt);
-            }
-        });
-
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder("Lengths")));
+        pExistingLengths.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder("Lengths"), "Existing lengths"));
 
         tblLengths.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -94,40 +133,52 @@ public class CardLengths extends MyInternalFrame {
         ));
         jScrollPane1.setViewportView(tblLengths);
 
-        btnDelete.setText("Delete");
-        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+        btnRemove.setText("Remove");
+        btnRemove.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDeleteActionPerformed(evt);
+                btnRemoveActionPerformed(evt);
             }
         });
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        btnUpdate.setText("Update");
+        btnUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUpdateActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout pExistingLengthsLayout = new javax.swing.GroupLayout(pExistingLengths);
+        pExistingLengths.setLayout(pExistingLengthsLayout);
+        pExistingLengthsLayout.setHorizontalGroup(
+            pExistingLengthsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pExistingLengthsLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(pExistingLengthsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addGroup(pExistingLengthsLayout.createSequentialGroup()
+                        .addComponent(btnRemove)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
+                        .addComponent(tfValueToUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnUpdate)))
+                .addContainerGap())
+        );
+        pExistingLengthsLayout.setVerticalGroup(
+            pExistingLengthsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pExistingLengthsLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnDelete, javax.swing.GroupLayout.DEFAULT_SIZE, 72, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnDelete))
-                .addContainerGap())
+                .addGroup(pExistingLengthsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnRemove)
+                    .addComponent(btnUpdate)
+                    .addComponent(tfValueToUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        cmbPeriod.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Day", "Week", "Month", "Year" }));
-        cmbPeriod.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbPeriodActionPerformed(evt);
-            }
-        });
+        pAddLength.setBorder(javax.swing.BorderFactory.createTitledBorder("Add Length"));
+
+        lblLength.setText("Sign");
 
         cmbSign.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" }));
         cmbSign.addActionListener(new java.awt.event.ActionListener() {
@@ -138,69 +189,103 @@ public class CardLengths extends MyInternalFrame {
 
         lblLength1.setText("Length");
 
+        spnLength.setModel(new javax.swing.SpinnerNumberModel(Short.valueOf((short)1), Short.valueOf((short)1), null, Short.valueOf((short)1)));
+
+        cmbPeriod.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Day", "Week", "Month", "Year" }));
+        cmbPeriod.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbPeriodActionPerformed(evt);
+            }
+        });
+
+        lblDescription.setText("Description");
+
+        btnAdd.setText("Add");
+        btnAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout pAddLengthLayout = new javax.swing.GroupLayout(pAddLength);
+        pAddLength.setLayout(pAddLengthLayout);
+        pAddLengthLayout.setHorizontalGroup(
+            pAddLengthLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pAddLengthLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pAddLengthLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pAddLengthLayout.createSequentialGroup()
+                        .addComponent(lblDescription)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(tfDescription))
+                    .addGroup(pAddLengthLayout.createSequentialGroup()
+                        .addGroup(pAddLengthLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblLength)
+                            .addComponent(lblLength1))
+                        .addGap(39, 39, 39)
+                        .addGroup(pAddLengthLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(spnLength)
+                            .addComponent(cmbSign, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cmbPeriod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pAddLengthLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        pAddLengthLayout.setVerticalGroup(
+            pAddLengthLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pAddLengthLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pAddLengthLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cmbSign, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblLength))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pAddLengthLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(lblLength1)
+                    .addGroup(pAddLengthLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(spnLength, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cmbPeriod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(pAddLengthLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblDescription)
+                    .addComponent(tfDescription, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnAdd)
+                .addContainerGap())
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addComponent(lblDescription)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(tfDescription))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lblLength)
-                                    .addComponent(lblLength1))
-                                .addGap(39, 39, 39)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(spnLength, javax.swing.GroupLayout.DEFAULT_SIZE, 48, Short.MAX_VALUE)
-                                    .addComponent(cmbSign, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGap(18, 18, 18)
-                                .addComponent(cmbPeriod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(133, 133, 133)
-                        .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(pAddLength, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(pExistingLengths, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnAdd)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(cmbSign, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblLength))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(lblLength1)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(spnLength, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(cmbPeriod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(lblDescription)
-                            .addComponent(tfDescription, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(18, 18, 18)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addContainerGap()
+                .addComponent(pAddLength, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pExistingLengths, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        PreparedStatement st;
 
         try {
 
             int choice = JOptionPane.showInternalOptionDialog(this,
-                    "Changing lengths may cause consistency problems!\n"
+                    "Changing existing lengths may cause consistency issues!\n"
                     + "Are you sure you want to proceed?",
                     "Bummer!",
                     JOptionPane.YES_NO_OPTION,
@@ -209,9 +294,9 @@ public class CardLengths extends MyInternalFrame {
                 return;
             }
 
-            st = con.prepareStatement(Queries.INSERT_LENGTH);
-            st.setString(1, String.valueOf(this.sign));
-            st.setString(2, tfDescription.getText());
+            PreparedStatement st = con.prepareStatement(Queries.INSERT_LENGTH);
+            st.setString(1, String.valueOf(sign));
+            st.setString(2, description);
             st.executeUpdate();
 
             fillLengths();
@@ -234,7 +319,7 @@ public class CardLengths extends MyInternalFrame {
         }
     }//GEN-LAST:event_btnAddActionPerformed
 
-    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+    private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
 
         int choice = JOptionPane.showInternalOptionDialog(this,
                 "Changing lengths may cause consistency problems!\n"
@@ -245,11 +330,12 @@ public class CardLengths extends MyInternalFrame {
         if (choice == JOptionPane.NO_OPTION) {
             return;
         }
-        
+
         PreparedStatement st;
 
         try {
-            char selectedSign = (tblLengths.getModel().getValueAt(tblLengths.getSelectedRow(), 0)).toString().charAt(0);
+            char selectedSign = (tblLengths.getModel().getValueAt(
+                    tblLengths.getSelectedRow(), 0)).toString().charAt(0);
             st = con.prepareStatement(Queries.DELETE_LENGTH);
             st.setString(1, String.valueOf(selectedSign));
             st.executeUpdate();
@@ -267,51 +353,80 @@ public class CardLengths extends MyInternalFrame {
             }
             System.err.println("Error code: " + e.getErrorCode() + "\nError Message: " + e.getMessage());
         }
-    }//GEN-LAST:event_btnDeleteActionPerformed
+    }//GEN-LAST:event_btnRemoveActionPerformed
 
     private void cmbSignActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbSignActionPerformed
         this.sign = cmbSign.getSelectedItem().toString().charAt(0);
     }//GEN-LAST:event_cmbSignActionPerformed
 
     private void cmbPeriodActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbPeriodActionPerformed
+        this.period = cmbPeriod.getSelectedItem().toString();
         updateDescription();
     }//GEN-LAST:event_cmbPeriodActionPerformed
+
+    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
+        try {
+
+            int choice = JOptionPane.showInternalOptionDialog(this,
+                    "Changing existing lengths may cause consistency issues!\n"
+                    + "Are you sure you want to proceed?",
+                    "Bummer!",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE, null, null, null);
+            if (choice == JOptionPane.NO_OPTION) {
+                return;
+            }
+
+            char selectedLength = tblLengths.getModel().getValueAt(
+                    tblLengths.getSelectedRow(), 0).toString().charAt(0);
+
+            PreparedStatement st = con.prepareStatement(Queries.UPDATE_LENGTH);
+            st.setString(1, tfValueToUpdate.getText());
+            st.setString(2, String.valueOf(selectedLength));
+            st.executeUpdate();
+
+            fillLengths();
+
+        } catch (SQLException e) {
+            switch (e.getErrorCode()) {
+                case 2627:
+                    JOptionPane.showInternalMessageDialog(this,
+                            "This length is already in use! Pick another one",
+                            "Bummer!",
+                            JOptionPane.ERROR_MESSAGE);
+                    break;
+            }
+        }
+    }//GEN-LAST:event_btnUpdateActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
-    private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnRemove;
+    private javax.swing.JButton btnUpdate;
     private javax.swing.JComboBox cmbPeriod;
     private javax.swing.JComboBox cmbSign;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblDescription;
     private javax.swing.JLabel lblLength;
     private javax.swing.JLabel lblLength1;
+    private javax.swing.JPanel pAddLength;
+    private javax.swing.JPanel pExistingLengths;
     private javax.swing.JSpinner spnLength;
     private javax.swing.JTable tblLengths;
     private javax.swing.JTextField tfDescription;
+    private javax.swing.JTextField tfValueToUpdate;
     // End of variables declaration//GEN-END:variables
 
-    private void fillLengths() {       
-        String[] lengthColumns = new String[]{"Sign", "Description"};
-        Statement s;
-        ResultSet rs;
-        try {
-            s = con.createStatement();
-            rs = s.executeQuery("Select * From tblCardLengths");
+    private void fillLengths() {
 
-            ArrayList<Object[]> rows = new ArrayList();
-            while (rs.next()) {
-                Object[] row = {rs.getString("cardLength"), rs.getString("lengthDescription")};
-                rows.add(row);
-            }
-            MyTableModel tableModel = new MyTableModel(lengthColumns, rows, null);
-            tblLengths.setModel(tableModel);
+        try {
+            Statement s = con.createStatement();
+            ResultSet rs = s.executeQuery(Queries.SELECT_ALL_LENGTHS);
+            tblLengths.setModel(HelperClass.buildTableModel(rs));
 
         } catch (SQLException ex) {
-            Logger.getLogger(CardLengths.class
-                    .getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CardLengths.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -320,7 +435,7 @@ public class CardLengths extends MyInternalFrame {
         boolean isOne = (num.equals("1"));
         String period = cmbPeriod.getSelectedItem().toString();
 
-        tfDescription.setText(num + " " + period + ((isOne) ? "" : "s"));
+        tfDescription.setText(spnLength.getValue().toString() + " " + period + ((isOne) ? "" : "s"));
 
         btnAdd.setEnabled(isOkToAdd());
     }
