@@ -5,8 +5,6 @@
  */
 package utils;
 
-import java.util.ArrayList;
-
 /**
  *
  * @author asus
@@ -21,9 +19,11 @@ public class Queries {
     public static final String INSERT_LINE = "INSERT INTO tblLine VALUES (?,?,?,?)";
     public static final String INSERT_COLOR = "INSERT INTO tblLineColor VALUES (?,?)";
 
-    // note: updating a line automatically deletes the color
+    //UPDATE LINE transaction
     public static final String UPDATE_LINE = "UPDATE tblLine SET foundedYear = ?, "
             + "lineType = ?, lineLength = ? WHERE name = ?";
+    public static final String UPDATE_COLOR = "UPDATE tblLineColor SET name = ? "
+            + "WHERE lineName = ?";
 
     // note: deleting a line automatically deletes the color
     public static final String DELETE_LINE = "DELETE FROM tblLine WHERE name = ?";
