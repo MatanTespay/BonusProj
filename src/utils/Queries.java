@@ -246,7 +246,7 @@ public class Queries {
             + " having COUNT (SFX.siteID) >= 5)\n"
             + "group by S.ID, S.name";
     public static final String USE_LONDON2 = "USE [LondonU2]";
-    public static final String IF_EXISTS_endDates = "IF  EXISTS (SELECT * "
+    public static final String IF_EXISTS_endDates = "IF EXISTS (SELECT * "
             + "FROM sys.views WHERE object_id = OBJECT_ID(N'[dbo].[endDates]'))\n"
             + "DROP VIEW [dbo].[endDates]";
     public static final String IF_EXISTS_numOfCardsForPrice = "IF  EXISTS (SELECT * "
@@ -263,11 +263,11 @@ public class Queries {
     public static final String CREATE_VIEW_END_DATES = "create view [dbo].[endDates] as\n"
             + "select OCA.*, case\n"
             + "when OCA.cardLength='1' then DATEADD(dd,1,OCA.cardPurchaseDate)\n"
-            + "when OCA.cardLength='3' then DATEADD(dd,3,OCA.cardPurchaseDate)\n"
-            + "when OCA.cardLength='W' then DATEADD(dd,7,OCA.cardPurchaseDate)\n"
-            + "when OCA.cardLength='M' then DATEADD(mm,1,OCA.cardPurchaseDate)\n"
-            + "when OCA.cardLength='T' then DATEADD(mm,3,OCA.cardPurchaseDate)\n"
-            + "when OCA.cardLength='Y' then DATEADD(yyyy,1,OCA.cardPurchaseDate)\n"
+            + "when OCA.cardLength='2' then DATEADD(dd,3,OCA.cardPurchaseDate)\n"
+            + "when OCA.cardLength='3' then DATEADD(dd,7,OCA.cardPurchaseDate)\n"
+            + "when OCA.cardLength='4' then DATEADD(mm,1,OCA.cardPurchaseDate)\n"
+            + "when OCA.cardLength='5' then DATEADD(mm,3,OCA.cardPurchaseDate)\n"
+            + "when OCA.cardLength='6' then DATEADD(yyyy,1,OCA.cardPurchaseDate)\n"
             + "end as 'date'\n"
             + "from tblOysterCardAreas OCA";
 
