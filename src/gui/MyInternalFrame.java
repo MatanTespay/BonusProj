@@ -210,9 +210,9 @@ public class MyInternalFrame extends JInternalFrame {
      *
      * @param state
      */
-    public void setIflyState(boolean state) {
-        MainClass.setIsIflySaved(state);
-    }
+//    public void setIflyState(boolean state) {
+//        MainClass.setIsIflySaved(state);
+//    }
 
     public void openChildFrame(MyInternalFrame child) {
         JDesktopPane desk = this.getDesktopPane();

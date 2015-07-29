@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import static utils.Constants.EDIT_MODE;
+import utils.HelperClass;
+import utils.Queries;
 
 /**
  *
@@ -26,7 +28,7 @@ public class Deposits extends MyInternalFrame {
     private int toYear;
     private double price;
     private final String[] DepositColumns = new String[]{"Start Year", "End Year", "Price"};
-    
+
     /**
      * Creates new form GeneralParameters
      *
@@ -39,9 +41,20 @@ public class Deposits extends MyInternalFrame {
         initComponents();
         fillDeposits();
 
-        ychFrom.setStartYear(1863);
-        ychTo.setStartYear(1863);
+        try {
+            Statement s = con.createStatement();
+            ResultSet rs = s.executeQuery(Queries.NEXT_DEPOSIT_YEAR);
+            rs.next();
+            int nextDepositYear = rs.getInt("next year");
+            ychFrom.setStartYear(nextDepositYear);
+            ychTo.setStartYear(nextDepositYear + 1);
 
+            ychFrom.setYear(nextDepositYear);
+            ychTo.setYear(nextDepositYear + 1);
+            ychFrom.setEnabled(false);
+        } catch (SQLException e) {
+            System.err.println("Error code: " + e.getErrorCode() + "\nError Message: " + e.getMessage());
+        }
     }
 
     /**
@@ -53,7 +66,6 @@ public class Deposits extends MyInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        ychFrom = new com.toedter.calendar.JYearChooser();
         ychTo = new com.toedter.calendar.JYearChooser();
         tfDeposit = new javax.swing.JTextField();
         lblFrom = new javax.swing.JLabel();
@@ -66,12 +78,7 @@ public class Deposits extends MyInternalFrame {
         btnSubmit = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
         btnCreate = new javax.swing.JButton();
-
-        ychFrom.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                ychFromPropertyChange(evt);
-            }
-        });
+        ychFrom = new com.toedter.calendar.JYearChooser();
 
         ychTo.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
@@ -106,18 +113,18 @@ public class Deposits extends MyInternalFrame {
         ));
         jScrollPane1.setViewportView(tblDeposits);
 
-        btnRemove.setText("Delete");
+        btnRemove.setText("Remove");
         btnRemove.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRemoveActionPerformed(evt);
             }
         });
 
-        btnSubmit.setText("Submit");
+        btnSubmit.setText("Save");
 
         btnCancel.setText("Cancel");
 
-        btnCreate.setText("Create");
+        btnCreate.setText("Add");
         btnCreate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCreateActionPerformed(evt);
@@ -128,10 +135,6 @@ public class Deposits extends MyInternalFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lblDepositFees)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -145,18 +148,21 @@ public class Deposits extends MyInternalFrame {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 348, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                        .addComponent(lblFrom)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(ychFrom, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(lblTo)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(lblFrom)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(ychFrom, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(6, 6, 6)
+                                                .addComponent(lblTo))
+                                            .addComponent(lblDepositFees))
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addComponent(ychTo, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addComponent(lblIs)))
                                 .addGap(29, 29, 29)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(btnCreate, javax.swing.GroupLayout.DEFAULT_SIZE, 79, Short.MAX_VALUE)
+                            .addComponent(btnCreate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnRemove, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -171,14 +177,14 @@ public class Deposits extends MyInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(ychFrom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblTo)
                     .addComponent(lblFrom)
                     .addComponent(ychTo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(lblIs)
                         .addComponent(tfDeposit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(btnCreate))
+                    .addComponent(btnCreate)
+                    .addComponent(ychFrom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(26, 26, 26)
                 .addComponent(lblDepositFees)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -189,7 +195,7 @@ public class Deposits extends MyInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCancel)
                     .addComponent(btnSubmit))
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
 
         pack();
@@ -235,10 +241,6 @@ public class Deposits extends MyInternalFrame {
 //            Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnCreateActionPerformed
-
-    private void ychFromPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_ychFromPropertyChange
-        this.fromYear = ychFrom.getYear();
-    }//GEN-LAST:event_ychFromPropertyChange
 
     private void ychToPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_ychToPropertyChange
         this.toYear = ychTo.getYear();
@@ -286,24 +288,12 @@ public class Deposits extends MyInternalFrame {
     }
 
     private void fillDeposits() {
-        Statement s;
-        ResultSet rs;
         try {
-            s = con.createStatement();
-            rs = s.executeQuery("Select * From tblGeneralParameters");
-
-            ArrayList<Object[]> rows = new ArrayList();
-            while (rs.next()) {
-                Object[] row = {rs.getString("depositStartYear"), rs.getString("depositEndYear"),
-                    rs.getString("price")};
-                rows.add(row);
-            }
-            MyTableModel tableModel = new MyTableModel(DepositColumns, rows, null);
-            tblDeposits.setModel(tableModel);
-
-        } catch (SQLException ex) {
-            Logger.getLogger(CardLengths.class
-                    .getName()).log(Level.SEVERE, null, ex);
+            Statement s = con.createStatement();
+            ResultSet rs = s.executeQuery(Queries.SELECT_ALL_DEPOSITS);
+            tblDeposits.setModel(HelperClass.buildTableModel(rs));
+        } catch (SQLException e){
+            
         }
     }
 }

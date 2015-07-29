@@ -5,8 +5,6 @@
  */
 package utils;
 
-import java.util.ArrayList;
-
 /**
  *
  * @author asus
@@ -24,9 +22,11 @@ public class Queries {
     public static final String INSERT_LINE = "INSERT INTO tblLine VALUES (?,?,?,?)";
     public static final String INSERT_COLOR = "INSERT INTO tblLineColor VALUES (?,?)";
 
-    // note: updating a line automatically deletes the color
+    //UPDATE LINE transaction
     public static final String UPDATE_LINE = "UPDATE tblLine SET foundedYear = ?, "
             + "lineType = ?, lineLength = ? WHERE name = ?";
+    public static final String UPDATE_COLOR = "UPDATE tblLineColor SET name = ? "
+            + "WHERE lineName = ?";
 
     // note: deleting a line automatically deletes the color
     public static final String DELETE_LINE = "DELETE FROM tblLine WHERE name = ?";
@@ -196,6 +196,12 @@ public class Queries {
     public static final String DELETE_LENGTH = "DELETE FROM tblCardLengths WHERE "
             + "cardLength = ?";
 
+    //------------------------ GENERAL PARAMETERS ------------------------------
+    public static final String SELECT_ALL_DEPOSITS = "SELECT * FROM tblGeneralParameters";
+    
+    public static final String NEXT_DEPOSIT_YEAR = "SELECT MAX(depositEndYear)+1 "
+            + "as 'next year' FROM tblGeneralParameters";
+
     //-------------------------- OTHER QUERIES ---------------------------------
     public static final String QUERY1 = "select S.siteType, AVG(S.foundedYear) as 'average founded year',\n"
             + "COUNT(S.ID) as 'num of sites'\n"
@@ -246,7 +252,7 @@ public class Queries {
             + " having COUNT (SFX.siteID) >= 5)\n"
             + "group by S.ID, S.name";
     public static final String USE_LONDON2 = "USE [LondonU2]";
-    public static final String IF_EXISTS_endDates = "IF  EXISTS (SELECT * "
+    public static final String IF_EXISTS_endDates = "IF EXISTS (SELECT * "
             + "FROM sys.views WHERE object_id = OBJECT_ID(N'[dbo].[endDates]'))\n"
             + "DROP VIEW [dbo].[endDates]";
     public static final String IF_EXISTS_numOfCardsForPrice = "IF  EXISTS (SELECT * "
@@ -263,11 +269,11 @@ public class Queries {
     public static final String CREATE_VIEW_END_DATES = "create view [dbo].[endDates] as\n"
             + "select OCA.*, case\n"
             + "when OCA.cardLength='1' then DATEADD(dd,1,OCA.cardPurchaseDate)\n"
-            + "when OCA.cardLength='3' then DATEADD(dd,3,OCA.cardPurchaseDate)\n"
-            + "when OCA.cardLength='W' then DATEADD(dd,7,OCA.cardPurchaseDate)\n"
-            + "when OCA.cardLength='M' then DATEADD(mm,1,OCA.cardPurchaseDate)\n"
-            + "when OCA.cardLength='T' then DATEADD(mm,3,OCA.cardPurchaseDate)\n"
-            + "when OCA.cardLength='Y' then DATEADD(yyyy,1,OCA.cardPurchaseDate)\n"
+            + "when OCA.cardLength='2' then DATEADD(dd,3,OCA.cardPurchaseDate)\n"
+            + "when OCA.cardLength='3' then DATEADD(dd,7,OCA.cardPurchaseDate)\n"
+            + "when OCA.cardLength='4' then DATEADD(mm,1,OCA.cardPurchaseDate)\n"
+            + "when OCA.cardLength='5' then DATEADD(mm,3,OCA.cardPurchaseDate)\n"
+            + "when OCA.cardLength='6' then DATEADD(yyyy,1,OCA.cardPurchaseDate)\n"
             + "end as 'date'\n"
             + "from tblOysterCardAreas OCA";
 

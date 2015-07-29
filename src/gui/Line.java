@@ -28,6 +28,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.PlainDocument;
 import static utils.Constants.ADD_MODE;
 import static utils.Constants.EDIT_MODE;
+import utils.E_Colors;
 import utils.InputType;
 import utils.Queries;
 
@@ -70,11 +71,13 @@ public class Line extends MyInternalFrame {
         setMode(ADD_MODE);
         initComponents();
         buildForm();
+        this.lineLength = 1f;
         this.lineType = utils.Constants.UNDERGROUND;
     }
 
     private void buildForm() {
         try {
+
             PreparedStatement getAllStations = con.prepareStatement("SELECT ID, name FROM tblStation");
 
             // set models to comboboxes   
@@ -95,25 +98,6 @@ public class Line extends MyInternalFrame {
                 @Override
                 public void removeUpdate(DocumentEvent e) {
                     lineName = tfName.getText();
-                    btnSave.setEnabled(isOkToSave());
-                }
-
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                }
-            });
-            tfColor.getDocument().addDocumentListener(new DocumentListener() {
-
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    colorName = tfColor.getText();
-                    btnSave.setEnabled(isOkToSave());
-
-                }
-
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    colorName = tfColor.getText();
                     btnSave.setEnabled(isOkToSave());
                 }
 
@@ -186,9 +170,6 @@ public class Line extends MyInternalFrame {
             PlainDocument nameDoc = (PlainDocument) tfName.getDocument();
             nameDoc.setDocumentFilter(new utils.MyDocFilter(InputType.TEXT));
 
-            PlainDocument colorDoc = (PlainDocument) tfColor.getDocument();
-            colorDoc.setDocumentFilter(new utils.MyDocFilter(InputType.TEXT));
-
         } catch (SQLException ex) {
 
         }
@@ -216,8 +197,8 @@ public class Line extends MyInternalFrame {
         btnCancel = new javax.swing.JButton();
         btnSave = new javax.swing.JButton();
         btnDelete = new javax.swing.JButton();
-        tfColor = new javax.swing.JTextField();
         spnLength = new javax.swing.JSpinner();
+        cmbColor = new utils.ColorComboBox();
         pStations = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblStations = new javax.swing.JTable();
@@ -230,7 +211,7 @@ public class Line extends MyInternalFrame {
 
         lbName.setText("Line Name*");
 
-        lblColor.setText("Color*");
+        lblColor.setText("Color");
 
         lblFoundation.setText("Foundation Year");
 
@@ -280,6 +261,12 @@ public class Line extends MyInternalFrame {
 
         spnLength.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(1.0001f), Float.valueOf(9.999871E-4f), null, Float.valueOf(0.5f)));
 
+        cmbColor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbColorActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout pDetailsLayout = new javax.swing.GroupLayout(pDetails);
         pDetails.setLayout(pDetailsLayout);
         pDetailsLayout.setHorizontalGroup(
@@ -287,21 +274,28 @@ public class Line extends MyInternalFrame {
             .addGroup(pDetailsLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pDetailsLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnDelete)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnSave)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnCancel))
                     .addGroup(pDetailsLayout.createSequentialGroup()
                         .addGroup(pDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(pDetailsLayout.createSequentialGroup()
-                                .addComponent(lblFoundation)
-                                .addGap(7, 7, 7))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pDetailsLayout.createSequentialGroup()
                                 .addGroup(pDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(lblColor)
                                     .addComponent(lbName))
-                                .addGap(40, 40, 40)))
-                        .addGroup(pDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(ychFoundationYear, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(tfName, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(tfColor, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 109, Short.MAX_VALUE)
+                                .addGap(40, 40, 40))
+                            .addGroup(pDetailsLayout.createSequentialGroup()
+                                .addComponent(lblFoundation)
+                                .addGap(15, 15, 15)))
+                        .addGroup(pDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(tfName)
+                            .addComponent(cmbColor, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(ychFoundationYear, javax.swing.GroupLayout.DEFAULT_SIZE, 116, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 86, Short.MAX_VALUE)
                         .addGroup(pDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pDetailsLayout.createSequentialGroup()
                                 .addComponent(lblType)
@@ -314,14 +308,7 @@ public class Line extends MyInternalFrame {
                                 .addComponent(spnLength, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(lblKm))
-                            .addComponent(cmbType, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pDetailsLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnDelete)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnSave)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnCancel)))
+                            .addComponent(cmbType, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
         pDetailsLayout.setVerticalGroup(
@@ -334,12 +321,13 @@ public class Line extends MyInternalFrame {
                     .addComponent(tfName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lbName))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblLength)
-                    .addComponent(lblKm)
-                    .addComponent(lblColor)
-                    .addComponent(tfColor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(spnLength, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(pDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(lblLength)
+                        .addComponent(lblKm)
+                        .addComponent(lblColor)
+                        .addComponent(spnLength, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cmbColor, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(ychFoundationYear, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -437,9 +425,9 @@ public class Line extends MyInternalFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(pStations, javax.swing.GroupLayout.PREFERRED_SIZE, 496, Short.MAX_VALUE)
-                    .addComponent(pDetails, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pDetails, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pStations, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -580,7 +568,6 @@ public class Line extends MyInternalFrame {
             } else {
                 // edit mode
                 updateLine = con.prepareStatement(Queries.UPDATE_LINE);
-
                 updateLine.setShort(1, foundedYear);
                 updateLine.setString(2, lineType.toString());
                 if (lineLength != null) {
@@ -590,6 +577,11 @@ public class Line extends MyInternalFrame {
                 }
                 updateLine.setString(4, lineName);
                 updateLine.executeUpdate();
+                
+                updateColor = con.prepareStatement(Queries.UPDATE_COLOR);
+                updateColor.setString(1, colorName);
+                updateColor.setString(2, lineName);
+                updateColor.executeUpdate();
             }
             con.commit();
             JOptionPane.showInternalMessageDialog(this,
@@ -609,7 +601,7 @@ public class Line extends MyInternalFrame {
                                 JOptionPane.ERROR_MESSAGE);
                     }
 
-                    if (e.getMessage().contains("tblColor")) {
+                    if (e.getMessage().contains("tblLineColor")) {
                         JOptionPane.showInternalMessageDialog(this,
                                 "Sorry but the color \"" + colorName + "\" is already taken. Please be original.",
                                 "Bummer!",
@@ -664,6 +656,10 @@ public class Line extends MyInternalFrame {
         }
     }//GEN-LAST:event_btnDeleteActionPerformed
 
+    private void cmbColorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbColorActionPerformed
+        colorName = cmbColor.getSelectedItem().toString();
+    }//GEN-LAST:event_cmbColorActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddStation;
@@ -672,6 +668,7 @@ public class Line extends MyInternalFrame {
     private javax.swing.JButton btnRemoveStation;
     private javax.swing.JButton btnSave;
     private javax.swing.JButton btnViewStation;
+    private javax.swing.JComboBox cmbColor;
     private javax.swing.JComboBox cmbStation;
     private javax.swing.JComboBox cmbType;
     private javax.swing.JScrollPane jScrollPane1;
@@ -685,7 +682,6 @@ public class Line extends MyInternalFrame {
     private javax.swing.JPanel pStations;
     private javax.swing.JSpinner spnLength;
     private javax.swing.JTable tblStations;
-    private javax.swing.JTextField tfColor;
     private javax.swing.JTextField tfName;
     private com.toedter.calendar.JYearChooser ychFoundationYear;
     // End of variables declaration//GEN-END:variables
@@ -743,7 +739,8 @@ public class Line extends MyInternalFrame {
 
     private void setDefaults() {
         tfName.setText(this.lineName);
-        tfColor.setText(this.colorName);
+//        tfColor.setText(this.colorName);
+        cmbColor.setSelectedItem(E_Colors.valueOf(this.colorName));
         ychFoundationYear.setYear(this.foundedYear);
         cmbType.setSelectedItem((this.lineType.equals('O')) ? "Overground" : "Underground");
 
@@ -770,10 +767,6 @@ public class Line extends MyInternalFrame {
     private boolean isOkToSave() {
         if (lineName == null || lineName.isEmpty()) {
             btnSave.setToolTipText("The line must have a name");
-            return false;
-        }
-        if (colorName == null || colorName.isEmpty()) {
-            btnSave.setToolTipText("The line must have a color");
             return false;
         }
 

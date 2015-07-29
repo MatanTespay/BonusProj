@@ -37,10 +37,8 @@ public class CardDialog extends MyInternalFrame {
         super(title, type);
         initComponents();
         this.mainWindow = parent;
-        cmbPDate.setEnabled(false);
         fillCmbCard();
-        cmbPDate.setVisible(false);
-        lblDate.setVisible(false);
+
     }
 
     /**
@@ -53,25 +51,15 @@ public class CardDialog extends MyInternalFrame {
     private void initComponents() {
 
         lblNumber = new javax.swing.JLabel();
-        lblDate = new javax.swing.JLabel();
         cmbCard = new javax.swing.JComboBox();
-        cmbPDate = new javax.swing.JComboBox();
         bntOK = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
 
         lblNumber.setText("Card Number:");
 
-        lblDate.setText("Purchase Date");
-
         cmbCard.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cmbCardActionPerformed(evt);
-            }
-        });
-
-        cmbPDate.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbPDateActionPerformed(evt);
             }
         });
 
@@ -95,19 +83,15 @@ public class CardDialog extends MyInternalFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(22, 22, 22)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(bntOK, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(bntOK)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnCancel))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lblNumber)
                         .addGap(18, 18, 18)
-                        .addComponent(cmbCard, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(lblDate)
-                        .addGap(18, 18, 18)
-                        .addComponent(cmbPDate, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(cmbCard, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(21, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -117,15 +101,11 @@ public class CardDialog extends MyInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblNumber)
                     .addComponent(cmbCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(31, 31, 31)
+                .addGap(26, 26, 26)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblDate)
-                    .addComponent(cmbPDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(31, 31, 31)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(bntOK)
-                    .addComponent(btnCancel))
-                .addContainerGap(38, Short.MAX_VALUE))
+                    .addComponent(btnCancel)
+                    .addComponent(bntOK))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -136,22 +116,10 @@ public class CardDialog extends MyInternalFrame {
         try {
             ComboItem cardItem = (ComboItem) cmbCard.getSelectedItem();
             cardNumber = Integer.parseInt(cardItem.getKey().toString());
-            cmbPDate.setEnabled(true);
-//            fillcmbPDate(cardNumber);
         } catch (NullPointerException ex) {
-            // no item is chosen
-            cmbPDate.setEnabled(false);
+
         }
     }//GEN-LAST:event_cmbCardActionPerformed
-
-    private void cmbPDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbPDateActionPerformed
-//        if (cmbPDate.getSelectedItem() == null) {
-//            return;
-//        }
-//        ComboItem purchaseDateItem = (ComboItem) cmbPDate.getSelectedItem();
-//        this.purchaseDate = Timestamp.valueOf(purchaseDateItem.getKey().toString());
-
-    }//GEN-LAST:event_cmbPDateActionPerformed
 
     private void bntOKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bntOKActionPerformed
         // TODO add your handling code here:
@@ -225,8 +193,6 @@ public class CardDialog extends MyInternalFrame {
     private javax.swing.JButton bntOK;
     private javax.swing.JButton btnCancel;
     private javax.swing.JComboBox cmbCard;
-    private javax.swing.JComboBox cmbPDate;
-    private javax.swing.JLabel lblDate;
     private javax.swing.JLabel lblNumber;
     // End of variables declaration//GEN-END:variables
 }

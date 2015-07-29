@@ -41,7 +41,7 @@ public class CardLengths extends MyInternalFrame {
         initComponents();
         fillLengths();
         tfDescription.setEnabled(false);
-
+        
     }
 
     /**
