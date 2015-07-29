@@ -228,7 +228,6 @@ public class Site extends MyInternalFrame {
         lblDistToSite = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tblNearbySites = new javax.swing.JTable();
-        lblNearbySites = new javax.swing.JLabel();
         sfePanel = new javax.swing.JPanel();
         cmbStation = new javax.swing.JComboBox();
         btnAddExit = new javax.swing.JButton();
@@ -240,7 +239,6 @@ public class Site extends MyInternalFrame {
         lblStation = new javax.swing.JLabel();
         cmbLine = new javax.swing.JComboBox();
         tfDistToExit = new javax.swing.JTextField();
-        lblNearbyExits = new javax.swing.JLabel();
 
         tfName.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -302,6 +300,8 @@ public class Site extends MyInternalFrame {
             }
         });
 
+        sfsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Nearby Sites"));
+
         btnAddNearSite.setText("Add site");
         btnAddNearSite.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -340,44 +340,37 @@ public class Site extends MyInternalFrame {
         ));
         jScrollPane3.setViewportView(tblNearbySites);
 
-        lblNearbySites.setText("Nearby Sites");
-
         javax.swing.GroupLayout sfsPanelLayout = new javax.swing.GroupLayout(sfsPanel);
         sfsPanel.setLayout(sfsPanelLayout);
         sfsPanelLayout.setHorizontalGroup(
             sfsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(sfsPanelLayout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(59, 59, 59)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 414, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addGroup(sfsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(sfsPanelLayout.createSequentialGroup()
-                        .addComponent(lblNearbySites)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 416, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(sfsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(sfsPanelLayout.createSequentialGroup()
-                                .addGap(23, 23, 23)
-                                .addComponent(lblDistToSite))
-                            .addGroup(sfsPanelLayout.createSequentialGroup()
-                                .addGap(18, 18, 18)
-                                .addComponent(btnAddNearSite, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(sfsPanelLayout.createSequentialGroup()
-                        .addGap(516, 516, 516)
-                        .addComponent(lblSite)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(sfsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tfDistToSite, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(sfsPanelLayout.createSequentialGroup()
-                        .addComponent(btnRemoveSite)
-                        .addGap(0, 18, Short.MAX_VALUE))
-                    .addComponent(cmbNearSite, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                        .addComponent(btnAddNearSite, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnRemoveSite))
+                    .addGroup(sfsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, sfsPanelLayout.createSequentialGroup()
+                            .addGap(6, 6, 6)
+                            .addComponent(lblDistToSite)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(tfDistToSite))
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, sfsPanelLayout.createSequentialGroup()
+                            .addGap(10, 10, 10)
+                            .addComponent(lblSite)
+                            .addGap(51, 51, 51)
+                            .addComponent(cmbNearSite, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
         sfsPanelLayout.setVerticalGroup(
             sfsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(sfsPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(sfsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblNearbySites)
+                .addGroup(sfsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(sfsPanelLayout.createSequentialGroup()
                         .addGroup(sfsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(cmbNearSite, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -386,13 +379,15 @@ public class Site extends MyInternalFrame {
                         .addGroup(sfsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(tfDistToSite, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lblDistToSite))
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(sfsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnAddNearSite)
                             .addComponent(btnRemoveSite)))
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
+
+        sfePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Nearby Exits"));
 
         cmbStation.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         cmbStation.addActionListener(new java.awt.event.ActionListener() {
@@ -442,43 +437,38 @@ public class Site extends MyInternalFrame {
             }
         });
 
-        lblNearbyExits.setText("Nearby Exits");
-
         javax.swing.GroupLayout sfePanelLayout = new javax.swing.GroupLayout(sfePanel);
         sfePanel.setLayout(sfePanelLayout);
         sfePanelLayout.setHorizontalGroup(
             sfePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(sfePanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lblNearbyExits)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(56, 56, 56)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 416, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(sfePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(sfePanelLayout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addGroup(sfePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblStation)
-                            .addComponent(lblLine)
-                            .addComponent(lblDistToExit)))
-                    .addGroup(sfePanelLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnAddExit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGap(18, 18, 18)
                 .addGroup(sfePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tfDistToExit, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(cmbLine, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(cmbStation, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(sfePanelLayout.createSequentialGroup()
-                        .addComponent(btnRemoveExit)
-                        .addGap(0, 34, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addGroup(sfePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblStation)
+                            .addComponent(lblLine))
+                        .addGap(41, 41, 41)
+                        .addGroup(sfePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(cmbLine, 0, 114, Short.MAX_VALUE)
+                            .addComponent(cmbStation, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(sfePanelLayout.createSequentialGroup()
+                        .addComponent(lblDistToExit)
+                        .addGap(18, 18, 18)
+                        .addComponent(tfDistToExit, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(sfePanelLayout.createSequentialGroup()
+                        .addComponent(btnAddExit, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnRemoveExit)))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         sfePanelLayout.setVerticalGroup(
             sfePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(sfePanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(sfePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(lblNearbyExits)
                     .addGroup(sfePanelLayout.createSequentialGroup()
                         .addGroup(sfePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(cmbStation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -505,38 +495,39 @@ public class Site extends MyInternalFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(sfePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(8, 8, 8)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblID)
-                            .addComponent(lblName))
-                        .addGap(41, 41, 41)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(tfName, javax.swing.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE)
-                            .addComponent(tfID))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblFoundation)
-                            .addComponent(Type))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(cmbType, 0, 119, Short.MAX_VALUE)
-                            .addComponent(ychFoundation, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(lblDescription)
+                                    .addGap(626, 626, 626))
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(27, 27, 27)
+                                    .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(lblDescription)
-                                .addGap(18, 18, 18)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 417, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btnSave, javax.swing.GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnDelete)
-                                .addGap(0, 33, Short.MAX_VALUE))
-                            .addComponent(sfsPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addContainerGap())
-                    .addComponent(sfePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lblID)
+                                    .addComponent(lblName))
+                                .addGap(31, 31, 31)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(tfName, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(tfID, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(25, 25, 25)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lblFoundation)
+                                    .addComponent(Type))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(cmbType, 0, 119, Short.MAX_VALUE)
+                                    .addComponent(ychFoundation, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                    .addComponent(sfsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -555,25 +546,28 @@ public class Site extends MyInternalFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(tfName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblName)
                             .addComponent(cmbType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(Type)))
+                            .addComponent(Type)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lblName)
+                                .addGap(5, 5, 5))))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lblFoundation)
                         .addGap(35, 35, 35)))
-                .addGap(6, 6, 6)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(lblDescription))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(btnSave)
-                        .addComponent(btnDelete)))
-                .addGap(18, 18, 18)
+                        .addComponent(btnDelete))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lblDescription)
+                        .addGap(3, 3, 3)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(sfePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(sfsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -698,50 +692,6 @@ public class Site extends MyInternalFrame {
         }
     }//GEN-LAST:event_btnAddExitActionPerformed
 
-    private void btnAddNearSiteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddNearSiteActionPerformed
-        PreparedStatement st;
-        ComboItem siteItem;
-        short otherSiteNumber;
-        double distance;
-
-        try {
-            siteItem = (ComboItem) cmbNearSite.getSelectedItem();
-            otherSiteNumber = Short.valueOf(siteItem.getKey().toString());
-            distance = Double.parseDouble(tfDistToSite.getText());
-
-            st = con.prepareStatement(utils.Queries.INSERT_SFS);
-
-            st.setShort(1, siteID);
-            st.setShort(2, otherSiteNumber);
-            st.setDouble(3, distance);
-            
-            int result = st.executeUpdate();
-            
-            if (result == 1) {
-                JOptionPane.showInternalMessageDialog(this,
-                        "Conection " + siteName + " - " + siteItem.getLabel() + " was saved successfully.",
-                        "Hooray!",
-                        JOptionPane.PLAIN_MESSAGE);
-
-                fillNearBySites();
-
-            } else {
-                JOptionPane.showInternalMessageDialog(this,
-                        "There was some errors adding the connection\n"
-                        + "Between " +  siteName + " and " + siteItem.getLabel()
-                        + "Please Dont try later.",
-                        "Bummer!",
-                        JOptionPane.ERROR_MESSAGE);
-            }
-            
-            
-            
-
-        } catch (SQLException | NullPointerException ex) {
-            Logger.getLogger(Site.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_btnAddNearSiteActionPerformed
-
     private void btnRemoveExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveExitActionPerformed
         PreparedStatement st;
         int stationNumber;
@@ -785,50 +735,6 @@ public class Site extends MyInternalFrame {
                      Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnRemoveExitActionPerformed
-
-    private void btnRemoveSiteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveSiteActionPerformed
-        PreparedStatement st;
-        int selectedRow;
-        TableModel model;
-        short otherSiteId;
-        
-        try {
-            
-            model = tblNearbySites.getModel();
-            selectedRow = tblNearbySites.getSelectedRow();
-            
-             otherSiteId = Short.valueOf(model.getValueAt(selectedRow, 0).toString());
-            
-
-            st = con.prepareStatement(utils.Queries.DELETE_SFS);
-            st.setInt(1, siteID);
-            st.setInt(2, otherSiteId);
-            
-            int result = st.executeUpdate();
-            
-            if (result == 1) {
-               JOptionPane.showInternalMessageDialog(this,
-                        "Conection " + siteName + " - " + model.getValueAt(selectedRow, 1) + " was removed successfully.",
-                        "Hooray!",
-                        JOptionPane.PLAIN_MESSAGE);
-
-                fillNearBySites();
-
-            } else {
-               JOptionPane.showInternalMessageDialog(this,
-                        "There was some errors adding the connection\n"
-                        + "Between " +  siteName + " and " + model.getValueAt(selectedRow, 1)
-                        + "Please Dont try later.",
-                        "Bummer!",
-                        JOptionPane.ERROR_MESSAGE);
-            }
-              
-         
-
-        } catch (SQLException | NullPointerException ex) {
-              Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_btnRemoveSiteActionPerformed
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         PreparedStatement st;
@@ -978,6 +884,88 @@ public class Site extends MyInternalFrame {
         btnAddNearSite.setEnabled(isOkToAddNearSite());
     }//GEN-LAST:event_cmbNearSiteActionPerformed
 
+    private void btnRemoveSiteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveSiteActionPerformed
+        PreparedStatement st;
+        int selectedRow;
+        TableModel model;
+        short otherSiteId;
+
+        try {
+
+            model = tblNearbySites.getModel();
+            selectedRow = tblNearbySites.getSelectedRow();
+
+            otherSiteId = Short.valueOf(model.getValueAt(selectedRow, 0).toString());
+
+            st = con.prepareStatement(utils.Queries.DELETE_SFS);
+            st.setInt(1, siteID);
+            st.setInt(2, otherSiteId);
+
+            int result = st.executeUpdate();
+
+            if (result == 1) {
+                JOptionPane.showInternalMessageDialog(this,
+                    "Conection " + siteName + " - " + model.getValueAt(selectedRow, 1) + " was removed successfully.",
+                    "Hooray!",
+                    JOptionPane.PLAIN_MESSAGE);
+
+                fillNearBySites();
+
+            } else {
+                JOptionPane.showInternalMessageDialog(this,
+                    "There was some errors adding the connection\n"
+                    + "Between " +  siteName + " and " + model.getValueAt(selectedRow, 1)
+                    + "Please Dont try later.",
+                    "Bummer!",
+                    JOptionPane.ERROR_MESSAGE);
+            }
+
+        } catch (SQLException | NullPointerException ex) {
+            Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnRemoveSiteActionPerformed
+
+    private void btnAddNearSiteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddNearSiteActionPerformed
+        PreparedStatement st;
+        ComboItem siteItem;
+        short otherSiteNumber;
+        double distance;
+
+        try {
+            siteItem = (ComboItem) cmbNearSite.getSelectedItem();
+            otherSiteNumber = Short.valueOf(siteItem.getKey().toString());
+            distance = Double.parseDouble(tfDistToSite.getText());
+
+            st = con.prepareStatement(utils.Queries.INSERT_SFS);
+
+            st.setShort(1, siteID);
+            st.setShort(2, otherSiteNumber);
+            st.setDouble(3, distance);
+
+            int result = st.executeUpdate();
+
+            if (result == 1) {
+                JOptionPane.showInternalMessageDialog(this,
+                    "Conection " + siteName + " - " + siteItem.getLabel() + " was saved successfully.",
+                    "Hooray!",
+                    JOptionPane.PLAIN_MESSAGE);
+
+                fillNearBySites();
+
+            } else {
+                JOptionPane.showInternalMessageDialog(this,
+                    "There was some errors adding the connection\n"
+                    + "Between " +  siteName + " and " + siteItem.getLabel()
+                    + "Please Dont try later.",
+                    "Bummer!",
+                    JOptionPane.ERROR_MESSAGE);
+            }
+
+        } catch (SQLException | NullPointerException ex) {
+            Logger.getLogger(Site.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnAddNearSiteActionPerformed
+
     private boolean isOkToAddExit() {
         boolean result = !(lineName == null || exitDistance < 0);
         return result;
@@ -1021,8 +1009,6 @@ public class Site extends MyInternalFrame {
     private javax.swing.JLabel lblID;
     private javax.swing.JLabel lblLine;
     private javax.swing.JLabel lblName;
-    private javax.swing.JLabel lblNearbyExits;
-    private javax.swing.JLabel lblNearbySites;
     private javax.swing.JLabel lblSite;
     private javax.swing.JLabel lblStation;
     private javax.swing.JPanel sfePanel;
