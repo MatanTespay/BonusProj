@@ -274,8 +274,18 @@ public class Queries {
 
     //-------------------------------- USERS -----------------------------------
     public static final String SELECT_USER = "SELECT username FROM tblUser u WHERE u.username=?";
-
+    
+    public static final String SELECT_ALL_USERS_ANDTHEIR_ROLES = "SELECT * FROM "
+                    + "tblUser u join tblRole r on u.RoleID = r.RoleID";
+    
     public static final String INSERT_USER = "INSERT INTO tblUser VALUES (?,?,?)";
+    
+    //TODO: NOT IN USE
+    public static final String UPDATE_USER = "UPDATE tblUser SET RoleID = ? "
+                            + "WHERE username = ? and password = ?";
+    
+    public static final String DELETE_USER = "DELETE FROM tblUser WHERE "
+            + "username = ? and password = ?";
 
     //---------------------------- OTHER QUERIES -------------------------------
     public static final String QUERY1 = "select S.siteType, AVG(S.foundedYear) as 'average founded year',\n"

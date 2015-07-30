@@ -24,6 +24,7 @@ import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import utils.Queries;
 
 /**
  *
@@ -305,8 +306,8 @@ public class Users extends MyInternalFrame {
         ResultSet rs;
         try {
             s = con.createStatement();
-            rs = s.executeQuery("Select * From tblRole");
-            ArrayList<ComboItem> items = new ArrayList<ComboItem>();
+            rs = s.executeQuery(Queries.SELECT_ALL_ROLES);
+            ArrayList<ComboItem> items = new ArrayList<>();
             while (rs.next()) {
                 items.add(new ComboItem(rs.getString("RoleID"), rs.getString("RoleName")));
             }
@@ -321,9 +322,8 @@ public class Users extends MyInternalFrame {
         ResultSet rs;
         try {
             PreparedStatement stmt;
-            String q = "SELECT username, password , RoleName "
-                    + "FROM tblUser u join tblRole r on u.RoleID = r.RoleID";
-            stmt = con.prepareStatement(q);
+
+            stmt = con.prepareStatement(Queries.SELECT_ALL_USERS_ANDTHEIR_ROLES);
             rs = stmt.executeQuery();
             ArrayList<Object[]> rows = new ArrayList();
             while (rs.next()) {
@@ -354,7 +354,12 @@ public class Users extends MyInternalFrame {
                 ResultSet rs;
                 String q;
                 if (!isEditState && !isDeleteState) {
-
+                    /*
+                        TODO
+                        password is not UNIQUE
+                        there is also no need to check username is UNIQUE
+                        just catch error code 2627
+                    */
                     q = "SELECT username, password , RoleName "
                             + "FROM tblUser u join tblRole r on u.RoleID = r.RoleID "
                             + "WHERE u.username=? and u.password=?";
@@ -372,11 +377,8 @@ public class Users extends MyInternalFrame {
                                 JOptionPane.ERROR_MESSAGE);
                     } else {
 
-                        String insertTableSQL = "INSERT INTO tblUser"
-                                + "(UserName, Password, RoleID ) VALUES"
-                                + "(?,?,?)";
                         int RoleID = Integer.parseInt((String)((ComboItem) cbRoleType.getSelectedItem()).getKey());
-                        stmt = con.prepareStatement(insertTableSQL);
+                        stmt = con.prepareStatement(Queries.INSERT_USER);
                         stmt.setString(1, txtUserName.getText());
                         stmt.setString(2, txtPass.getText());
                         stmt.setInt(3, RoleID);
@@ -388,7 +390,12 @@ public class Users extends MyInternalFrame {
 
                     }
                 } else if (isEditState) {
-
+                    /*
+                        TODO
+                        why do we need to update username and password
+                        if they are given as parameters. I think you should
+                        use Queries.UPDATE_USER
+                    */
                     q = "UPDATE tblUser"
                             + " SET username = ?"
                             + " ,password = ?"
@@ -431,10 +438,8 @@ public class Users extends MyInternalFrame {
                     isEditState = false;
 
                 } else {
-                    q = "DELETE FROM tblUser "
-                            + "WHERE username=? and password=?";
 
-                    stmt = MainClass.con.prepareStatement(q);
+                    stmt = MainClass.con.prepareStatement(Queries.DELETE_USER);
                     String oldName = (String) tblUsers.getModel().getValueAt(editedRiwIdx, 0);
                     String oldPass = (String) tblUsers.getModel().getValueAt(editedRiwIdx, 1);
                     stmt.setString(1, oldName);
@@ -478,8 +483,7 @@ public class Users extends MyInternalFrame {
         ArrayList<Object[]> data = new ArrayList<>();
         while (rs.next()) {
             Vector<Object> row = new Vector<>();
-            for (int columnIndex = 0; columnIndex < UserColumns.length; columnIndex++) {
-                String co = UserColumns[columnIndex];
+            for (String co : UserColumns) {
                 row.add(rs.getObject(co));
             }
             data.add(row.toArray(new Object[row.size()]));
@@ -488,7 +492,6 @@ public class Users extends MyInternalFrame {
         return new MyTableModel(UserColumns, data);
 
     }
-
     class mydate extends JDateChooser {
 
     }
