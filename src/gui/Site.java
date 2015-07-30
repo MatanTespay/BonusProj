@@ -1174,7 +1174,7 @@ public class Site extends MyInternalFrame {
 //        PreparedStatement st;
 //        ResultSet rs;
         try {
-            PreparedStatement getAllLines = con.prepareStatement(utils.Queries.SELECT_LINE_NAME_FOR_STATION_NAME);
+            PreparedStatement getAllLines = con.prepareStatement(utils.Queries.SELECT_LINES_OR_STATION__BY_NAME);
             QueryCombobox qCb = new QueryCombobox(cmbLine, cmbStation, String.class, getAllLines);
             HashSet<JButton> tableButtons = new HashSet<>();
             qCb.bindButtons(tableButtons);

@@ -331,7 +331,6 @@ public class Activity extends MyInternalFrame {
 
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
         try {
-            // TODO add your handling code here:
             PreparedStatement st;
             ResultSet rs;
 
@@ -368,9 +367,8 @@ public class Activity extends MyInternalFrame {
     }//GEN-LAST:event_btnCreateActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        // TODO add your handling code here:
         try {
-            // TODO add your handling code here:
+
             PreparedStatement st;
             ResultSet rs;
 
@@ -437,9 +435,8 @@ public class Activity extends MyInternalFrame {
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
-        // TODO add your handling code here:
         try {
-            // TODO add your handling code here:
+
             PreparedStatement st;
 
             st = con.prepareStatement(Queries.UPDATE_ACTIVITY);

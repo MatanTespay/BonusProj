@@ -1111,7 +1111,7 @@ public class Card extends MyInternalFrame {
 
             if (cardType == PAPER) {
 
-                deletePaperProgram = con.prepareStatement(Queries.DELETE_ALL_PAPER_PROGRAMS_OF_CARD);
+                deletePaperProgram = con.prepareStatement(Queries.DELETE_PAPER_PROGRAM_OF_CARD);
                 deletePaperProgram.setLong(1, cardNumber);
 
                 deletePaperProgram.executeUpdate();

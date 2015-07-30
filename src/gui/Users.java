@@ -56,7 +56,7 @@ public class Users extends MyInternalFrame {
             {
                 add(new InputValidator(txtPass, utils.InputType.PASSWORD, lblerrPass, null));
                 add(new InputValidator(txtUserName, utils.InputType.TEXT, lblerrUserName, null));
-                
+
             }
         };
 
@@ -64,7 +64,6 @@ public class Users extends MyInternalFrame {
         setTableSelection();
         btnRemove.setEnabled(false);
         btnEdit.setEnabled(false);
-        
 
     }
 
@@ -260,12 +259,10 @@ public class Users extends MyInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddUserActionPerformed
-        // TODO add your handling code here:
         saveChange();
     }//GEN-LAST:event_btnAddUserActionPerformed
 
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
-        // TODO add your handling code here:
         isEditState = true;
         String name = (String) (tblUsers.getModel().getValueAt(tblUsers.getSelectedRow(), 0));
         String pass = (String) (tblUsers.getModel().getValueAt(tblUsers.getSelectedRow(), 1));
@@ -276,7 +273,6 @@ public class Users extends MyInternalFrame {
     }//GEN-LAST:event_btnEditActionPerformed
 
     private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
-        // TODO add your handling code here:
         isDeleteState = true;
         editedRiwIdx = tblUsers.getSelectedRow();
         saveChange();
@@ -355,11 +351,11 @@ public class Users extends MyInternalFrame {
                 String q;
                 if (!isEditState && !isDeleteState) {
                     /*
-                        TODO
-                        password is not UNIQUE
-                        there is also no need to check username is UNIQUE
-                        just catch error code 2627
-                    */
+                     TODO:
+                     password is not UNIQUE
+                     there is also no need to check username is UNIQUE
+                     just catch error code 2627
+                     */
                     q = "SELECT username, password , RoleName "
                             + "FROM tblUser u join tblRole r on u.RoleID = r.RoleID "
                             + "WHERE u.username=? and u.password=?";
@@ -377,7 +373,7 @@ public class Users extends MyInternalFrame {
                                 JOptionPane.ERROR_MESSAGE);
                     } else {
 
-                        int RoleID = Integer.parseInt((String)((ComboItem) cbRoleType.getSelectedItem()).getKey());
+                        int RoleID = Integer.parseInt((String) ((ComboItem) cbRoleType.getSelectedItem()).getKey());
                         stmt = con.prepareStatement(Queries.INSERT_USER);
                         stmt.setString(1, txtUserName.getText());
                         stmt.setString(2, txtPass.getText());
@@ -391,11 +387,11 @@ public class Users extends MyInternalFrame {
                     }
                 } else if (isEditState) {
                     /*
-                        TODO
-                        why do we need to update username and password
-                        if they are given as parameters. I think you should
-                        use Queries.UPDATE_USER
-                    */
+                     TODO:
+                     why do we need to update username and password
+                     if they are given as parameters. I think you should
+                     use Queries.UPDATE_USER
+                     */
                     q = "UPDATE tblUser"
                             + " SET username = ?"
                             + " ,password = ?"
@@ -407,7 +403,7 @@ public class Users extends MyInternalFrame {
                             ResultSet.CONCUR_UPDATABLE);
 
                     //set params
-                    int RoleID = Integer.parseInt((String)((ComboItem) cbRoleType.getSelectedItem()).getKey());
+                    int RoleID = Integer.parseInt((String) ((ComboItem) cbRoleType.getSelectedItem()).getKey());
                     String oldName = (String) tblUsers.getModel().getValueAt(editedRiwIdx, 0);
                     String oldPass = (String) tblUsers.getModel().getValueAt(editedRiwIdx, 1);
                     stmt.setString(1, txtUserName.getText());
@@ -455,13 +451,13 @@ public class Users extends MyInternalFrame {
                 }
             } catch (SQLServerException ex) {
                 String msg = "There was an error in the action";
-                if(ex.getErrorCode() == 2627){ // 2627 is unique constraint (includes primary key), 2601 is unique index
+                if (ex.getErrorCode() == 2627) { // 2627 is unique constraint (includes primary key), 2601 is unique index
                     msg = "This User Name alredy exit!";
                 }
-                JOptionPane.showInternalConfirmDialog(this, msg ,
-						"Error", JOptionPane.PLAIN_MESSAGE,
-						JOptionPane.ERROR_MESSAGE);
-                
+                JOptionPane.showInternalConfirmDialog(this, msg,
+                        "Error", JOptionPane.PLAIN_MESSAGE,
+                        JOptionPane.ERROR_MESSAGE);
+
                 Logger.getLogger(Users.class.getName()).log(Level.SEVERE, null, ex);
 
             } catch (SQLException ex) {
@@ -469,10 +465,10 @@ public class Users extends MyInternalFrame {
             }
 
             JOptionPane.showMessageDialog(this,
-                                "Changes Saved",
-                                "INFORMATION MESSAGE",
-                                JOptionPane.INFORMATION_MESSAGE);
-            
+                    "Changes Saved",
+                    "INFORMATION MESSAGE",
+                    JOptionPane.INFORMATION_MESSAGE);
+
         }
     }
 
@@ -492,8 +488,8 @@ public class Users extends MyInternalFrame {
         return new MyTableModel(UserColumns, data);
 
     }
+
     class mydate extends JDateChooser {
 
     }
-
 }

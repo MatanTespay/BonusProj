@@ -228,7 +228,7 @@ public class AddRole extends MyInternalFrame {
         if (result) {
             try {
 
-                stmt = con.prepareStatement(Queries.SELECT_ROLE_IDS_OF_ROLE_NAME,
+                stmt = con.prepareStatement(Queries.SELECT_ROLE_ID_OF_ROLE_BY_NAME,
                         ResultSet.TYPE_SCROLL_SENSITIVE,
                         ResultSet.CONCUR_UPDATABLE);
                 stmt.setString(1, txtRoleName.getText());
