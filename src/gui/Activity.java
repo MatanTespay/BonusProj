@@ -24,6 +24,7 @@ import static utils.Constants.EDIT_MODE;
 import static utils.Constants.INGOING;
 import static utils.Constants.OUTGOING;
 import static utils.HelperClass.setSelectedValue;
+import utils.Queries;
 
 /**
  *
@@ -333,15 +334,8 @@ public class Activity extends MyInternalFrame {
             // TODO add your handling code here:
             PreparedStatement st;
             ResultSet rs;
-            String s = "INSERT INTO [LondonU2].[dbo].[tblActivity]"
-                    + "  ([cardNumber]"
-                    + "  ,[cardPurchaseDate]"
-                    + "  ,[activityDate]"
-                    + "  ,[activityType]"
-                    + "  ,[stationID]"
-                    + "  ,[lineName])"
-                    + "     VALUES (? ,? ,? ,? ,?,?)";
-            st = con.prepareStatement(s);
+
+            st = con.prepareStatement(Queries.INSERT_ACTIVITY);
             st.setInt(1, cardNumber);
             st.setTimestamp(2, this.purchaseDate);
             st.setTimestamp(3, this.activityDate);
@@ -379,12 +373,8 @@ public class Activity extends MyInternalFrame {
             // TODO add your handling code here:
             PreparedStatement st;
             ResultSet rs;
-            String s = "DELETE FROM [LondonU2].[dbo].[tblActivity]"
-                    + "   WHERE [cardNumber] = ? and "
-                    + "   [cardPurchaseDate]= ? and "
-                    + "   [activityDate] = ?";
 
-            st = con.prepareStatement(s);
+            st = con.prepareStatement(Queries.DELETE_ACTIVITY);
             st.setInt(1, cardNumber);
             st.setTimestamp(2, this.purchaseDate);
             st.setTimestamp(3, this.activityDate);
@@ -425,7 +415,7 @@ public class Activity extends MyInternalFrame {
                 }
             } else {
                 JOptionPane.showInternalMessageDialog(this,
-                        "Erro, couldnt delete Activity",
+                        "Error, could not delete Activity",
                         "Error",
                         JOptionPane.ERROR_MESSAGE);
 
@@ -452,15 +442,7 @@ public class Activity extends MyInternalFrame {
             // TODO add your handling code here:
             PreparedStatement st;
 
-            String s = "UPDATE [LondonU2].[dbo].[tblActivity] "
-                    + " SET [activityType] = ? "
-                    + " ,[stationID] = ? "
-                    + " ,[lineName] = ? "
-                    + " WHERE [cardNumber] = ?"
-                    + " and [cardPurchaseDate] = ?"
-                    + " and [activityDate] = ?";
-
-            st = con.prepareStatement(s);
+            st = con.prepareStatement(Queries.UPDATE_ACTIVITY);
             st.setString(1, (activityType) ? "O" : "I");
             st.setInt(2, this.stationID);
             st.setString(3, this.lineName);
@@ -478,7 +460,7 @@ public class Activity extends MyInternalFrame {
                         JOptionPane.INFORMATION_MESSAGE);
             } else {
                 JOptionPane.showInternalMessageDialog(this,
-                        "Erro, couldnt update activity",
+                        "Error, could not update activity",
                         "Error",
                         JOptionPane.ERROR_MESSAGE);
 
@@ -522,16 +504,12 @@ public class Activity extends MyInternalFrame {
         PreparedStatement st;
         try {
 
-            String s;
-            s = "SELECT TOP(1) A.* FROM tblActivity As A WHERE "
-                    + "A.cardNumber = ? and A.cardPurchaseDate = ? ";
-            st = con.prepareStatement(s);
-
+            st = con.prepareStatement(Queries.IS_CARD_1ST_ACTIVITY);
             st.setInt(1, this.cardNumber);
 
             //for some reason i had to cast timestemp to string , dont ask me why !!!
             st.setTimestamp(2, this.purchaseDate);
-
+            
             rs = st.executeQuery();
 
             if (rs.next()) {
@@ -553,16 +531,8 @@ public class Activity extends MyInternalFrame {
         ResultSet rs;
 
         try {
-
-            String s;
-            s = "SELECT A.*, S.name FROM tblActivity As A "
-                    + "join tblStation As S on A.stationID = S.ID "
-                    + "WHERE "
-                    + "A.cardNumber = ? and A.cardPurchaseDate = ? and A.activityDate = ?";
-            st = con.prepareStatement(s);
-
+            st = con.prepareStatement(Queries.SELECT_ACTIVITY);
             st.setInt(1, this.cardNumber);
-
             st.setTimestamp(2, this.purchaseDate);
             st.setTimestamp(3, this.activityDate);
             rs = st.executeQuery();
@@ -573,19 +543,13 @@ public class Activity extends MyInternalFrame {
                 this.stationEdit = this.stationID = rs.getInt("stationID");
                 this.lineEdit = this.lineName = rs.getString("lineName");
 
-                PreparedStatement st2;
-                ResultSet rs2;
-                String stationName;
-
-                st = con.prepareStatement("SELECT S.ID,S.name FROM tblStation S WHERE "
-                        + "S.ID = ?");
+                st = con.prepareStatement(Queries.SELECT_STATION);
                 st.setInt(1, this.stationID);
                 rs = st.executeQuery();
 
                 if (rs.next()) {
                     this.stationName = rs.getString("name");
                 }
-
             }
         } catch (SQLException ex) {
             Logger.getLogger(Activity.class
@@ -614,7 +578,7 @@ public class Activity extends MyInternalFrame {
         ResultSet rs;
         try {
             s = con.createStatement();
-            rs = s.executeQuery("SELECT C.number FROM tblCard As C");
+            rs = s.executeQuery(Queries.SELECT_ALL_CARD_NUMBERS);
             ArrayList<ComboItem> items = new ArrayList<>();
             while (rs.next()) {
                 items.add(new ComboItem(rs.getString("number"), rs.getString("number")));
@@ -623,9 +587,6 @@ public class Activity extends MyInternalFrame {
                 Collections.sort(items);
 
                 cmbCard.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
-//                if (super.getMode() == utils.Constants.ADD_MODE) {
-//                    cmbCard.setSelectedIndex(0);
-//                }
             }
         } catch (SQLException ex) {
             Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
@@ -636,7 +597,7 @@ public class Activity extends MyInternalFrame {
         PreparedStatement st;
         ResultSet rs;
         try {
-            st = con.prepareStatement("SELECT C.purchaseDate FROM tblCard As C WHERE C.number = ?");
+            st = con.prepareStatement(Queries.SELECT_PURCHASE_DATES_OF_CARD);
             st.setInt(1, cardNumber);
             rs = st.executeQuery();
 
@@ -648,9 +609,6 @@ public class Activity extends MyInternalFrame {
                 Collections.sort(items);
 
                 cmbPurchaseDate.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
-//                if (super.getMode() == utils.Constants.ADD_MODE) {
-//                    cmbPurchaseDate.setSelectedIndex(0);
-//                }
             }
         } catch (SQLException ex) {
             Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
@@ -662,15 +620,8 @@ public class Activity extends MyInternalFrame {
         ResultSet rs;
         try {
             s = con.createStatement();
-            String query = "SELECT ID ,name"
-                              + " FROM  tblStation";
             
-            String outQ = "SELECT distinct sil.stationID ,s.name"
-                              + " FROM  tblStation"
-                               + " s  inner join  tblStationInLine sil"
-                               + "  on s.ID = sil.stationID";
-            
-            rs = s.executeQuery(outQ);
+            rs = s.executeQuery(Queries.SELECT_STATIONS_WITH_LINES);
             ArrayList<ComboItem> items = new ArrayList<>();
             while (rs.next()) {
                 items.add(new ComboItem(rs.getInt("stationID"), rs.getString("name")));
@@ -679,12 +630,6 @@ public class Activity extends MyInternalFrame {
                 Collections.sort(items);
 
                 cmbStation.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
-//                if (super.getMode() == utils.Constants.ADD_MODE) {
-//                    ComboItem Item = (ComboItem) cmbStation.getSelectedItem();
-//                    this.stationID = (int) Item.getKey();
-//                    fillCmbLine(stationID);
-//                }
-
             }
         } catch (SQLException ex) {
             Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
@@ -706,8 +651,7 @@ public class Activity extends MyInternalFrame {
         PreparedStatement st;
         ResultSet rs;
         try {
-            st = con.prepareStatement("SELECT SIL.lineName FROM tblStationInLine "
-                    + "As SIL WHERE SIL.stationID = ?");
+            st = con.prepareStatement(Queries.SELECT_LINES_OF_STATION);
             st.setInt(1, stationID);
             rs = st.executeQuery();
 
@@ -719,13 +663,6 @@ public class Activity extends MyInternalFrame {
                 Collections.sort(items);
 
                 cmbLine.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
-//                if (super.getMode() == utils.Constants.ADD_MODE) {
-//                    cmbLine.setSelectedIndex(0);
-//                }
-//                else{
-//                    setSelectedValue(cmbLine, this.lineName);
-//                }
-
             }
         } catch (SQLException ex) {
             Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
@@ -757,29 +694,4 @@ public class Activity extends MyInternalFrame {
             btnUpdate.setVisible(true);
         }
     }
-
-//    @Override
-//    public List<Object[]> getKeyComponents() {
-//        super.keyComponents = new ArrayList<>();
-//        
-//        Object[] values = new Object[3]; 
-//        JComboBox comboMunber = new JComboBox();
-//        JComboBox ComboPurchaseDate = new JComboBox();
-//        comboMunber.putClientProperty("TableKey", "number");
-//        comboMunber.putClientProperty("MyText", "Card Number");
-//        comboMunber.putClientProperty("Query", "Select * from tblCard");        
-//        values[0] = comboMunber;
-//        
-//        ComboPurchaseDate = new JComboBox();
-//        ComboPurchaseDate.putClientProperty("TableKey", "cardNumber");
-//        ComboPurchaseDate.putClientProperty("MyText", "Purchase date");
-//        ComboPurchaseDate.putClientProperty("Query", "Select * from tblCard where number = ?");    
-//        ComboPurchaseDate.putClientProperty("Chnager", comboMunber);
-//   
-//        values[0] = ComboPurchaseDate;  
-//        
-//        super.keyComponents.add(values);
-//                
-//        return super.keyComponents;
-//    }
 }

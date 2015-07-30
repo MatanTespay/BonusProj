@@ -7,21 +7,16 @@ package gui;
 
 import init.ComboItem;
 import static init.MainClass.con;
-import java.awt.Component;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JFrame;
-import javax.swing.JTextField;
-import utils.ConvertUtil;
+import utils.Queries;
 
 /**
  *
@@ -37,6 +32,9 @@ public class ActivityDialog extends MyInternalFrame {
     /**
      * Creates new form ActivityDialog
      *
+     * @param title
+     * @param type
+     * @param parent
      */
     public ActivityDialog(String title, String type, MainWindow parent) {
         super(title, type);
@@ -51,7 +49,7 @@ public class ActivityDialog extends MyInternalFrame {
         ResultSet rs;
         try {
             s = con.createStatement();
-            rs = s.executeQuery("SELECT distinct C.number FROM tblCard As C join tblActivity t on c.number = t.cardNumber");
+            rs = s.executeQuery(Queries.SELECT_CARD_NUMBERS_WITH_ACTIVITIES);
             ArrayList<ComboItem> items = new ArrayList<>();
             while (rs.next()) {
                 items.add(new ComboItem(rs.getString("number"), rs.getString("number")));
@@ -74,7 +72,7 @@ public class ActivityDialog extends MyInternalFrame {
         PreparedStatement st;
         ResultSet rs;
         try {
-            st = con.prepareStatement("SELECT C.purchaseDate FROM tblCard As C WHERE C.number = ?");
+            st = con.prepareStatement(Queries.SELECT_PURCHASE_DATES_OF_CARD);
             st.setInt(1, cardNumber);
             rs = st.executeQuery();
 
@@ -100,8 +98,7 @@ public class ActivityDialog extends MyInternalFrame {
         PreparedStatement s;
         ResultSet rs;
         try {
-            s = con.prepareCall("SELECT [activityDate] FROM [LondonU2].[dbo].[tblActivity] "
-                    + "where cardNumber = ? and cardPurchaseDate = ?");
+            s = con.prepareCall(Queries.SELECT_ACTIVITIES_OF_CARD);
 
             s.setInt(1, cardNumber);
             s.setString(2, new Timestamp(this.purchaseDate.getTime()).toString());
@@ -266,8 +263,6 @@ public class ActivityDialog extends MyInternalFrame {
     }//GEN-LAST:event_cmbPDateActionPerformed
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
-        // TODO add your handling code here:
-
         this.setVisible(false);
         mainWindow.desktop.remove(this);
 
@@ -279,7 +274,6 @@ public class ActivityDialog extends MyInternalFrame {
         this.activityDate = (Timestamp)cardItem.getKey();
         
     }//GEN-LAST:event_cmbActDateActionPerformed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bntOK;

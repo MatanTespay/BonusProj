@@ -11,14 +11,39 @@ package utils;
  */
 public class Queries {
 
-    //-------------------------------ZONE---------------------------------------
+    //---------------------------- ACTIVITY ------------------------------------
+    public static final String SELECT_ACTIVITY = "SELECT A.*, S.name FROM "
+            + "tblActivity As A join tblStation As S on A.stationID = S.ID "
+            + "WHERE A.cardNumber = ? and A.cardPurchaseDate = ? and A.activityDate = ?";
+
+    public static final String IS_CARD_1ST_ACTIVITY = "SELECT TOP 1 * FROM "
+            + "tblActivity As A WHERE A.cardNumber = ? and A.cardPurchaseDate = ?";
+    
+    public static final String SELECT_ACTIVITIES_OF_CARD = "SELECT activityDate "
+            + "FROM tblActivity WHERE cardNumber = ? and cardPurchaseDate = ?";
+    
+    public static final String SELECT_CARD_NUMBERS_WITH_ACTIVITIES = "SELECT "
+            + "distinct C.number FROM tblCard As C join tblActivity t on "
+            + "c.number = t.cardNumber";
+
+    public static final String INSERT_ACTIVITY = "INSERT INTO tblActivity "
+            + "VALUES (? ,? ,? ,? ,?, ?)";
+
+    public static final String UPDATE_ACTIVITY = "UPDATE tblActivity SET "
+            + "activityType = ?,stationID = ?,lineName = ? WHERE cardNumber = ? "
+            + " and cardPurchaseDate = ? and activityDate = ?";
+
+    public static final String DELETE_ACTIVITY = "DELETE FROM tblActivity WHERE "
+            + "cardNumber = ? and cardPurchaseDate = ? and activityDate = ?";
+
+    //------------------------------ ZONE --------------------------------------
     public static final String SELECT_ALL_ZONES = "SELECT * FROM tblZone";
 
     //--------------------------- LINE & COLOR ---------------------------------  
     public static final String SELECT_LINE_AND_COLOR = "SELECT * FROM tblLine As L "
             + "join tblLineColor As LC on L.name = LC.lineName WHERE L.name = ?";
-    
-     public static final String SELECT_ALL_LINE_NAMES = "SELECT name FROM tblLine";
+
+    public static final String SELECT_ALL_LINE_NAMES = "SELECT name FROM tblLine";
 
     //INSERT LINE transaction
     public static final String INSERT_LINE = "INSERT INTO tblLine VALUES (?,?,?,?)";
@@ -35,7 +60,7 @@ public class Queries {
 
     //----------------------------- STATION ------------------------------------
     public static final String SELECT_STATION_ID_BY_NAME = "SELECT ID FROM tblStation As S WHERE S.name = ?";
-    
+
     public static final String SELECT_ALL_STATION_IDS_AND_NAMES = "SELECT ID, name FROM tblStation";
 
     public static final String SELECT_STATION = "SELECT * FROM tblStation WHERE ID = ?";
@@ -56,6 +81,10 @@ public class Queries {
             + "SIL.lineName = L.name join tblLineColor  As LC on L.name = "
             + "LC.lineName WHERE SIL.stationID = ? ";
 
+    public static final String SELECT_STATIONS_WITH_LINES = "SELECT distinct "
+            + "sil.stationID ,s.name FROM  tblStation s  inner join  "
+            + "tblStationInLine sil on s.ID = sil.stationID";
+
     public static final String INSERT_STATION_IN_LINE = "INSERT INTO tblStationInLine VALUES (?,?)";
 
     public static final String DELETE_STATION_IN_LINE = "DELETE FROM tblStationInLine "
@@ -67,8 +96,10 @@ public class Queries {
 
     public static final String SELECT_CARD = "SELECT * FROM tblCard "
             + "WHERE number = ? and purchaseDate = ?";
-    
+
     public static final String SELECT_ALL_CARD_NUMBERS = "SELECT number FROM tblCard";
+
+    public static final String SELECT_PURCHASE_DATES_OF_CARD = "SELECT C.purchaseDate FROM tblCard As C WHERE C.number = ?";
 
     public static final String INSERT_CARD = "INSERT INTO tblCard VALUES(?,?,?)";
 
@@ -159,7 +190,7 @@ public class Queries {
 
     public static final String SELECT_LINE_NAME_FOR_STATION_NAME = "SELECT SIL.lineName FROM tblStationInLine SIL\n"
             + "JOIN tblStation s on sil.stationID = s.ID WHERE s.name = ?";
-   
+
     public static final String SELECT_ONLY_STATION_WITH_LINES = "SELECT distinct [ID],[name] "
             + "FROM tblStation s join tblStationInLine sil "
             + "on s.ID = sil.stationID";
@@ -209,11 +240,11 @@ public class Queries {
 
     public static final String DELETE_LENGTH = "DELETE FROM tblCardLengths WHERE "
             + "cardLength = ?";
-    
+
     public static final String UPDATE_LENGTH = "UPDATE tblCardLengths SET "
             + "lengthDescription = ? WHERE cardLength = ?";
 
-    //-------------------------- GENERAL PARAMETERS-----------------------------
+    //-------------------------- GENERAL PARAMETERS ----------------------------
     public static final String SELECT_ALL_DEPOSITS = "SELECT * FROM tblGeneralParameters";
 
     public static final String NEXT_DEPOSIT_YEAR = "SELECT MAX(depositEndYear)+1 "
@@ -223,14 +254,27 @@ public class Queries {
 
     public static final String DELETE_DEPOSIT = "DELETE FROM tblGeneralParameters WHERE "
             + "depositStartYear = ? and depositEndYear = ?";
-    
+
     public static final String UPDATE_DEPOSIT = "UPDATE tblGeneralParameters "
             + "SET price = ? WHERE depositStartYear = ? and depositEndYear = ?";
+    
+    //-------------------------------- ROLE ------------------------------------
+    
+    public static final String SELECT_ROLE_IDS_OF_ROLE_NAME = "SELECT * FROM "
+                        + "tblRole WHERE RoleName = ?";
+    
+    public static final String SELECT_ALL_ROLES = "SELECT * FROM tblRole";
+    
+    public static final String INSERT_ROLE = "INSERT INTO tblRole VALUES (?,?)";
+    
+    public static final String UPDATE_ROLE = "UPDATE tblRole SET RoleName = ? "
+                        + "WHERE RoleID = ?";
+    
+    public static final String DELETE_ROLE = "DELETE FROM tblRole WHERE RoleID = ?";
 
-    //---------------------------- OTHER QUERIES -------------------------------
-    
+    //-------------------------------- USERS -----------------------------------
     public static final String SELECT_USER = "SELECT username FROM tblUser u WHERE u.username=?";
-    
+
     public static final String INSERT_USER = "INSERT INTO tblUser VALUES (?,?,?)";
 
     //---------------------------- OTHER QUERIES -------------------------------
