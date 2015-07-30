@@ -153,7 +153,7 @@ public class Queries {
 
     public static final String SELECT_LINE_NAME_FOR_STATION_NAME = "SELECT SIL.lineName FROM tblStationInLine SIL\n"
             + "JOIN tblStation s on sil.stationID = s.ID WHERE s.name = ?";
-   
+
     public static final String SELECT_ONLY_STATION_WITH_LINES = "SELECT distinct [ID],[name] "
             + "FROM tblStation s join tblStationInLine sil "
             + "on s.ID = sil.stationID";
@@ -203,7 +203,7 @@ public class Queries {
 
     public static final String DELETE_LENGTH = "DELETE FROM tblCardLengths WHERE "
             + "cardLength = ?";
-    
+
     public static final String UPDATE_LENGTH = "UPDATE tblCardLengths SET "
             + "lengthDescription = ? WHERE cardLength = ?";
 
@@ -217,9 +217,21 @@ public class Queries {
 
     public static final String DELETE_DEPOSIT = "DELETE FROM tblGeneralParameters WHERE "
             + "depositStartYear = ? and depositEndYear = ?";
-    
+
     public static final String UPDATE_DEPOSIT = "UPDATE tblGeneralParameters "
             + "SET price = ? WHERE depositStartYear = ? and depositEndYear = ?";
+
+    /**/
+    public static final String CHECK_PROGRAMS_FOR_CARD = "SELECT x.cardNumber, x.cardPurchaseDate,x.cardLength FROM \n" +
+            "(SELECT * FROM tblPaperCardAreas UNION SELECT * FROM tblOysterCardAreas) " +
+            "AS x INNER JOIN tblCardLengths AS LENG ON (x.cardLength=LENG.cardLength) " +
+            "WHERE cardNumber = ? AND cardPurchaseDate = ? AND zoneNumber = ? " +
+            "AND((LENG.cardLength = '1' AND DATEDIFF(day,x.cardPurchaseDate,GETDATE()) <= 1 ) " +
+            "OR(LENG.cardLength = '2' AND DATEDIFF(day,x.cardPurchaseDate,GETDATE()) <= 3 ) " +
+            "OR(LENG.cardLength = '3' AND DATEDIFF(day,x.cardPurchaseDate,GETDATE()) <= 7 ) " +
+            "OR(LENG.cardLength = '4' AND DATEDIFF(month,x.cardPurchaseDate,GETDATE()) <= 1 ) " +
+            "OR(LENG.cardLength = '5' AND DATEDIFF(month,x.cardPurchaseDate,GETDATE()) <= 3 ) " +
+            "OR(LENG.cardLength = '6' AND DATEDIFF(year,x.cardPurchaseDate,GETDATE()) <= 1 ))";
 
     //-------------------------- OTHER QUERIES ---------------------------------
     public static final String QUERY1 = "select S.siteType, AVG(S.foundedYear) as 'average founded year',\n"

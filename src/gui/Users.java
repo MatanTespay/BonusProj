@@ -433,7 +433,7 @@ public class Users extends MyInternalFrame {
                 } else {
                     q = "DELETE FROM tblUser "
                             + "WHERE username=? and password=?";
-
+ 
                     stmt = MainClass.con.prepareStatement(q);
                     String oldName = (String) tblUsers.getModel().getValueAt(editedRiwIdx, 0);
                     String oldPass = (String) tblUsers.getModel().getValueAt(editedRiwIdx, 1);
