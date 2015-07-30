@@ -7,7 +7,9 @@ package gui;
 
 import init.ComboItem;
 import init.InputValidator;
+import init.MainClass;
 import static init.MainClass.con;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -924,24 +926,36 @@ public class Site extends MyInternalFrame {
 
     private void btnAddNearSiteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddNearSiteActionPerformed
         PreparedStatement st;
+        Connection con ;
         ComboItem siteItem;
         short otherSiteNumber;
         double distance;
 
         try {
+            con = MainClass.con;
+            con.setAutoCommit(false);
+            st = con.prepareStatement(utils.Queries.INSERT_SFS);
+            
             siteItem = (ComboItem) cmbNearSite.getSelectedItem();
             otherSiteNumber = Short.valueOf(siteItem.getKey().toString());
             distance = Double.parseDouble(tfDistToSite.getText());
 
-            st = con.prepareStatement(utils.Queries.INSERT_SFS);
-
             st.setShort(1, siteID);
             st.setShort(2, otherSiteNumber);
             st.setDouble(3, distance);
+            
+            st.addBatch();
+            
+            st.setShort(1, otherSiteNumber);
+            st.setShort(2, siteID);            
+            st.setDouble(3, distance);
+            st.addBatch();
+            
+            int[] result = st.executeBatch();
+            con.commit();
+            
 
-            int result = st.executeUpdate();
-
-            if (result == 1) {
+            if (result.length == 2) {
                 JOptionPane.showInternalMessageDialog(this,
                     "Near site : "  + siteItem.getLabel() + " was saved successfully.",
                     "Hooray!",
@@ -953,7 +967,7 @@ public class Site extends MyInternalFrame {
                 JOptionPane.showInternalMessageDialog(this,
                     "There was some errors adding the site\n"
                     + "Between " +  siteName + " and " + siteItem.getLabel()
-                    + "Please Dont try later.",
+                    + "\nPlease Dont try later.",
                     "Bummer!",
                     JOptionPane.ERROR_MESSAGE);
             }
@@ -1129,7 +1143,7 @@ public class Site extends MyInternalFrame {
             nearBySiteModel = new CustomTableModel(tblNearbySites, cols, q_getNearSites);
             HashSet<JButton> tableButtons = new HashSet<>();
             tableButtons.add(this.btnRemoveSite);
-            //nearBySiteModel.bindComboBox(cmbNearSite, 0, 1);
+            nearBySiteModel.bindComboBox(cmbNearSite, 0, 1);
             nearBySiteModel.bindButtons(tableButtons);
             this.tblNearbySites.setModel(nearBySiteModel);
             nearBySiteModel.fillTable();
@@ -1190,7 +1204,8 @@ public class Site extends MyInternalFrame {
 //        ResultSet rs;
         try {
             PreparedStatement getAllSites = con.prepareStatement(utils.Queries.SELECT_ALL_SITES);
-
+            getAllSites.setInt(1, this.siteID);
+            
             // set models to comboboxes   
             cmbNearSite.setModel(new QueryCombobox(cmbNearSite, Short.class, getAllSites));
             cmbNearSite.setSelectedIndex(0);

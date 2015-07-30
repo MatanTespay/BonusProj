@@ -113,6 +113,9 @@ public class Queries {
 
     public static final String SELECT_ALL_CARD_NUMBERS = "SELECT number FROM tblCard";
 
+    public static final String SELECT_CUSTOMER_CARD_NUMBERS = "SELECT number FROM tblCard c where c.owner = ?";
+    
+
     public static final String SELECT_PURCHASE_DATES_OF_CARD = "SELECT C.purchaseDate FROM tblCard As C WHERE C.number = ?";
 
     public static final String INSERT_CARD = "INSERT INTO tblCard VALUES(?,?,?)";
@@ -200,7 +203,7 @@ public class Queries {
     //------------------------------- SITE ---------------------------------------
     public static final String SELECT_SITEID_BY_NAME = "Select * From tblSite As S WHERE S.NAME = ?";
 
-    public static final String SELECT_ALL_SITES = "Select * From tblSite";
+    public static final String SELECT_ALL_SITES = "Select * From tblSite where id <> ?";
 
     public static final String SELECT_LINE_NAME_FOR_STATION_NAME = "SELECT SIL.lineName FROM tblStationInLine SIL\n"
             + "JOIN tblStation s on sil.stationID = s.ID WHERE s.name = ?";

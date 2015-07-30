@@ -6,6 +6,7 @@
 package gui;
 
 import init.ComboItem;
+import init.MainClass;
 import static init.MainClass.con;
 import java.beans.PropertyVetoException;
 import java.sql.PreparedStatement;
@@ -74,7 +75,13 @@ public class Activity extends MyInternalFrame {
         setMode(ADD_MODE);
         buildForm();
         dchActivityDate.setDate(new java.util.Date());
-        cmbCard.setSelectedIndex(0);
+        if (cmbCard.getModel().getSize() != 0) {
+        cmbCard.setSelectedIndex(0);    
+        }else{
+            btnCreate.setEnabled(false);
+            
+        }
+        
         int station = Integer.parseInt(((ComboItem) cmbStation.getSelectedItem()).getKey().toString());
         fillCmbLine(station);
     }
@@ -357,10 +364,12 @@ public class Activity extends MyInternalFrame {
 
                     if (result == 1) {
                         JOptionPane.showMessageDialog(this,
-                                "Changes Saved",
+                                "Changes Saved"
+                            + "\nClosing window",
                                 "INFORMATION MESSAGE",
                                 JOptionPane.INFORMATION_MESSAGE);
 
+                        this.dispose();
                     } else {
                         JOptionPane.showMessageDialog(this,
                                 "Couldn't insert activity."
@@ -645,11 +654,22 @@ public class Activity extends MyInternalFrame {
     }
 
     private void fillCmbCard() {
-        Statement s;
+        PreparedStatement s;
         ResultSet rs;
         try {
-            s = con.createStatement();
-            rs = s.executeQuery(Queries.SELECT_ALL_CARD_NUMBERS);
+            
+            
+            if (MainWindow.getSelectedUserType().equals("Customer")) {
+                s = con.prepareStatement(Queries.SELECT_CUSTOMER_CARD_NUMBERS);
+                String user = MainClass.getUserData().getKey().toString();
+                s.setString(1, user);
+                
+            }
+            else{
+                s = con.prepareStatement(Queries.SELECT_ALL_CARD_NUMBERS);
+            }
+            
+             rs = s.executeQuery();
             ArrayList<ComboItem> items = new ArrayList<>();
             while (rs.next()) {
                 items.add(new ComboItem(rs.getString("number"), rs.getString("number")));
