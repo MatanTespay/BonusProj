@@ -78,7 +78,7 @@ public class Line extends MyInternalFrame {
     private void buildForm() {
         try {
 
-            PreparedStatement getAllStations = con.prepareStatement("SELECT ID, name FROM tblStation");
+            PreparedStatement getAllStations = con.prepareStatement(Queries.SELECT_ALL_STATION_IDS_AND_NAMES);
 
             // set models to comboboxes   
             cmbStation.setModel(new QueryCombobox(cmbStation, Short.class, getAllStations));

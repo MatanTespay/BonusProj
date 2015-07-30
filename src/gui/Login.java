@@ -17,6 +17,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import utils.Queries;
 
 /**
  *
@@ -275,8 +276,8 @@ public class Login extends javax.swing.JFrame {
 
             } else {
                 JOptionPane.showMessageDialog(this,
-                        "Invalid password or User Name. Try again.",
-                        "Error Message",
+                        "Invalid username or password. Try again.",
+                        "Bummer!",
                         JOptionPane.ERROR_MESSAGE);
             }
 
@@ -291,10 +292,8 @@ public class Login extends javax.swing.JFrame {
 
                 PreparedStatement stmt;
                 ResultSet rs;
-                String q;
 
-                q = "SELECT username FROM tblUser u WHERE u.username=? ";
-                stmt = MainClass.con.prepareStatement(q);
+                stmt = MainClass.con.prepareStatement(Queries.SELECT_USER);
 
                 String name = userTxtName.getText();
                 stmt.setString(1, name);
@@ -302,18 +301,14 @@ public class Login extends javax.swing.JFrame {
 
                 if (rs.next()) {
                     JOptionPane.showMessageDialog(this,
-                            "User name alredy exist, try another one",
-                            "Error Message",
+                            "The username already exists. Try another one",
+                            "Bummer!",
                             JOptionPane.ERROR_MESSAGE);
 
                 } else {
 
-                    String insertTableSQL = "INSERT INTO tblUser"
-                            + "(UserName, Password, RoleID ) VALUES"
-                            + "(?,?,?)";
-
                     int RoleID = 4; // customer role
-                    stmt = MainClass.con.prepareStatement(insertTableSQL);
+                    stmt = MainClass.con.prepareStatement(Queries.INSERT_USER);
                     stmt.setString(1, name);
                     stmt.setString(2, pass);
                     stmt.setInt(3, RoleID);
@@ -335,9 +330,9 @@ public class Login extends javax.swing.JFrame {
 
                     } else {
                         JOptionPane.showMessageDialog(this,
-                                "There was an error siging up.\n"
-                                + "Don't try again, just give up",
-                                "Error Message",
+                                "There was an error signing up.\n"
+                                + "Don't bother trying again, just give up",
+                                "Bummer!",
                                 JOptionPane.ERROR_MESSAGE);
                     }
                 }
@@ -345,8 +340,8 @@ public class Login extends javax.swing.JFrame {
                 switch (ex.getErrorCode()) {
                     case 2627:
                         JOptionPane.showMessageDialog(this,
-                                "User name or password or User Name. Try again.",
-                                "Error Message",
+                                "Username or password is incorrect. Try again.",
+                                "Bummer!",
                                 JOptionPane.ERROR_MESSAGE);
                         break;
                 }

@@ -80,8 +80,8 @@ public class Station extends MyInternalFrame {
 
         try {
 
-            PreparedStatement getAllZones = con.prepareStatement("SELECT * FROM tblZone");
-            PreparedStatement getAllLines = con.prepareStatement("SELECT name FROM tblLine");
+            PreparedStatement getAllZones = con.prepareStatement(Queries.SELECT_ALL_ZONES);
+            PreparedStatement getAllLines = con.prepareStatement(Queries.SELECT_ALL_LINE_NAMES);
 
             // set models to comboboxe
             cmbZone.setModel(new QueryCombobox(cmbZone, Byte.class, getAllZones));
