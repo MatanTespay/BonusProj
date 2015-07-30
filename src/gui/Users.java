@@ -350,9 +350,9 @@ public class Users extends MyInternalFrame {
             try {
 
                 PreparedStatement stmt;
-                
+
                 if (!isEditState && !isDeleteState) {
-                    
+
                     int RoleID = Integer.parseInt((String) ((ComboItem) cbRoleType.getSelectedItem()).getKey());
                     stmt = con.prepareStatement(Queries.INSERT_USER);
                     stmt.setString(1, txtUserName.getText());
@@ -362,6 +362,12 @@ public class Users extends MyInternalFrame {
                     stmt.executeUpdate();
                     txtUserName.setText("");
                     txtPass.setText("");
+
+                    JOptionPane.showMessageDialog(this,
+                            "User was added successfully",
+                            "INFORMATION MESSAGE",
+                            JOptionPane.INFORMATION_MESSAGE);
+
                     FillUsersTable();
 
                 } else if (isEditState) {
@@ -394,6 +400,11 @@ public class Users extends MyInternalFrame {
                     txtUserName.setText("");
                     txtPass.setText("");
 
+                    JOptionPane.showMessageDialog(this,
+                            "Changes Saved",
+                            "INFORMATION MESSAGE",
+                            JOptionPane.INFORMATION_MESSAGE);
+
 //                    String up = "UPDATE [LondonU2].[dbo].[tblCard]"
 //                            + " SET [purchaseDate] = ?"
 //                            + " WHERE number = 14";
@@ -421,6 +432,15 @@ public class Users extends MyInternalFrame {
                     btnRemove.setEnabled(false);
 
                     isDeleteState = false;
+
+                    JOptionPane.showMessageDialog(this,
+                            "User was deleted successfully",
+                            "INFORMATION MESSAGE",
+                            JOptionPane.INFORMATION_MESSAGE);
+
+                    txtUserName.setText("");
+                    txtPass.setText("");
+
                 }
             } catch (SQLServerException ex) {
                 String msg = "There was an error in the action";
@@ -436,12 +456,6 @@ public class Users extends MyInternalFrame {
             } catch (SQLException ex) {
                 Logger.getLogger(Users.class.getName()).log(Level.SEVERE, null, ex);
             }
-
-            JOptionPane.showMessageDialog(this,
-                    "Changes Saved",
-                    "INFORMATION MESSAGE",
-                    JOptionPane.INFORMATION_MESSAGE);
-
         }
     }
 
