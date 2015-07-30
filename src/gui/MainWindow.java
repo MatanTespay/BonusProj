@@ -339,7 +339,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
                 ifram = new Deposits(e.getActionCommand(), selectedUserType);
                 break;
             case "Export/Import CSV":
-                ifram = new ExportImportCsv(e.getActionCommand(), selectedUserType);
+                ifram = new ExportImportCsv(e.getActionCommand(), selectedUserType,this);
                 break;
             case "Remote Sites":
             case "Unused Paper Cards":

@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.table.DefaultTableModel;
 import utils.HelperClass;
 import utils.Queries;
 
@@ -20,6 +21,18 @@ import utils.Queries;
  */
 public class QueryForm extends MyInternalFrame {
 
+    /**
+     * Creates new form QueryForm from result of the import result
+     * @param  model
+     * @param title
+     * @param type
+     */
+    public QueryForm(String title, String type , DefaultTableModel model){
+        super(title, type);
+        initComponents();
+        tblResult.setModel(model);
+        
+    }
     /**
      * Creates new form QueryForm
      *
