@@ -7,6 +7,7 @@ package gui;
 
 import init.ComboItem;
 import static init.MainClass.con;
+import java.awt.Color;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -623,7 +624,7 @@ public class Station extends MyInternalFrame {
 
         ArrayList<Column> cols = new ArrayList<>();
         cols.add(new Column("Name", "name", String.class));
-        cols.add(new Column("Color", "colorName", String.class));
+        cols.add(new Column("Color", "colorName", Color.class));
         cols.add(new Column("Foundation year", "foundedYear", Short.class));
         cols.add(new Column("Type", "lineType", String.class));
         cols.add(new Column("Length", "lineLength", Float.class));
@@ -641,6 +642,7 @@ public class Station extends MyInternalFrame {
 
             tblLines.setModel(lineTableModel);
             lineTableModel.fillTable();
+            tblLines.getColumnModel().getColumn(1).setCellRenderer(new utils.ColorRenderer(false));
 
             btnDelete.setEnabled(isOkToDelete());
 
@@ -672,7 +674,6 @@ public class Station extends MyInternalFrame {
     public void setDefaults() {
         tfStationID.setText(String.valueOf(stationID));
         tfName.setText(this.stationName);
-        //Set the zoneID to the value from the class field and not to index 0.
         setSelectedValue(cmbZone, String.valueOf(this.zoneNumber)); //WHAT FOR? <- ALL FOR LOVE!
         spnPlatforms.setValue(this.platformNum);
         chbKiosk.setSelected(this.isKiosk);
