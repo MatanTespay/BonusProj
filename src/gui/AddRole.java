@@ -19,6 +19,7 @@ import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import utils.Queries;
 
 /**
  *
@@ -219,7 +220,6 @@ public class AddRole extends MyInternalFrame {
         } else {
             Save();
         }
-
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void Save() {
@@ -228,9 +228,7 @@ public class AddRole extends MyInternalFrame {
         if (result) {
             try {
 
-                q = "SELECT RoleID, RoleName "
-                        + "FROM tblRole where RoleName =?";
-                stmt = con.prepareStatement(q,
+                stmt = con.prepareStatement(Queries.SELECT_ROLE_IDS_OF_ROLE_NAME,
                         ResultSet.TYPE_SCROLL_SENSITIVE,
                         ResultSet.CONCUR_UPDATABLE);
                 stmt.setString(1, txtRoleName.getText());
@@ -239,15 +237,13 @@ public class AddRole extends MyInternalFrame {
                 if (rs.next()) {
                     //role already exist
                     JOptionPane.showMessageDialog(this,
-                            "Role Name alredy exist",
+                            "Role name alredy exist",
                             "Error Message",
                             JOptionPane.ERROR_MESSAGE);
                 } else {
                     //adding new role
-                    String insertTableSQL = "INSERT INTO tblRole"
-                            + "(RoleID, RoleName) VALUES"
-                            + "(?,?)";
-                    stmt = con.prepareStatement(insertTableSQL);
+
+                    stmt = con.prepareStatement(Queries.INSERT_ROLE);
 
                     if (tblRoles.getRowCount() == 0) {
                         lastIndx = 1;
@@ -272,10 +268,7 @@ public class AddRole extends MyInternalFrame {
         try {
             editedRiwIdx = tblRoles.getSelectedRow();
 
-            q = "DELETE FROM tblRole "
-                    + "WHERE RoleID=?";
-
-            stmt = MainClass.con.prepareStatement(q);
+            stmt = MainClass.con.prepareStatement(Queries.DELETE_ROLE);
             int index = Integer.parseInt(tblRoles.getModel().getValueAt(editedRiwIdx, 0).toString());
 
             stmt.setInt(1, index);
@@ -312,11 +305,7 @@ public class AddRole extends MyInternalFrame {
 
         if (result) {
             try {
-                q = "UPDATE tblRole"
-                        + " SET RoleName = ?"
-                        + " WHERE RoleID=?";
-
-                stmt = con.prepareStatement(q,
+                stmt = con.prepareStatement(Queries.UPDATE_ROLE,
                         ResultSet.TYPE_SCROLL_SENSITIVE,
                         ResultSet.CONCUR_UPDATABLE);
 
@@ -374,9 +363,7 @@ public class AddRole extends MyInternalFrame {
 
         try {
 
-            q = "SELECT RoleID, RoleName "
-                    + "FROM tblRole";
-            stmt = con.prepareStatement(q,
+            stmt = con.prepareStatement(Queries.SELECT_ALL_ROLES,
                     ResultSet.TYPE_SCROLL_SENSITIVE,
                     ResultSet.CONCUR_UPDATABLE);
             rs = stmt.executeQuery();

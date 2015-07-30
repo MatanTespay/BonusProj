@@ -88,8 +88,8 @@ public class Card extends MyInternalFrame {
             picFileChooser = new JFileChooser();
 
             // set model to comboboxes
-            PreparedStatement getAllCardLengths = con.prepareStatement("SELECT * FROM tblCardLengths");
-            PreparedStatement getAllZones = con.prepareStatement("SELECT * FROM tblZone");
+            PreparedStatement getAllCardLengths = con.prepareStatement(Queries.SELECT_ALL_LENGTHS);
+            PreparedStatement getAllZones = con.prepareStatement(Queries.SELECT_ALL_ZONES);
 
             cmbLength.setModel(new QueryCombobox(cmbLength, Character.class, getAllCardLengths));
             cmbZone.setModel(new QueryCombobox(cmbZone, Byte.class, getAllZones));

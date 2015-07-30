@@ -5,10 +5,8 @@
  */
 package gui;
 
-import gui.MyInternalFrame;
 import java.io.File;
 import javax.swing.JFileChooser;
-//import utils.CsvHandler;
 import javax.swing.JOptionPane;
 import utils.CsvHandler;
 
@@ -20,6 +18,8 @@ public class ExportImportCsv extends MyInternalFrame {
 
     /**
      * Creates new form ExportImportCsv
+     * @param title
+     * @param type
      */
     public ExportImportCsv(String title, String type) {
         super(title, type);

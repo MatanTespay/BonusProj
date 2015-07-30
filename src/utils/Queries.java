@@ -11,12 +11,39 @@ package utils;
  */
 public class Queries {
 
-    //-------------------------------ZONE---------------------------------------
+    //---------------------------- ACTIVITY ------------------------------------
+    public static final String SELECT_ACTIVITY = "SELECT A.*, S.name FROM "
+            + "tblActivity As A join tblStation As S on A.stationID = S.ID "
+            + "WHERE A.cardNumber = ? and A.cardPurchaseDate = ? and A.activityDate = ?";
+
+    public static final String IS_CARD_1ST_ACTIVITY = "SELECT TOP 1 * FROM "
+            + "tblActivity As A WHERE A.cardNumber = ? and A.cardPurchaseDate = ?";
+    
+    public static final String SELECT_ACTIVITIES_OF_CARD = "SELECT activityDate "
+            + "FROM tblActivity WHERE cardNumber = ? and cardPurchaseDate = ?";
+    
+    public static final String SELECT_CARD_NUMBERS_WITH_ACTIVITIES = "SELECT "
+            + "distinct C.number FROM tblCard As C join tblActivity t on "
+            + "c.number = t.cardNumber";
+
+    public static final String INSERT_ACTIVITY = "INSERT INTO tblActivity "
+            + "VALUES (? ,? ,? ,? ,?, ?)";
+
+    public static final String UPDATE_ACTIVITY = "UPDATE tblActivity SET "
+            + "activityType = ?,stationID = ?,lineName = ? WHERE cardNumber = ? "
+            + " and cardPurchaseDate = ? and activityDate = ?";
+
+    public static final String DELETE_ACTIVITY = "DELETE FROM tblActivity WHERE "
+            + "cardNumber = ? and cardPurchaseDate = ? and activityDate = ?";
+
+    //------------------------------ ZONE --------------------------------------
     public static final String SELECT_ALL_ZONES = "SELECT * FROM tblZone";
 
     //--------------------------- LINE & COLOR ---------------------------------  
     public static final String SELECT_LINE_AND_COLOR = "SELECT * FROM tblLine As L "
             + "join tblLineColor As LC on L.name = LC.lineName WHERE L.name = ?";
+
+    public static final String SELECT_ALL_LINE_NAMES = "SELECT name FROM tblLine";
 
     //INSERT LINE transaction
     public static final String INSERT_LINE = "INSERT INTO tblLine VALUES (?,?,?,?)";
@@ -33,6 +60,8 @@ public class Queries {
 
     //----------------------------- STATION ------------------------------------
     public static final String SELECT_STATION_ID_BY_NAME = "SELECT ID FROM tblStation As S WHERE S.name = ?";
+
+    public static final String SELECT_ALL_STATION_IDS_AND_NAMES = "SELECT ID, name FROM tblStation";
 
     public static final String SELECT_STATION = "SELECT * FROM tblStation WHERE ID = ?";
 
@@ -52,6 +81,10 @@ public class Queries {
             + "SIL.lineName = L.name join tblLineColor  As LC on L.name = "
             + "LC.lineName WHERE SIL.stationID = ? ";
 
+    public static final String SELECT_STATIONS_WITH_LINES = "SELECT distinct "
+            + "sil.stationID ,s.name FROM  tblStation s  inner join  "
+            + "tblStationInLine sil on s.ID = sil.stationID";
+
     public static final String INSERT_STATION_IN_LINE = "INSERT INTO tblStationInLine VALUES (?,?)";
 
     public static final String DELETE_STATION_IN_LINE = "DELETE FROM tblStationInLine "
@@ -63,6 +96,10 @@ public class Queries {
 
     public static final String SELECT_CARD = "SELECT * FROM tblCard "
             + "WHERE number = ? and purchaseDate = ?";
+
+    public static final String SELECT_ALL_CARD_NUMBERS = "SELECT number FROM tblCard";
+
+    public static final String SELECT_PURCHASE_DATES_OF_CARD = "SELECT C.purchaseDate FROM tblCard As C WHERE C.number = ?";
 
     public static final String INSERT_CARD = "INSERT INTO tblCard VALUES(?,?,?)";
 
@@ -170,7 +207,7 @@ public class Queries {
 
     public static final String SELECT_AllSITES = "Select * From tblSite";
 
-    //------------------------------- SITE FROM EXIT---------------------------------------
+    //----------------------------- SITE FROM EXIT -----------------------------
     public static final String INSERT_SFE = "INSERT INTO tblSiteFromExit VALUES (?,?,?,?)";
 
     public static final String DELETE_SFE = "DELETE FROM [LondonU2].[dbo].[tblSiteFromExit] "
@@ -178,7 +215,7 @@ public class Queries {
     public static final String SELECT_SFE_BY_SITEID = "Select * From tblSiteFromExit As SFE "
             + "join tblStation As S on SFE.stationID = S.ID WHERE SFE.siteID = ? ";
 
-    //------------------------------- SITE FROM SITE---------------------------------------
+    //----------------------------- SITE FROM SITE -----------------------------
     public static final String SELECT_SFS_BY_SITEID = "SELECT * FROM tblSiteFromSite As SFS\n"
             + "          join tblSite As S on SFS.siteID2 = S.ID and s.ID in(\n"
             + "          SELECT sfs.siteID2 FROM tblSiteFromSite As SFS)  where sfs.siteID1 = ?";
@@ -188,7 +225,7 @@ public class Queries {
     public static final String DELETE_SFS = "DELETE FROM [LondonU2].[dbo].[tblSiteFromSite] \n"
             + "      WHERE siteID1 = ? and siteID2 = ?";
 
-    //---------------------------- SITE TYPES ----------------------------------
+    //------------------------------ SITE TYPES --------------------------------
     public static final String SELECT_ALL_SITE_TYPES = "SELECT * FROM tblSiteType";
 
     public static final String INSERT_SYTE_TYPE = "INSERT INTO tblSiteType VALUES (?)";
@@ -196,7 +233,7 @@ public class Queries {
     public static final String DELETE_SITE_TYPE = "DELETE FROM tblSiteType WHERE "
             + "siteType = ?";
 
-    //-------------------------- CARD LENGTHS ----------------------------------
+    //----------------------------- CARD LENGTHS -------------------------------
     public static final String SELECT_ALL_LENGTHS = "SELECT * FROM tblCardLengths";
 
     public static final String INSERT_LENGTH = "INSERT INTO tblCardLengths VALUES (?,?)";
@@ -207,7 +244,7 @@ public class Queries {
     public static final String UPDATE_LENGTH = "UPDATE tblCardLengths SET "
             + "lengthDescription = ? WHERE cardLength = ?";
 
-    //------------------------ GENERAL PARAMETERS ------------------------------
+    //-------------------------- GENERAL PARAMETERS ----------------------------
     public static final String SELECT_ALL_DEPOSITS = "SELECT * FROM tblGeneralParameters";
 
     public static final String NEXT_DEPOSIT_YEAR = "SELECT MAX(depositEndYear)+1 "
@@ -220,20 +257,37 @@ public class Queries {
 
     public static final String UPDATE_DEPOSIT = "UPDATE tblGeneralParameters "
             + "SET price = ? WHERE depositStartYear = ? and depositEndYear = ?";
+    
+    //-------------------------------- ROLE ------------------------------------
+    
+    public static final String SELECT_ROLE_IDS_OF_ROLE_NAME = "SELECT * FROM "
+                        + "tblRole WHERE RoleName = ?";
+    
+    public static final String SELECT_ALL_ROLES = "SELECT * FROM tblRole";
+    
+    public static final String INSERT_ROLE = "INSERT INTO tblRole VALUES (?,?)";
+    
+    public static final String UPDATE_ROLE = "UPDATE tblRole SET RoleName = ? "
+                        + "WHERE RoleID = ?";
+    
+    public static final String DELETE_ROLE = "DELETE FROM tblRole WHERE RoleID = ?";
 
-    /**/
-    public static final String CHECK_PROGRAMS_FOR_CARD = "SELECT x.cardNumber, x.cardPurchaseDate,x.cardLength FROM \n" +
-            "(SELECT * FROM tblPaperCardAreas UNION SELECT * FROM tblOysterCardAreas) " +
-            "AS x INNER JOIN tblCardLengths AS LENG ON (x.cardLength=LENG.cardLength) " +
-            "WHERE cardNumber = ? AND cardPurchaseDate = ? AND zoneNumber = ? " +
-            "AND((LENG.cardLength = '1' AND DATEDIFF(day,x.cardPurchaseDate,GETDATE()) <= 1 ) " +
-            "OR(LENG.cardLength = '2' AND DATEDIFF(day,x.cardPurchaseDate,GETDATE()) <= 3 ) " +
-            "OR(LENG.cardLength = '3' AND DATEDIFF(day,x.cardPurchaseDate,GETDATE()) <= 7 ) " +
-            "OR(LENG.cardLength = '4' AND DATEDIFF(month,x.cardPurchaseDate,GETDATE()) <= 1 ) " +
-            "OR(LENG.cardLength = '5' AND DATEDIFF(month,x.cardPurchaseDate,GETDATE()) <= 3 ) " +
-            "OR(LENG.cardLength = '6' AND DATEDIFF(year,x.cardPurchaseDate,GETDATE()) <= 1 ))";
+    //-------------------------------- USERS -----------------------------------
+    public static final String SELECT_USER = "SELECT username FROM tblUser u WHERE u.username=?";
+    
+    public static final String SELECT_ALL_USERS_ANDTHEIR_ROLES = "SELECT * FROM "
+                    + "tblUser u join tblRole r on u.RoleID = r.RoleID";
+    
+    public static final String INSERT_USER = "INSERT INTO tblUser VALUES (?,?,?)";
+    
+    //TODO: NOT IN USE
+    public static final String UPDATE_USER = "UPDATE tblUser SET RoleID = ? "
+                            + "WHERE username = ? and password = ?";
+    
+    public static final String DELETE_USER = "DELETE FROM tblUser WHERE "
+            + "username = ? and password = ?";
 
-    //-------------------------- OTHER QUERIES ---------------------------------
+    //---------------------------- OTHER QUERIES -------------------------------
     public static final String QUERY1 = "select S.siteType, AVG(S.foundedYear) as 'average founded year',\n"
             + "COUNT(S.ID) as 'num of sites'\n"
             + "from tblSite S left outer join tblSiteFromExit SFE on S.ID=SFE.siteID\n"

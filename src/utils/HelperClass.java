@@ -792,6 +792,8 @@ public class HelperClass {
                 return rs.getBoolean(colName);
             case "Byte":
                 return rs.getByte(colName);
+            case "Color":
+                return E_Colors.valueOf(rs.getString(colName)).getColor();
             case "Double":
                 return rs.getDouble(colName);
             case "Float":

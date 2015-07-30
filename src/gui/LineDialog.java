@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import utils.Queries;
 import utils.QueryCombobox;
 
 /**
@@ -141,7 +142,7 @@ public class LineDialog extends MyInternalFrame {
     private void fillCmbLine() {
         PreparedStatement st;
         try {
-            st = con.prepareStatement("SELECT name FROM tblLine");
+            st = con.prepareStatement(Queries.SELECT_ALL_LINE_NAMES);
 
             cmbLineName.setModel(new QueryCombobox(cmbLineName, String.class, st));
 

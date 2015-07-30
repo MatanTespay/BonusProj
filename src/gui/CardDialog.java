@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.sql.Timestamp;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import utils.Queries;
 
 /**
  *
@@ -83,11 +84,11 @@ public class CardDialog extends MyInternalFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(22, 22, 22)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(bntOK)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnCancel))
+                        .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lblNumber)
                         .addGap(18, 18, 18)
@@ -145,7 +146,7 @@ public class CardDialog extends MyInternalFrame {
         ResultSet rs;
         try {
             s = con.createStatement();
-            rs = s.executeQuery("SELECT C.number FROM tblCard C");
+            rs = s.executeQuery(Queries.SELECT_ALL_CARD_NUMBERS);
             ArrayList<ComboItem> items = new ArrayList<>();
             while (rs.next()) {
                 items.add(new ComboItem(rs.getString("number"), rs.getString("number")));
@@ -163,32 +164,6 @@ public class CardDialog extends MyInternalFrame {
             Logger.getLogger(CardDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
-//    private void fillcmbPDate(long cardNumber) {
-//        PreparedStatement st;
-//        ResultSet rs;
-//        try {
-//            st = con.prepareStatement("SELECT C.purchaseDate FROM tblCard As C WHERE C.number = ?");
-//            st.setLong(1, cardNumber);
-//            rs = st.executeQuery();
-//
-//            ArrayList<ComboItem> items = new ArrayList<>();
-//            while (rs.next()) {
-//                items.add(new ComboItem(rs.getTimestamp("purchaseDate"), rs.getTimestamp("purchaseDate").toString()));
-//            }
-//            if (!items.isEmpty()) {
-//                Collections.sort(items);
-//
-//                cmbPDate.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
-//
-//                ComboItem purchaseDateItem = (ComboItem) cmbPDate.getSelectedItem();
-//                this.purchaseDate = Timestamp.valueOf(purchaseDateItem.getKey().toString());
-//                cmbPDate.setSelectedIndex(0);
-//            }
-//        } catch (SQLException ex) {
-//            Logger.getLogger(CardDialog.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bntOK;
     private javax.swing.JButton btnCancel;

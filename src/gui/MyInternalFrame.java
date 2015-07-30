@@ -8,7 +8,6 @@ package gui;
 import utils.DisabledGlassPane;
 import com.toedter.calendar.JDateChooser;
 import init.InputValidator;
-import init.MainClass;
 import java.awt.Color;
 
 import java.util.AbstractMap;
@@ -17,7 +16,6 @@ import java.util.List;
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import utils.HelperClass;
 
@@ -208,7 +206,7 @@ public class MyInternalFrame extends JInternalFrame {
     /**
      * changes the save state of the {@link init.IFly}}
      *
-     * @param state
+     * @param child
      */
 //    public void setIflyState(boolean state) {
 //        MainClass.setIsIflySaved(state);

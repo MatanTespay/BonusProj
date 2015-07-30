@@ -9,8 +9,7 @@ import init.ComboItem;
 import static init.MainClass.con;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import utils.Queries;
 import utils.QueryCombobox;
 
 /**
@@ -147,7 +146,7 @@ public class StationDialog extends MyInternalFrame {
     private void fillCmbLine() {
         PreparedStatement st;
         try {
-            st = con.prepareStatement("SELECT ID,name FROM tblStation");
+            st = con.prepareStatement(Queries.SELECT_ALL_STATION_IDS_AND_NAMES);
 
             cmbStationName.setModel(new QueryCombobox(cmbStationName, Integer.class, st));
 
