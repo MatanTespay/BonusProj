@@ -56,7 +56,7 @@ public class Users extends MyInternalFrame {
             {
                 add(new InputValidator(txtPass, utils.InputType.PASSWORD, lblerrPass, null));
                 add(new InputValidator(txtUserName, utils.InputType.TEXT, lblerrUserName, null));
-                
+
             }
         };
 
@@ -64,7 +64,6 @@ public class Users extends MyInternalFrame {
         setTableSelection();
         btnRemove.setEnabled(false);
         btnEdit.setEnabled(false);
-        
 
     }
 
@@ -351,70 +350,40 @@ public class Users extends MyInternalFrame {
             try {
 
                 PreparedStatement stmt;
-                ResultSet rs;
-                String q;
+                
                 if (!isEditState && !isDeleteState) {
-                    /*
-                        TODO
-                        password is not UNIQUE
-                        there is also no need to check username is UNIQUE
-                        just catch error code 2627
-                    */
-                    q = "SELECT username, password , RoleName "
-                            + "FROM tblUser u join tblRole r on u.RoleID = r.RoleID "
-                            + "WHERE u.username=? and u.password=?";
-                    stmt = MainClass.con.prepareStatement(q);
-
+                    
+                    int RoleID = Integer.parseInt((String) ((ComboItem) cbRoleType.getSelectedItem()).getKey());
+                    stmt = con.prepareStatement(Queries.INSERT_USER);
                     stmt.setString(1, txtUserName.getText());
                     stmt.setString(2, txtPass.getText());
+                    stmt.setInt(3, RoleID);
+                    // execute insert SQL stetement                
+                    stmt.executeUpdate();
+                    txtUserName.setText("");
+                    txtPass.setText("");
+                    FillUsersTable();
 
-                    rs = stmt.executeQuery();
-
-                    if (rs.next()) {
-                        JOptionPane.showMessageDialog(this,
-                                "User with that password alredy exist",
-                                "Error Message",
-                                JOptionPane.ERROR_MESSAGE);
-                    } else {
-
-                        int RoleID = Integer.parseInt((String)((ComboItem) cbRoleType.getSelectedItem()).getKey());
-                        stmt = con.prepareStatement(Queries.INSERT_USER);
-                        stmt.setString(1, txtUserName.getText());
-                        stmt.setString(2, txtPass.getText());
-                        stmt.setInt(3, RoleID);
-                        // execute insert SQL stetement                
-                        stmt.executeUpdate();
-                        txtUserName.setText("");
-                        txtPass.setText("");
-                        FillUsersTable();
-
-                    }
                 } else if (isEditState) {
                     /*
-                        TODO
-                        why do we need to update username and password
-                        if they are given as parameters. I think you should
-                        use Queries.UPDATE_USER
-                    */
-                    q = "UPDATE tblUser"
-                            + " SET username = ?"
-                            + " ,password = ?"
-                            + " ,RoleID = ? "
-                            + "WHERE username=? and password=?";
+                     TODO
+                     why do we need to update username and password
+                     if they are given as parameters. I think you should
+                     use Queries.UPDATE_USER
+                     */
 
-                    stmt = con.prepareStatement(q,
+                    stmt = con.prepareStatement(utils.Queries.UPDATE_USER,
                             ResultSet.TYPE_SCROLL_SENSITIVE,
                             ResultSet.CONCUR_UPDATABLE);
 
                     //set params
-                    int RoleID = Integer.parseInt((String)((ComboItem) cbRoleType.getSelectedItem()).getKey());
+                    int RoleID = Integer.parseInt((String) ((ComboItem) cbRoleType.getSelectedItem()).getKey());
                     String oldName = (String) tblUsers.getModel().getValueAt(editedRiwIdx, 0);
-                    String oldPass = (String) tblUsers.getModel().getValueAt(editedRiwIdx, 1);
+
                     stmt.setString(1, txtUserName.getText());
                     stmt.setString(2, txtPass.getText());
                     stmt.setInt(3, RoleID);
                     stmt.setString(4, oldName);
-                    stmt.setString(5, oldPass);
 
                     stmt.executeUpdate();
 
@@ -441,9 +410,9 @@ public class Users extends MyInternalFrame {
 
                     stmt = MainClass.con.prepareStatement(Queries.DELETE_USER);
                     String oldName = (String) tblUsers.getModel().getValueAt(editedRiwIdx, 0);
-                    String oldPass = (String) tblUsers.getModel().getValueAt(editedRiwIdx, 1);
+
                     stmt.setString(1, oldName);
-                    stmt.setString(2, oldPass);
+
                     stmt.executeUpdate();
 
                     FillUsersTable();
@@ -455,13 +424,13 @@ public class Users extends MyInternalFrame {
                 }
             } catch (SQLServerException ex) {
                 String msg = "There was an error in the action";
-                if(ex.getErrorCode() == 2627){ // 2627 is unique constraint (includes primary key), 2601 is unique index
+                if (ex.getErrorCode() == 2627) { // 2627 is unique constraint (includes primary key), 2601 is unique index
                     msg = "This User Name alredy exit!";
                 }
-                JOptionPane.showInternalConfirmDialog(this, msg ,
-						"Error", JOptionPane.PLAIN_MESSAGE,
-						JOptionPane.ERROR_MESSAGE);
-                
+                JOptionPane.showInternalConfirmDialog(this, msg,
+                        "Error", JOptionPane.PLAIN_MESSAGE,
+                        JOptionPane.ERROR_MESSAGE);
+
                 Logger.getLogger(Users.class.getName()).log(Level.SEVERE, null, ex);
 
             } catch (SQLException ex) {
@@ -469,10 +438,10 @@ public class Users extends MyInternalFrame {
             }
 
             JOptionPane.showMessageDialog(this,
-                                "Changes Saved",
-                                "INFORMATION MESSAGE",
-                                JOptionPane.INFORMATION_MESSAGE);
-            
+                    "Changes Saved",
+                    "INFORMATION MESSAGE",
+                    JOptionPane.INFORMATION_MESSAGE);
+
         }
     }
 
@@ -492,6 +461,7 @@ public class Users extends MyInternalFrame {
         return new MyTableModel(UserColumns, data);
 
     }
+
     class mydate extends JDateChooser {
 
     }

@@ -111,7 +111,6 @@ public class Activity extends MyInternalFrame {
         cmbPurchaseDate = new javax.swing.JComboBox();
         cmbCard = new javax.swing.JComboBox();
         btnCreate = new javax.swing.JButton();
-        btnCancel = new javax.swing.JButton();
         btnUpdate = new javax.swing.JButton();
         btnDelete = new javax.swing.JButton();
 
@@ -176,8 +175,6 @@ public class Activity extends MyInternalFrame {
             }
         });
 
-        btnCancel.setText("Cancel");
-
         btnUpdate.setText("Update");
         btnUpdate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -219,9 +216,6 @@ public class Activity extends MyInternalFrame {
                             .addComponent(cmbLine, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(11, 11, 11))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())))
         );
@@ -253,14 +247,12 @@ public class Activity extends MyInternalFrame {
                     .addComponent(lblLine)
                     .addComponent(cmbLine, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(24, 24, 24)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnCreate)
-                    .addComponent(btnCancel))
+                .addComponent(btnCreate)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnUpdate)
                     .addComponent(btnDelete))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
 
         bindingGroup.bind();
@@ -335,22 +327,64 @@ public class Activity extends MyInternalFrame {
             PreparedStatement st;
             ResultSet rs;
 
-            st = con.prepareStatement(Queries.INSERT_ACTIVITY);
-            st.setInt(1, cardNumber);
-            st.setTimestamp(2, this.purchaseDate);
-            st.setTimestamp(3, this.activityDate);
-            st.setString(4, (activityType) ? "O" : "I");
-            st.setInt(5, stationID);
-            st.setString(6, lineName);
+            //get zone number of selected station
+            st = con.prepareStatement(Queries.SELECT_ZONEID_BY_STATIONID);
+            st.setInt(1, stationID);
 
-            int result = st.executeUpdate();
+            rs = st.executeQuery();
+            String zoneNumber;
 
-            JOptionPane.showMessageDialog(this,
-                    "Changes Saved",
-                    "INFORMATION MESSAGE",
-                    JOptionPane.INFORMATION_MESSAGE);
-//            fillCmbStation();
-//            cmbStation.setSelectedIndex(0);
+            if (rs.next()) {
+                zoneNumber = rs.getString("zoneNumber");
+                //check for programs
+                st = con.prepareStatement(Queries.CHECK_PROGRAMS_FOR_CARD);
+                st.setInt(1, cardNumber);
+                st.setTimestamp(2, this.purchaseDate);
+                st.setInt(3, Integer.parseInt(zoneNumber));
+
+                rs = st.executeQuery();
+                if (rs.next()) {
+                    //user has a valid program for the selected card
+                    st = con.prepareStatement(Queries.INSERT_ACTIVITY);
+                    st.setInt(1, cardNumber);
+                    st.setTimestamp(2, this.purchaseDate);
+                    st.setTimestamp(3, this.activityDate);
+                    st.setString(4, (activityType) ? "O" : "I");
+                    st.setInt(5, stationID);
+                    st.setString(6, lineName);
+
+                    int result = st.executeUpdate();
+
+                    if (result == 1) {
+                        JOptionPane.showMessageDialog(this,
+                                "Changes Saved",
+                                "INFORMATION MESSAGE",
+                                JOptionPane.INFORMATION_MESSAGE);
+
+                    } else {
+                        JOptionPane.showMessageDialog(this,
+                                "Couldn't insert activity."
+                                + "\nThere ere some errors",
+                                "INFORMATION ERROR",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+
+                } else {
+                    //user has no a valid program
+                    JOptionPane.showMessageDialog(this,
+                            "You have no valid programs for the selected station",
+                            "INFORMATION ERROR",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+
+            } else {
+                //no zone number for selected station
+                JOptionPane.showMessageDialog(this,
+                        "Couldn't insert activity."
+                        + "\nno zone number for selected station",
+                        "INFORMATION ERROR",
+                        JOptionPane.ERROR_MESSAGE);
+            }
 
         } catch (SQLException ex) {
             String msg = "There was an error in the action";
@@ -383,8 +417,8 @@ public class Activity extends MyInternalFrame {
 
             if (result == 1) {
                 JOptionPane.showInternalMessageDialog(this,
-                        "Activity was deledted, "
-                                + "Showing next activity for the card",
+                        "Activity was deledted."
+                        + "\nShowing next activity for the card",
                         "INFORMATION MESSAGE",
                         JOptionPane.INFORMATION_MESSAGE);
 
@@ -392,7 +426,8 @@ public class Activity extends MyInternalFrame {
                 if ((rs = checkForOtherAct()) == null) {
                     try {
                         JOptionPane.showInternalMessageDialog(this,
-                                "No other activities for this card, closing window",
+                                "No other activities for this card."
+                                        + "\nClosing window",
                                 "INFORMATION MESSAGE",
                                 JOptionPane.INFORMATION_MESSAGE);
                         this.setClosed(true);
@@ -441,32 +476,69 @@ public class Activity extends MyInternalFrame {
         try {
             // TODO add your handling code here:
             PreparedStatement st;
+            ResultSet rs;
 
-            st = con.prepareStatement(Queries.UPDATE_ACTIVITY);
-            st.setString(1, (activityType) ? "O" : "I");
-            st.setInt(2, this.stationID);
-            st.setString(3, this.lineName);
+            //get zone number of selected station
+            st = con.prepareStatement(Queries.SELECT_ZONEID_BY_STATIONID);
+            st.setInt(1, stationID);
 
-            st.setInt(4, cardNumber);
-            st.setTimestamp(5, this.purchaseDate);
-            st.setTimestamp(6, this.activityDate);
+            rs = st.executeQuery();
+            String zoneNumber;
 
-            int result = st.executeUpdate();
+            if (rs.next()) {
+                zoneNumber = rs.getString("zoneNumber");
+                //check for programs
+                st = con.prepareStatement(Queries.CHECK_PROGRAMS_FOR_CARD);
+                st.setInt(1, cardNumber);
+                st.setTimestamp(2, this.purchaseDate);
+                st.setInt(3, Integer.parseInt(zoneNumber));
 
-            if (result == 1) {
-                JOptionPane.showInternalMessageDialog(this,
-                        "Activity was updated",
-                        "INFORMATION MESSAGE",
-                        JOptionPane.INFORMATION_MESSAGE);
+                rs = st.executeQuery();
+                if (rs.next()) {
+                    //user has a valid program for the selected card
+                    st = con.prepareStatement(Queries.UPDATE_ACTIVITY);
+                    st.setString(1, (activityType) ? "O" : "I");
+                    st.setInt(2, this.stationID);
+                    st.setString(3, this.lineName);
+
+                    st.setInt(4, cardNumber);
+                    st.setTimestamp(5, this.purchaseDate);
+                    st.setTimestamp(6, this.activityDate);
+
+                    int result = st.executeUpdate();
+
+                    if (result == 1) {
+                        JOptionPane.showInternalMessageDialog(this,
+                                "Activity was updated",
+                                "INFORMATION MESSAGE",
+                                JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        JOptionPane.showInternalMessageDialog(this,
+                                "Error, could not update activity",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+
+                    }
+
+                } else {
+                    //user has no a valid program
+                    JOptionPane.showMessageDialog(this,
+                            "You have no valid programs for the selected station",
+                            "INFORMATION ERROR",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+
             } else {
-                JOptionPane.showInternalMessageDialog(this,
-                        "Error, could not update activity",
-                        "Error",
+                //no zone number for selected station
+                JOptionPane.showMessageDialog(this,
+                        "Couldn't insert activity."
+                        + "\nno zone number for selected station",
+                        "INFORMATION ERROR",
                         JOptionPane.ERROR_MESSAGE);
-
             }
+
         } catch (SQLException ex) {
-            String msg = ex.getMessage();
+            String msg = "There was an error in the action";
 
             JOptionPane.showInternalMessageDialog(this,
                     msg,
@@ -480,7 +552,6 @@ public class Activity extends MyInternalFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnCreate;
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnUpdate;
@@ -509,7 +580,7 @@ public class Activity extends MyInternalFrame {
 
             //for some reason i had to cast timestemp to string , dont ask me why !!!
             st.setTimestamp(2, this.purchaseDate);
-            
+
             rs = st.executeQuery();
 
             if (rs.next()) {
@@ -620,7 +691,7 @@ public class Activity extends MyInternalFrame {
         ResultSet rs;
         try {
             s = con.createStatement();
-            
+
             rs = s.executeQuery(Queries.SELECT_STATIONS_WITH_LINES);
             ArrayList<ComboItem> items = new ArrayList<>();
             while (rs.next()) {
@@ -630,6 +701,7 @@ public class Activity extends MyInternalFrame {
                 Collections.sort(items);
 
                 cmbStation.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
+                cmbStation.setSelectedIndex(0);
             }
         } catch (SQLException ex) {
             Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
@@ -657,12 +729,13 @@ public class Activity extends MyInternalFrame {
 
             ArrayList<ComboItem> items = new ArrayList<>();
             while (rs.next()) {
-                items.add(new ComboItem(rs.getString("lineName"), rs.getString("lineName")));
+                items.add(new ComboItem(rs.getString("Name"), rs.getString("Name")));
             }
             if (!items.isEmpty()) {
                 Collections.sort(items);
 
                 cmbLine.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
+                cmbLine.setSelectedIndex(0);
             }
         } catch (SQLException ex) {
             Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
@@ -686,7 +759,7 @@ public class Activity extends MyInternalFrame {
             // key fields
             cmbCard.setEnabled(false);
             cmbPurchaseDate.setEnabled(false);
-            cmbActivityType.setEnabled(false);
+            cmbActivityType.setEnabled(true);
 
             // control buttons
             btnCreate.setVisible(false);

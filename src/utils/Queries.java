@@ -36,8 +36,20 @@ public class Queries {
     public static final String DELETE_ACTIVITY = "DELETE FROM tblActivity WHERE "
             + "cardNumber = ? and cardPurchaseDate = ? and activityDate = ?";
 
+    public static final String CHECK_PROGRAMS_FOR_CARD = "SELECT x.cardNumber, x.cardPurchaseDate,x.cardLength FROM \n" +
+            "(SELECT * FROM tblPaperCardAreas UNION SELECT * FROM tblOysterCardAreas) " +
+            "AS x INNER JOIN tblCardLengths AS LENG ON (x.cardLength=LENG.cardLength) " +
+            "WHERE cardNumber = ? AND cardPurchaseDate = ? AND zoneNumber = ? " +
+            "AND((LENG.cardLength = '1' AND DATEDIFF(day,x.cardPurchaseDate,GETDATE()) <= 1 ) " +
+            "OR(LENG.cardLength = '2' AND DATEDIFF(day,x.cardPurchaseDate,GETDATE()) <= 3 ) " +
+            "OR(LENG.cardLength = '3' AND DATEDIFF(day,x.cardPurchaseDate,GETDATE()) <= 7 ) " +
+            "OR(LENG.cardLength = '4' AND DATEDIFF(month,x.cardPurchaseDate,GETDATE()) <= 1 ) " +
+            "OR(LENG.cardLength = '5' AND DATEDIFF(month,x.cardPurchaseDate,GETDATE()) <= 3 ) " +
+            "OR(LENG.cardLength = '6' AND DATEDIFF(year,x.cardPurchaseDate,GETDATE()) <= 1 ))";
+
+    
     //------------------------------ ZONE --------------------------------------
-    public static final String SELECT_ALL_ZONES = "SELECT * FROM tblZone";
+    public static final String SELECT_ALL_ZONES = "SELECT * FROM tblZone";       
 
     //--------------------------- LINE & COLOR ---------------------------------  
     public static final String SELECT_LINE_AND_COLOR = "SELECT * FROM tblLine As L "
@@ -72,6 +84,8 @@ public class Queries {
 
     public final static String DELETE_STATION = "DELETE FROM tblStation WHERE ID = ?";
 
+    public static final String SELECT_ZONEID_BY_STATIONID = "SELECT zoneNumber FROM tblStation WHERE ID = ?";
+    
     //------------------------ STATION IN LINE ---------------------------------
     public static final String SELECT_STATIONS_OF_LINE = "SELECT * FROM tblStationInLine "
             + "As SIL join tblStation As S on SIL.stationID = S.ID WHERE SIL.lineName = ?";
@@ -281,11 +295,14 @@ public class Queries {
     public static final String INSERT_USER = "INSERT INTO tblUser VALUES (?,?,?)";
     
     //TODO: NOT IN USE
-    public static final String UPDATE_USER = "UPDATE tblUser SET RoleID = ? "
-                            + "WHERE username = ? and password = ?";
+    public static final String UPDATE_USER = "UPDATE tblUser"
+                            + " SET username = ?"
+                            + " ,password = ?"
+                            + " ,RoleID = ? "
+                            + "WHERE username=? ";
     
     public static final String DELETE_USER = "DELETE FROM tblUser WHERE "
-            + "username = ? and password = ?";
+            + "username = ? ";
 
     //---------------------------- OTHER QUERIES -------------------------------
     public static final String QUERY1 = "select S.siteType, AVG(S.foundedYear) as 'average founded year',\n"
