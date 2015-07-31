@@ -124,7 +124,7 @@ public class StationDialog extends MyInternalFrame {
         // TODO add your handling code here:
 
         this.setVisible(false);
-        mainWindow.desktop.remove(this);
+        mainWindow.getDesktop().remove(this);
         Station s = new Station(title, getSelectedUserType(), this.stationID);
         mainWindow.createFrame(s);
 
@@ -132,7 +132,7 @@ public class StationDialog extends MyInternalFrame {
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
         this.setVisible(false);
-        mainWindow.desktop.remove(this);
+        mainWindow.getDesktop().remove(this);
     }//GEN-LAST:event_btnCancelActionPerformed
 
 

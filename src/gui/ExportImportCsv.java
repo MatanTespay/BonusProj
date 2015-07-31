@@ -148,7 +148,7 @@ public class ExportImportCsv extends MyInternalFrame {
                    //open new window and show result
                  
                   this.setVisible(false);
-                 mainWindow.desktop.remove(this);
+                 mainWindow.getDesktop().remove(this);
                  QueryForm form = new QueryForm("Import result", title,model);
                  mainWindow.createFrame(form);
                  

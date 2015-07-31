@@ -126,7 +126,7 @@ public class LineDialog extends MyInternalFrame {
         if (this.lineName != null) {
 
             this.setVisible(false);
-            mainWindow.desktop.remove(this);
+            mainWindow.getDesktop().remove(this);
             Line l = new Line(title, getSelectedUserType(), this.lineName);
             mainWindow.createFrame(l);
         }
@@ -136,7 +136,7 @@ public class LineDialog extends MyInternalFrame {
         // TODO add your handling code here:
 
         this.setVisible(false);
-        mainWindow.desktop.remove(this);
+        mainWindow.getDesktop().remove(this);
     }//GEN-LAST:event_btnCancelActionPerformed
 
     private void fillCmbLine() {

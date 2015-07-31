@@ -142,7 +142,7 @@ public class SiteDialog extends MyInternalFrame {
         // TODO add your handling code here:
 
         this.setVisible(false);
-        mainWindow.desktop.remove(this);
+        mainWindow.getDesktop().remove(this);
     }//GEN-LAST:event_btnCancelActionPerformed
 
     private void bntOKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bntOKActionPerformed
@@ -150,7 +150,7 @@ public class SiteDialog extends MyInternalFrame {
         if (this.siteID > 0) {
 
             this.setVisible(false);
-            mainWindow.desktop.remove(this);
+            mainWindow.getDesktop().remove(this);
             Site s = new Site(title, getSelectedUserType(), this.siteID);
             mainWindow.createFrame(s);
         }

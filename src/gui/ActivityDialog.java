@@ -246,7 +246,7 @@ public class ActivityDialog extends MyInternalFrame {
         if (this.purchaseDate != null && this.activityDate != null && this.cardNumber > 0) {
 
             this.setVisible(false);
-            mainWindow.desktop.remove(this);
+            mainWindow.getDesktop().remove(this);
             Activity act = new Activity(title, getSelectedUserType(), this.cardNumber, this.purchaseDate, this.activityDate);
             mainWindow.createFrame(act);
         }
@@ -264,7 +264,7 @@ public class ActivityDialog extends MyInternalFrame {
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
         this.setVisible(false);
-        mainWindow.desktop.remove(this);
+        mainWindow.getDesktop().remove(this);
 
     }//GEN-LAST:event_btnCancelActionPerformed
 
