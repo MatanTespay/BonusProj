@@ -21,13 +21,6 @@ import utils.Queries;
  */
 public class QueryForm extends MyInternalFrame {
 
-    public QueryForm(String title, String type, DefaultTableModel model) {
-        super(title, type);
-        initComponents();
-        tblResult.setModel(model);
-
-    }
-
     /**
      * Creates new form QueryForm from result of the import result
      * @param  model

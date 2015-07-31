@@ -1203,7 +1203,7 @@ public class Site extends MyInternalFrame {
 //        Statement s;
 //        ResultSet rs;
         try {
-            PreparedStatement getAllSites = con.prepareStatement(utils.Queries.SELECT_ALL_SITES);
+            PreparedStatement getAllSites = con.prepareStatement(utils.Queries.SELECT_ALL_SITES_BUT_ONE);
             getAllSites.setInt(1, this.siteID);
             
             // set models to comboboxes   

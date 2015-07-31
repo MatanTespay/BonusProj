@@ -285,7 +285,11 @@ public final class Queries {
      */
     public static final String SELECT_PURCHASE_DATES_OF_CARD = "SELECT "
             + "C.purchaseDate FROM tblCard as C WHERE C.number = ?";
-
+    
+    /**
+     * 
+     */
+    public static final String SELECT_CUSTOMER_CARD_NUMBERS = "SELECT number FROM tblCard c where c.owner = ?";
     /**
      * @no: 31
      * @purpose: inserts a card
@@ -486,7 +490,11 @@ public final class Queries {
      * @usage: Site form
      */
     public static final String SELECT_ALL_SITES = "Select * From tblSite";
-
+    
+    /**
+     * 
+     */
+    public static final String SELECT_ALL_SITES_BUT_ONE = "Select * From tblSite where id <> ?";
     /**
      * @no: 53
      * @purpose: returns the line names of a station given its name
@@ -504,7 +512,8 @@ public final class Queries {
     public static final String SELECT_ONLY_STATION_WITH_LINES = "SELECT distinct "
             + "ID,name FROM tblStation s join tblStationInLine sil on s.ID = "
             + "sil.stationID";
-
+    
+    
     /**
      * @no: 55
      * @purpose: inserts site
