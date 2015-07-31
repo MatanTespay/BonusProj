@@ -119,6 +119,20 @@ public class HelperClass {
         return result;
     }
     
+     public static boolean isPasswordOk(String s) {
+
+        //^(?=.*[a-zA-Z])(?=[-' '_]+)(?=.*\d)(?=.*(_|[^\w])).+$
+        //\b(?:\w+\W+){1}(?=[-' '_]+(?:\w+\W+))\b.
+        //
+        //Pattern pattern = Pattern.compile("[a-zA-Z]+([' '-_]?)[a-zA-Z]+");
+        Pattern pattern = Pattern.compile("[a-zA-Z0-9~!@#$%^&*_+-]+");
+        boolean result;
+
+        result = pattern.matcher(s).matches();
+        return result;
+    }
+        
+        
     /**
      * validates if the value is date
      *

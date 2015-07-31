@@ -17,8 +17,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.text.PlainDocument;
+import utils.InputType;
 import utils.Queries;
 
 /**
@@ -30,6 +34,7 @@ public class AddRole extends MyInternalFrame {
     String[] TableColumns = {
         "# Role",
         "RoleName"};
+    
     int lastIndx = -1;
     PreparedStatement stmt;
     ResultSet rs;
@@ -45,6 +50,32 @@ public class AddRole extends MyInternalFrame {
     public AddRole(String title, String type) {
         super(title, type);
         initComponents();
+        buidForm();
+    }
+
+    private void buidForm() {
+
+        txtRoleName.getDocument().addDocumentListener(new DocumentListener() {
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                btnSave.setEnabled(isOkToSave());
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+
+                btnSave.setEnabled(isOkToSave());
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+            }
+
+        });
+        PlainDocument nameDoc = (PlainDocument) txtRoleName.getDocument();
+        nameDoc.setDocumentFilter(new utils.MyDocFilter(InputType.TEXT50));
+
         super.validators = new ArrayList<InputValidator>() {
             {
                 add(new InputValidator(txtRoleName, utils.InputType.ROLE, lblErrRoleName, null));
@@ -55,9 +86,21 @@ public class AddRole extends MyInternalFrame {
         setMode(utils.Constants.EDIT_MODE);
         FillTable();
         setTableSelection();
-        txtRoleName.setToolTipText("<html><b>Role Name can have one space between word<br>"
-                + "spaciel charecters (-,_) only"
-                + ".</html>");
+
+    }
+
+    private boolean isOkToSave() {
+        if (txtRoleName.getText().isEmpty()) {
+            btnSave.setToolTipText("The Role name cant be empty");
+            return false;
+        }
+        
+        if ( txtRoleName.getText().length() > 50) {
+            btnSave.setToolTipText("The Role name can oly have 50 Characters");
+            return false;
+        }
+        
+        return true;
     }
 
     /**
@@ -281,23 +324,22 @@ public class AddRole extends MyInternalFrame {
             btnRemove.setEnabled(false);
         } catch (SQLException ex) {
             String msg = ex.getMessage();
-                if (ex.getErrorCode() == 2627) { // 2627 is unique constraint (includes primary key), 2601 is unique index
-                    msg = "This User Name alredy exit!";
-                }
-                JOptionPane.showInternalConfirmDialog(this, msg,
-                        "Error", JOptionPane.PLAIN_MESSAGE,
-                        JOptionPane.ERROR_MESSAGE);
+            if (ex.getErrorCode() == 2627) { // 2627 is unique constraint (includes primary key), 2601 is unique index
+                msg = "This User Name alredy exit!";
+            }
+            JOptionPane.showInternalConfirmDialog(this, msg,
+                    "Error", JOptionPane.PLAIN_MESSAGE,
+                    JOptionPane.ERROR_MESSAGE);
 
-                Logger.getLogger(Users.class.getName()).log(Level.SEVERE, null, ex);
-                
-        
-        } 
+            Logger.getLogger(Users.class.getName()).log(Level.SEVERE, null, ex);
 
-         JOptionPane.showMessageDialog(this,
-                    "Changes Saved",
-                    "INFORMATION MESSAGE",
-                    JOptionPane.INFORMATION_MESSAGE);
-            btnSave.setActionCommand("");
+        }
+
+        JOptionPane.showMessageDialog(this,
+                "Changes Saved",
+                "INFORMATION MESSAGE",
+                JOptionPane.INFORMATION_MESSAGE);
+        btnSave.setActionCommand("");
     }
 
     private void Edit() {

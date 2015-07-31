@@ -273,7 +273,10 @@ public class Activity extends MyInternalFrame {
             this.cardNumber = Integer.parseInt(cardItem.getKey().toString());
             cmbPurchaseDate.setEnabled(true);
             fillCmbPurchaseDate(cardNumber);
-            cmbPurchaseDate.setSelectedIndex(0);
+            if (cmbPurchaseDate.getModel().getSize() > 0) {
+                cmbPurchaseDate.setSelectedIndex(0);   
+            }
+            
         } catch (NullPointerException ex) {
             // no item is chosen
             cmbPurchaseDate.setEnabled(false);
@@ -286,7 +289,10 @@ public class Activity extends MyInternalFrame {
             this.stationID = (int) stationItem.getKey();
             cmbLine.setEnabled(true);
             fillCmbLine(stationID);
-            cmbLine.setSelectedIndex(0);
+            if (cmbLine.getModel().getSize() > 0) {
+                cmbLine.setSelectedIndex(0);
+            }
+            
         } catch (NullPointerException ex) {
             // no item is chosen
             cmbLine.setEnabled(false);
@@ -718,7 +724,9 @@ public class Activity extends MyInternalFrame {
                 Collections.sort(items);
 
                 cmbStation.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
-                cmbStation.setSelectedIndex(0);
+                if (cmbStation.getModel().getSize() > 0) {
+                    cmbStation.setSelectedIndex(0);
+                }
             }
         } catch (SQLException ex) {
             Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);
@@ -733,7 +741,9 @@ public class Activity extends MyInternalFrame {
         items.add(new ComboItem(utils.Constants.OUTGOING, "Outgoing"));
 
         cmbActivityType.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
-        cmbActivityType.setSelectedIndex(0);
+        if (cmbActivityType.getModel().getSize() > 0) {
+            cmbActivityType.setSelectedIndex(0);
+        }
     }
 
     private void fillCmbLine(int stationID) {
@@ -752,7 +762,9 @@ public class Activity extends MyInternalFrame {
                 Collections.sort(items);
 
                 cmbLine.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
-                cmbLine.setSelectedIndex(0);
+                if (cmbLine.getModel().getSize() > 0) {
+                    cmbLine.setSelectedIndex(0);
+                }
             }
         } catch (SQLException ex) {
             Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, ex);

@@ -14,6 +14,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JMenu;
@@ -80,78 +82,83 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     private void AdminORManagerMenu(JMenu aMenu) {
         //Manager to
         aMenu = addMenuToMenuBar("System", KeyEvent.VK_O);
-        addMenuItem(aMenu, "Add Deposit", KeyEvent.VK_D);
+        addMenuItem(aMenu, "Add Deposit", KeyEvent.VK_D,"dollar183.png");
 
         //<editor-fold defaultstate="collapsed" desc="Only Admin">
         if (!selectedUserType.equals("Manager")) {
-            addMenuItem(aMenu, "Add User", KeyEvent.VK_U);
-            addMenuItem(aMenu, "Add Role", KeyEvent.VK_U);
-            addMenuItem(aMenu, "Add Card Length", KeyEvent.VK_B);
-            addMenuItem(aMenu, "Add Zone", KeyEvent.VK_B);
+            addMenuItem(aMenu, "Add User", KeyEvent.VK_U,"addUser.png");
+            addMenuItem(aMenu, "Add Role", KeyEvent.VK_U,"");
+            addMenuItem(aMenu, "Add Card Length", KeyEvent.VK_B,null);
+            addMenuItem(aMenu, "Add Zone", KeyEvent.VK_B,null);
         }
         //</editor-fold>
 
         aMenu = addMenuToMenuBar("management", KeyEvent.VK_O);
         submenu = addMenuToMenuBar("Activity", KeyEvent.VK_A);
-        addMenuItem(submenu, "Add Activity", KeyEvent.VK_B);
-        addMenuItem(submenu, "Edit Activity", KeyEvent.VK_A);
+        addMenuItem(submenu, "Add Activity", KeyEvent.VK_B,null);
+        addMenuItem(submenu, "Edit Activity", KeyEvent.VK_A,null);
         aMenu.add(submenu);
         aMenu.addSeparator();
 
         submenu = addMenuToMenuBar("Card", KeyEvent.VK_A);
-        addMenuItem(submenu, "Add Card", KeyEvent.VK_B);
-        addMenuItem(submenu, "Edit Card", KeyEvent.VK_A);
+        addMenuItem(submenu, "Add Card", KeyEvent.VK_B,null);
+        addMenuItem(submenu, "Edit Card", KeyEvent.VK_A,null);
         aMenu.add(submenu);
         aMenu.addSeparator();
 
         submenu = addMenuToMenuBar("Line", KeyEvent.VK_A);
-        addMenuItem(submenu, "Add Line", KeyEvent.VK_B);
-        addMenuItem(submenu, "Edit Line", KeyEvent.VK_A);
+        addMenuItem(submenu, "Add Line", KeyEvent.VK_B,null);
+        addMenuItem(submenu, "Edit Line", KeyEvent.VK_A,null);
         aMenu.add(submenu);
         aMenu.addSeparator();
 
         submenu = addMenuToMenuBar("Site", KeyEvent.VK_A);
-        addMenuItem(submenu, "Add Site", KeyEvent.VK_B);
-        addMenuItem(submenu, "Edit Site", KeyEvent.VK_A);
-        addMenuItem(submenu, "Add Site Type", KeyEvent.VK_A);
+        addMenuItem(submenu, "Add Site", KeyEvent.VK_B,null);
+        addMenuItem(submenu, "Edit Site", KeyEvent.VK_A,null);
+        addMenuItem(submenu, "Add Site Type", KeyEvent.VK_A,null);
         aMenu.add(submenu);
         aMenu.addSeparator();
 
         submenu = addMenuToMenuBar("Queries", KeyEvent.VK_A);
-        addMenuItem(submenu, "Remote Sites", KeyEvent.VK_B);
-        addMenuItem(submenu, "Unused Paper Cards", KeyEvent.VK_A);
-        addMenuItem(submenu, "Main Stations", KeyEvent.VK_A);
-        addMenuItem(submenu, "Most Active Stations", KeyEvent.VK_A);
-        addMenuItem(submenu, "Cards That Have Activity Issues", KeyEvent.VK_A);
-        addMenuItem(submenu, "Very Active Oyster Cards", KeyEvent.VK_A);
-        addMenuItem(submenu, "Profitable Deposit Years", KeyEvent.VK_A);
+        addMenuItem(submenu, "Remote Sites", KeyEvent.VK_B,null);
+        addMenuItem(submenu, "Unused Paper Cards", KeyEvent.VK_A,null);
+        addMenuItem(submenu, "Main Stations", KeyEvent.VK_A,null);
+        addMenuItem(submenu, "Most Active Stations", KeyEvent.VK_A,null);
+        addMenuItem(submenu, "Cards That Have Activity Issues", KeyEvent.VK_A,null);
+        addMenuItem(submenu, "Very Active Oyster Cards", KeyEvent.VK_A,null);
+        addMenuItem(submenu, "Profitable Deposit Years", KeyEvent.VK_A,null);
         aMenu.add(submenu);
         aMenu.addSeparator();
 
         submenu = addMenuToMenuBar("Station", KeyEvent.VK_A);
-        addMenuItem(submenu, "Add Station", KeyEvent.VK_B);
-        addMenuItem(submenu, "Edit Station", KeyEvent.VK_A);
+        addMenuItem(submenu, "Add Station", KeyEvent.VK_B,null);
+        addMenuItem(submenu, "Edit Station", KeyEvent.VK_A,null);
         aMenu.add(submenu);
         aMenu.addSeparator();
 
-        addMenuItem(aMenu, "Export/Import CSV", KeyEvent.VK_B);
+        addMenuItem(aMenu, "Export/Import CSV", KeyEvent.VK_B,null);
 
     }
 
     private void MunicipalityMenu(JMenu aMenu) {
         aMenu = addMenuToMenuBar("management", KeyEvent.VK_O);
-        addMenuItem(aMenu, "Export/Import CSV", KeyEvent.VK_B);
+        addMenuItem(aMenu, "Export/Import CSV", KeyEvent.VK_B,null);
     }
 
     private void UserMenu(JMenu aMenu) {
         aMenu = addMenuToMenuBar("management", KeyEvent.VK_O);
 
-        addMenuItem(aMenu, "Add Card", KeyEvent.VK_B);
+        addMenuItem(aMenu, "Add Card", KeyEvent.VK_B,null);
         aMenu.addSeparator();
-        addMenuItem(aMenu, "Add Activity", KeyEvent.VK_B);
-
+        addMenuItem(aMenu, "Add Activity", KeyEvent.VK_B,null);
+        
     }
 
+    private Icon getIconName(String name){
+        Icon i = new javax.swing.ImageIcon(getClass().getResource("/Img/"+name+""));
+       return i;
+         
+    }
     /**
      * fill the {@link #MainMenuBar}}
      */
@@ -323,7 +330,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
                 ifram = new CardLengths(e.getActionCommand(), selectedUserType);
                 break;
             case "Add User":
-                ifram = new Users(e.getActionCommand(), selectedUserType);
+                ifram = new User(e.getActionCommand(), selectedUserType);
                 break;
             case "Add Line":
                 ifram = new Line(e.getActionCommand(), selectedUserType);
@@ -392,18 +399,21 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
      * @param param the value of param
      * @return the javax.swing.JMenuItem
      */
-    private JMenuItem addMenuItem(JMenu theMenu, String itemTitle, int key, java.lang.String param) {
-        String[] values = param.split(",");
-        menuItem = new JMenuItem(values[0] + " " + values[1], key);
-        menuItem.setActionCommand(param);
-        theMenu.add(menuItem);
-        menuItem.addActionListener(this);
-        return menuItem;
-    }
+//    private JMenuItem addMenuItem(JMenu theMenu, String itemTitle, int key, java.lang.String param) {
+//        String[] values = param.split(",");
+//        menuItem = new JMenuItem(values[0] + " " + values[1], key);
+//        menuItem.setActionCommand(param);
+//        theMenu.add(menuItem);
+//        menuItem.addActionListener(this);
+//        return menuItem;
+//    }
 
-    private JMenuItem addMenuItem(JMenu theMenu, String itemTitle, int key) {
+    private JMenuItem addMenuItem(JMenu theMenu, String itemTitle, int key,String IconName) {
 
         menuItem = new JMenuItem(itemTitle, key);
+        if (IconName != null && !IconName.equals("")) {
+            menuItem.setIcon(getIconName(IconName));
+        }
         menuItem.setActionCommand(itemTitle);
         theMenu.add(menuItem);
         menuItem.addActionListener(this);
