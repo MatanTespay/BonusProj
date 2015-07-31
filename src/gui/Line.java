@@ -39,6 +39,7 @@ import utils.Queries;
 public class Line extends MyInternalFrame {
 
     private String lineName;
+    private String oldLineName;
     private Short foundedYear;
     private Character lineType;
     private Float lineLength;
@@ -54,7 +55,7 @@ public class Line extends MyInternalFrame {
     public Line(String title, String type, String lineName) {
         super(title, type);
         setMode(EDIT_MODE);
-        this.lineName = lineName;
+        this.oldLineName = this.lineName = lineName;
         initComponents();
         setVariables();
         buildForm();
@@ -209,7 +210,7 @@ public class Line extends MyInternalFrame {
 
         pDetails.setBorder(javax.swing.BorderFactory.createTitledBorder("Details"));
 
-        lbName.setText("Line Name*");
+        lbName.setText("Line Name");
 
         lblColor.setText("Color");
 
@@ -272,10 +273,9 @@ public class Line extends MyInternalFrame {
         pDetailsLayout.setHorizontalGroup(
             pDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pDetailsLayout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(pDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pDetailsLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnDelete)
                         .addGap(18, 18, 18)
                         .addComponent(btnSave)
@@ -283,14 +283,16 @@ public class Line extends MyInternalFrame {
                         .addComponent(btnCancel))
                     .addGroup(pDetailsLayout.createSequentialGroup()
                         .addGroup(pDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pDetailsLayout.createSequentialGroup()
+                            .addGroup(pDetailsLayout.createSequentialGroup()
+                                .addGap(20, 20, 20)
                                 .addGroup(pDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(lblColor)
                                     .addComponent(lbName))
                                 .addGap(40, 40, 40))
-                            .addGroup(pDetailsLayout.createSequentialGroup()
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pDetailsLayout.createSequentialGroup()
+                                .addContainerGap()
                                 .addComponent(lblFoundation)
-                                .addGap(15, 15, 15)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                         .addGroup(pDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(tfName)
                             .addComponent(cmbColor, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -564,32 +566,36 @@ public class Line extends MyInternalFrame {
                 insertColor.setString(1, colorName);
                 insertColor.setString(2, lineName);
                 insertColor.executeUpdate();
+                
+                setMode(EDIT_MODE);
 
             } else {
                 // edit mode
                 updateLine = con.prepareStatement(Queries.UPDATE_LINE);
-                updateLine.setShort(1, foundedYear);
-                updateLine.setString(2, lineType.toString());
+                updateLine.setString(1, lineName);
+                updateLine.setShort(2, foundedYear);
+                updateLine.setString(3, lineType.toString());
                 if (lineLength != null) {
-                    updateLine.setFloat(3, lineLength);
+                    updateLine.setFloat(4, lineLength);
                 } else {
-                    updateLine.setNull(3, java.sql.Types.DOUBLE);
+                    updateLine.setNull(4, java.sql.Types.DOUBLE);
                 }
-                updateLine.setString(4, lineName);
+                updateLine.setString(5, oldLineName);
                 updateLine.executeUpdate();
                 
                 updateColor = con.prepareStatement(Queries.UPDATE_COLOR);
                 updateColor.setString(1, colorName);
                 updateColor.setString(2, lineName);
                 updateColor.executeUpdate();
+                
+                this.oldLineName = this.lineName;
             }
             con.commit();
             JOptionPane.showInternalMessageDialog(this,
-                    "Line was added successfully!",
+                    "Line was saved successfully!",
                     "Hooray!",
                     JOptionPane.PLAIN_MESSAGE);
 
-            setMode(EDIT_MODE);
             setActiveness();
         } catch (SQLException e) {
             switch (e.getErrorCode()) {
@@ -729,7 +735,6 @@ public class Line extends MyInternalFrame {
             this.colorName = rs.getString(5)/*color name*/;
             this.foundedYear = rs.getShort("foundedYear");
             this.lineLength = (rs.getFloat("lineLength") != 0) ? rs.getFloat("lineLength") : null;
-            this.lineName = rs.getString("name");
             this.lineType = rs.getString("lineType").charAt(0);
 
         } catch (SQLException ex) {
@@ -750,12 +755,10 @@ public class Line extends MyInternalFrame {
 
     private void setActiveness() {
         if (getMode() == ADD_MODE) {
-            tfName.setEnabled(true);
             pStations.setVisible(false);
             btnDelete.setVisible(false);
         } else {
             // edit mode
-            tfName.setEnabled(false);
             pStations.setVisible(true);
             btnDelete.setVisible(true);
             setStationTblModel();

@@ -162,8 +162,8 @@ public final class Queries {
      * @purpose: updates a line given its PK
      * @usage: Line form
      */
-    public static final String UPDATE_LINE = "UPDATE tblLine SET foundedYear = ?, "
-            + "lineType = ?, lineLength = ? WHERE name = ?";
+    public static final String UPDATE_LINE = "UPDATE tblLine SET name = ?, "
+            + "foundedYear = ?, lineType = ?, lineLength = ? WHERE name = ?";
     /**
      * @no: 14
      * @purpose: updates a color's name given a line's PK
