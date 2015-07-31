@@ -81,7 +81,7 @@ public class Activity extends MyInternalFrame {
             btnCreate.setEnabled(false);
             
         }
-        
+        dchActivityDate.setEnabled(false);
         int station = Integer.parseInt(((ComboItem) cmbStation.getSelectedItem()).getKey().toString());
         fillCmbLine(station);
     }
