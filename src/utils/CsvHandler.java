@@ -25,7 +25,13 @@ import java.util.Date;
 import org.apache.commons.lang.StringUtils;
 
 import com.opencsv.CSVReader;
+import init.MyTableModel;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Locale;
+import java.util.Vector;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 import org.apache.commons.lang.ArrayUtils;
 
 /**
@@ -110,7 +116,7 @@ public class CsvHandler {
      * records.
      * @throws Exception
      */
-public void loadCSV(String csvFile, String tableName,
+    public DefaultTableModel loadCSV(String csvFile, String tableName,
             boolean truncateBeforeLoad) throws Exception {
         boolean isAutoInc = false; //check if key of table is Auto Increment
         boolean isFirstRowCol = false; //check if first row of file are culomns definition or row data.
@@ -224,12 +230,11 @@ public void loadCSV(String csvFile, String tableName,
                 // table is with identity'
                 if (withIdentityCol) {
                     query = query.replaceFirst(KEYS_REGEX, StringUtils.join(firstRowWithoutCol, ","));
-                }
-                else{
+                } else {
                     query = query.replaceFirst(KEYS_REGEX, StringUtils.join(firstRow, ","));
-                } 
+                }
             }
-            
+
             query = query.replaceFirst(VALUES_REGEX, questionmarks);
         } else {
             query = SQL_INSERT.replaceFirst(TABLE_REGEX, tableName);
@@ -259,8 +264,13 @@ public void loadCSV(String csvFile, String tableName,
 //            Integer number;
 //            Double d;
 
+            Vector<Vector<Object>> insertdData = new Vector<>();
+            Vector<Object> row;
             if (!isFirstRowCol) {
-                addRowToBatch(firstRow, ps, isAutoInc,withIdentityCol);
+                row = addRowToBatch(firstRow, ps, isAutoInc, withIdentityCol);
+                if (row != null) {
+                    insertdData.add(row);
+                }
             }
 
             while ((nextLine = csvReader.readNext()) != null) {
@@ -299,7 +309,10 @@ public void loadCSV(String csvFile, String tableName,
 //                    }
 //                    ps.addBatch();
 //                }
-                addRowToBatch(nextLine, ps, isAutoInc,withIdentityCol);
+                row = addRowToBatch(nextLine, ps, isAutoInc, withIdentityCol);
+                if (row != null) {
+                    insertdData.add(row);
+                }
 
                 if (++count % batchSize == 0) {
                     ps.executeBatch();
@@ -307,10 +320,20 @@ public void loadCSV(String csvFile, String tableName,
             }
             ps.executeBatch(); // insert remaining records
             con.commit();
-            JOptionPane.showMessageDialog(null,
-                    "data has been imported successfully",
-                    "INFORMATION MESSAGE",
-                    JOptionPane.INFORMATION_MESSAGE);
+//            JOptionPane.showMessageDialog(null,
+//                    "data has been imported successfully",
+//                    "INFORMATION MESSAGE",
+//                    JOptionPane.INFORMATION_MESSAGE);
+
+//            int ok = JOptionPane.showInternalConfirmDialog(null,
+//                    "Data has been imported successfully", "INFORMATION MESSAGE", JOptionPane.YES_NO_OPTION);
+
+            Vector<String> colNames = new Vector<>(cols);
+            
+            //Collections.copy(colNames, cols);
+            DefaultTableModel model = new DefaultTableModel(insertdData ,colNames);
+            return model;
+
         } catch (Exception e) {
             con.rollback();
             e.printStackTrace();
@@ -326,14 +349,38 @@ public void loadCSV(String csvFile, String tableName,
         }
     }
 
-    private void addRowToBatch(String[] nextLine, PreparedStatement ps, Boolean isAutoInc,boolean withKeyCol) throws SQLException {
+    /**
+     *
+     * @param nextLine the value of nextLine
+     * @param ps the value of ps
+     * @param isAutoInc the value of isAutoInc
+     * @param withKeyCol the value of withKeyCol
+     * @return the java.lang.Object[]
+     * @throws SQLException
+     */
+    private Vector<Object> addRowToBatch(String[] nextLine, PreparedStatement ps, Boolean isAutoInc, boolean withKeyCol) throws SQLException {
         Date date = null;
         Integer number;
         Double d;
+        Vector<Object> row = null;
         if (null != nextLine) {
+
+            //size of row to save
+            int size = (withKeyCol ? nextLine.length : nextLine.length - 1);
+            //index of siteType column according to inserted values from csv
+            int typeIdx = (withKeyCol ? nextLine.length - 1 : nextLine.length - 2);
+            row = new Vector<>(size);
+
+            //if the site type is nut Museum dont add the row to table
+            if (!nextLine[typeIdx].equals("Museum")) {
+                return null;
+            }
+
             int index = 1;
             for (int i = 0; i < nextLine.length; i++) {
                 //if key col is auto increment skip key col from file
+                row.add(nextLine[i]);
+                
                 if (isAutoInc && withKeyCol && i == 0) {
                     continue;
                 }
@@ -360,11 +407,15 @@ public void loadCSV(String csvFile, String tableName,
                 } else {
                     ps.setString(index++, nextLine[i]);
                 }
+
+                //row.add(nextLine[i]);
                 //</editor-fold>
             }
+
             ps.addBatch();
         }
 
+        return row;
     }
 
     public char getSeprator() {

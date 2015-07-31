@@ -31,7 +31,8 @@ import javax.swing.JMenuItem;
  */
 public class MainWindow extends javax.swing.JFrame implements ActionListener {
 
-    String selectedUserType;
+    static String selectedUserType;
+
     JMenu menu, submenu;
     JMenuItem menuItem;
     JDesktopPane desktop;
@@ -76,91 +77,161 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         super(title);
     }
 
+    private void AdminORManagerMenu(JMenu aMenu) {
+        //Manager to
+        aMenu = addMenuToMenuBar("System", KeyEvent.VK_O);
+        addMenuItem(aMenu, "Add Deposit", KeyEvent.VK_D);
+
+        //<editor-fold defaultstate="collapsed" desc="Only Admin">
+        if (!selectedUserType.equals("Manager")) {
+            addMenuItem(aMenu, "Add User", KeyEvent.VK_U);
+            addMenuItem(aMenu, "Add Role", KeyEvent.VK_U);
+            addMenuItem(aMenu, "Add Card Length", KeyEvent.VK_B);
+        }
+        //</editor-fold>
+
+        aMenu = addMenuToMenuBar("management", KeyEvent.VK_O);
+        submenu = addMenuToMenuBar("Activity", KeyEvent.VK_A);
+        addMenuItem(submenu, "Add Activity", KeyEvent.VK_B);
+        addMenuItem(submenu, "Edit Activity", KeyEvent.VK_A);
+        aMenu.add(submenu);
+        aMenu.addSeparator();
+
+        submenu = addMenuToMenuBar("Card", KeyEvent.VK_A);
+        addMenuItem(submenu, "Add Card", KeyEvent.VK_B);
+        addMenuItem(submenu, "Edit Card", KeyEvent.VK_A);
+        aMenu.add(submenu);
+        aMenu.addSeparator();
+
+        submenu = addMenuToMenuBar("Line", KeyEvent.VK_A);
+        addMenuItem(submenu, "Add Line", KeyEvent.VK_B);
+        addMenuItem(submenu, "Edit Line", KeyEvent.VK_A);
+        aMenu.add(submenu);
+        aMenu.addSeparator();
+
+        submenu = addMenuToMenuBar("Site", KeyEvent.VK_A);
+        addMenuItem(submenu, "Add Site", KeyEvent.VK_B);
+        addMenuItem(submenu, "Edit Site", KeyEvent.VK_A);
+        aMenu.add(submenu);
+        aMenu.addSeparator();
+
+        submenu = addMenuToMenuBar("Queries", KeyEvent.VK_A);
+        addMenuItem(submenu, "Remote Sites", KeyEvent.VK_B);
+        addMenuItem(submenu, "Unused Paper Cards", KeyEvent.VK_A);
+        addMenuItem(submenu, "Main Stations", KeyEvent.VK_A);
+        addMenuItem(submenu, "Most Active Stations", KeyEvent.VK_A);
+        addMenuItem(submenu, "Cards That Have Activity Issues", KeyEvent.VK_A);
+        addMenuItem(submenu, "Very Active Oyster Cards", KeyEvent.VK_A);
+        addMenuItem(submenu, "Profitable Deposit Years", KeyEvent.VK_A);
+        aMenu.add(submenu);
+        aMenu.addSeparator();
+
+        submenu = addMenuToMenuBar("Station", KeyEvent.VK_A);
+        addMenuItem(submenu, "Add Station", KeyEvent.VK_B);
+        addMenuItem(submenu, "Edit Station", KeyEvent.VK_A);
+        aMenu.add(submenu);
+        aMenu.addSeparator();
+
+        addMenuItem(aMenu, "Export/Import CSV", KeyEvent.VK_B);
+
+    }
+
+    private void MunicipalityMenu(JMenu aMenu) {
+        aMenu = addMenuToMenuBar("management", KeyEvent.VK_O);
+        addMenuItem(aMenu, "Export/Import CSV", KeyEvent.VK_B);
+    }
+
+    private void UserMenu(JMenu aMenu) {
+        aMenu = addMenuToMenuBar("management", KeyEvent.VK_O);
+
+        addMenuItem(aMenu, "Add Card", KeyEvent.VK_B);
+        aMenu.addSeparator();
+        addMenuItem(aMenu, "Add Activity", KeyEvent.VK_B);
+
+    }
+
     /**
      * fill the {@link #MainMenuBar}}
      */
     private void fillMenuBar() {
 
-        //<editor-fold defaultstate="collapsed" desc="File Menu">
         JMenu aMenu = addMenuToMenuBar("File", 'F');
-        //addMenuItem(aMenu, "Save", KeyEvent.VK_S);
 
         CloseAction closeAction = new CloseAction("Exit", null, "Close The Application", new Integer(KeyEvent.VK_X), this);
         menuItem = new JMenuItem(closeAction);
 
         menu.add(menuItem);
-//</editor-fold>
 
-        //<editor-fold defaultstate="collapsed" desc="Operations Menu">
-        if (!selectedUserType.equals("Customer")) {
-            //aMenu = addMenuToMenuBar("Operations", KeyEvent.VK_O);
-
-            if (!selectedUserType.equals("Agent")) {
-
-                //<editor-fold defaultstate="collapsed" desc="Only Admin">
-                if (!selectedUserType.equals("Manager")) {
-
-                    aMenu = addMenuToMenuBar("System", KeyEvent.VK_O);
-                    addMenuItem(aMenu, "Add User", KeyEvent.VK_U);
-                    addMenuItem(aMenu, "Add Role", KeyEvent.VK_U);
-                    addMenuItem(aMenu, "Add Deposit", KeyEvent.VK_D);
-                    addMenuItem(aMenu, "Add Card Length", KeyEvent.VK_B);
-
-                }
-
-                //</editor-fold>
-                //<editor-fold defaultstate="collapsed" desc=" Admin + Manger">
-                //</editor-fold>
-            }
-
-            //<editor-fold defaultstate="collapsed" desc="All Workers">
-            aMenu = addMenuToMenuBar("management", KeyEvent.VK_O);
-
-            submenu = addMenuToMenuBar("Activity", KeyEvent.VK_A);
-            addMenuItem(submenu, "Add Activity", KeyEvent.VK_B);
-            addMenuItem(submenu, "Edit Activity", KeyEvent.VK_A);
-            aMenu.add(submenu);
-            aMenu.addSeparator();
-
-            submenu = addMenuToMenuBar("Card", KeyEvent.VK_A);
-            addMenuItem(submenu, "Add Card", KeyEvent.VK_B);
-            addMenuItem(submenu, "Edit Card", KeyEvent.VK_A);
-            aMenu.add(submenu);
-            aMenu.addSeparator();
-
-            submenu = addMenuToMenuBar("Line", KeyEvent.VK_A);
-            addMenuItem(submenu, "Add Line", KeyEvent.VK_B);
-            addMenuItem(submenu, "Edit Line", KeyEvent.VK_A);
-            aMenu.add(submenu);
-            aMenu.addSeparator();
-
-            submenu = addMenuToMenuBar("Site", KeyEvent.VK_A);
-            addMenuItem(submenu, "Add Site", KeyEvent.VK_B);
-            addMenuItem(submenu, "Edit Site", KeyEvent.VK_A);
-            aMenu.add(submenu);
-            aMenu.addSeparator();
-
-            submenu = addMenuToMenuBar("Queries", KeyEvent.VK_A);
-            addMenuItem(submenu, "Remote Sites", KeyEvent.VK_B);
-            addMenuItem(submenu, "Unused Paper Cards", KeyEvent.VK_A);
-            addMenuItem(submenu, "Main Stations", KeyEvent.VK_A);
-            addMenuItem(submenu, "Most Active Stations", KeyEvent.VK_A);
-            addMenuItem(submenu, "Cards That Have Activity Issues", KeyEvent.VK_A);
-            addMenuItem(submenu, "Very Active Oyster Cards", KeyEvent.VK_A);
-            addMenuItem(submenu, "Profitable Deposit Years", KeyEvent.VK_A);
-            aMenu.add(submenu);
-            aMenu.addSeparator();
-
-            submenu = addMenuToMenuBar("Station", KeyEvent.VK_A);
-            addMenuItem(submenu, "Add Station", KeyEvent.VK_B);
-            addMenuItem(submenu, "Edit Station", KeyEvent.VK_A);
-            aMenu.add(submenu);
-            aMenu.addSeparator();
-            addMenuItem(aMenu, "Export/Import CSV", KeyEvent.VK_B);
-            aMenu.addSeparator();
-
-            //</editor-fold>
+        switch (selectedUserType) {
+            case "Customer":
+                UserMenu(aMenu);
+                break;
+            case "Municipality":
+                MunicipalityMenu(aMenu);
+                break;
+            default:
+                AdminORManagerMenu(aMenu);
+                break;
         }
+//        if (!selectedUserType.equals("Customer")) {
+//            //aMenu = addMenuToMenuBar("Operations", KeyEvent.VK_O);
+//
+//            if (!selectedUserType.equals("Municipality")) {
+//
+//                //<editor-fold defaultstate="collapsed" desc="All Workers">
+//                aMenu = addMenuToMenuBar("management", KeyEvent.VK_O);
+//
+//            } else {
+//
+//            }
+//
+//            submenu = addMenuToMenuBar("Activity", KeyEvent.VK_A);
+//            addMenuItem(submenu, "Add Activity", KeyEvent.VK_B);
+//            addMenuItem(submenu, "Edit Activity", KeyEvent.VK_A);
+//            aMenu.add(submenu);
+//            aMenu.addSeparator();
+//
+//            submenu = addMenuToMenuBar("Card", KeyEvent.VK_A);
+//            addMenuItem(submenu, "Add Card", KeyEvent.VK_B);
+//            addMenuItem(submenu, "Edit Card", KeyEvent.VK_A);
+//            aMenu.add(submenu);
+//            aMenu.addSeparator();
+//
+//            submenu = addMenuToMenuBar("Line", KeyEvent.VK_A);
+//            addMenuItem(submenu, "Add Line", KeyEvent.VK_B);
+//            addMenuItem(submenu, "Edit Line", KeyEvent.VK_A);
+//            aMenu.add(submenu);
+//            aMenu.addSeparator();
+//
+//            submenu = addMenuToMenuBar("Site", KeyEvent.VK_A);
+//            addMenuItem(submenu, "Add Site", KeyEvent.VK_B);
+//            addMenuItem(submenu, "Edit Site", KeyEvent.VK_A);
+//            aMenu.add(submenu);
+//            aMenu.addSeparator();
+//
+//            submenu = addMenuToMenuBar("Queries", KeyEvent.VK_A);
+//            addMenuItem(submenu, "Remote Sites", KeyEvent.VK_B);
+//            addMenuItem(submenu, "Unused Paper Cards", KeyEvent.VK_A);
+//            addMenuItem(submenu, "Main Stations", KeyEvent.VK_A);
+//            addMenuItem(submenu, "Most Active Stations", KeyEvent.VK_A);
+//            addMenuItem(submenu, "Cards That Have Activity Issues", KeyEvent.VK_A);
+//            addMenuItem(submenu, "Very Active Oyster Cards", KeyEvent.VK_A);
+//            addMenuItem(submenu, "Profitable Deposit Years", KeyEvent.VK_A);
+//            aMenu.add(submenu);
+//            aMenu.addSeparator();
+//
+//            submenu = addMenuToMenuBar("Station", KeyEvent.VK_A);
+//            addMenuItem(submenu, "Add Station", KeyEvent.VK_B);
+//            addMenuItem(submenu, "Edit Station", KeyEvent.VK_A);
+//            aMenu.add(submenu);
+//            aMenu.addSeparator();
+//
+//            addMenuItem(aMenu, "Export/Import CSV", KeyEvent.VK_B);
+//            aMenu.addSeparator();
+//
+//            //</editor-fold>
+//        }
+
     }
 
     /**
@@ -190,7 +261,6 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 //            MainClass.setIsIflySaved(true);
 //        }
 //    }
-
 //    private Object createInternalFrameClass(String className, List<Object> params) {
 //        try {
 //
@@ -269,7 +339,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
                 ifram = new Deposits(e.getActionCommand(), selectedUserType);
                 break;
             case "Export/Import CSV":
-                ifram = new ExportImportCsv(e.getActionCommand(), selectedUserType);
+                ifram = new ExportImportCsv(e.getActionCommand(), selectedUserType,this);
                 break;
             case "Remote Sites":
             case "Unused Paper Cards":
@@ -429,4 +499,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         this.params = params;
     }
 
+    public static String getSelectedUserType() {
+        return selectedUserType;
+    }
 }

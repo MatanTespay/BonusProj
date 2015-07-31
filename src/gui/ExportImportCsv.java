@@ -8,6 +8,8 @@ package gui;
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 import utils.CsvHandler;
 
 /**
@@ -16,14 +18,18 @@ import utils.CsvHandler;
  */
 public class ExportImportCsv extends MyInternalFrame {
 
+    MainWindow mainWindow;
+    
     /**
      * Creates new form ExportImportCsv
      * @param title
      * @param type
+     * @param main
      */
-    public ExportImportCsv(String title, String type) {
+    public ExportImportCsv(String title, String type, MainWindow main) {
         super(title, type);
         initComponents();
+        this.mainWindow = main;
     }
 
     /**
@@ -137,8 +143,16 @@ public class ExportImportCsv extends MyInternalFrame {
                     fileName += ".csv";
                 }
 
-                csv.loadCSV(fileName, "TempSite", false);
-                
+                DefaultTableModel model = csv.loadCSV(fileName, "TempSite", false);
+                if (model != null && model.getRowCount() > 0) {
+                   //open new window and show result
+                 
+                  this.setVisible(false);
+                 mainWindow.desktop.remove(this);
+                 QueryForm form = new QueryForm("Import result", title,model);
+                 mainWindow.createFrame(form);
+                 
+                }
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(null,
                         ex.getMessage(),
