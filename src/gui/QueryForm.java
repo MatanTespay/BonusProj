@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.table.DefaultTableModel;
 import utils.HelperClass;
 import utils.Queries;
 
@@ -19,6 +20,13 @@ import utils.Queries;
  * @author asus
  */
 public class QueryForm extends MyInternalFrame {
+
+    public QueryForm(String title, String type, DefaultTableModel model) {
+        super(title, type);
+        initComponents();
+        tblResult.setModel(model);
+
+    }
 
     /**
      * Creates new form QueryForm
@@ -67,7 +75,7 @@ public class QueryForm extends MyInternalFrame {
                     st2.execute(Queries.SET_ANSI_NULLS_ON);
                     st2.execute(Queries.SET_QUOTED_IDENTIFIER_ON);
                     st2.execute(Queries.CREATE_VIEW_numOfCardsForPrice);
-                    
+
                     Statement st3 = con.createStatement();
                     st3.execute(Queries.USE_LONDON2);
                     st3.execute(Queries.IF_EXISTS_yearsWithMoreThan5000);
@@ -75,14 +83,14 @@ public class QueryForm extends MyInternalFrame {
                     st3.execute(Queries.SET_ANSI_NULLS_ON);
                     st3.execute(Queries.SET_QUOTED_IDENTIFIER_ON);
                     st3.execute(Queries.CREATE_VIEW_yearsWithMoreThan5000);
-                    
+
                     Statement st4 = con.createStatement();
                     st4.execute(Queries.USE_LONDON2);
                     st4.execute(Queries.IF_EXISTS_NumOfOysterRides);
                     st4.execute(Queries.USE_LONDON2);
                     st4.execute(Queries.SET_ANSI_NULLS_ON);
                     st4.execute(Queries.SET_QUOTED_IDENTIFIER_ON);
-                    st4.execute(Queries.CREATE_VIEW_NumOfOysterRides);
+                    st4.execute(Queries.CREATE_VIEW_numOfOysterRides);
 
                     rs = st.executeQuery(Queries.QUERY7);
                     break;
