@@ -37,8 +37,11 @@ public class CustomTableModel extends AbstractTableModel {
     private int keyColumn;
     private int valueColumn;
 
-    /*
+    /**
      used when table starts empty
+     * @param table
+     * @param columns
+     * @param fillStatement
      */
     public CustomTableModel(JTable table, ArrayList<Column> columns, PreparedStatement fillStatement) {
         this.table = table;

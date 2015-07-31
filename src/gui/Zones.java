@@ -45,7 +45,13 @@ public class Zones extends MyInternalFrame {
 
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                btnDelete.setEnabled((lstZones.getSelectedIndex() != -1));
+                boolean isItemSelected = lstZones.getSelectedIndex() != -1;
+                btnRemove.setEnabled(isItemSelected);
+                btnUpdate.setEnabled(isItemSelected);
+                if (isItemSelected) {
+                    tfUpdateNumber.setText(lstZones.getSelectedValue().toString());
+                }
+
             }
         });
         if (lstZones.getModel().getSize() > 0) {
@@ -62,52 +68,60 @@ public class Zones extends MyInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        lblZoneNumber = new javax.swing.JLabel();
+        pAddZone = new javax.swing.JPanel();
+        lblAddNumber = new javax.swing.JLabel();
         cmbZone = new javax.swing.JComboBox();
-        btnCreate = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
+        btnAdd = new javax.swing.JButton();
+        pExistingZone = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         lstZones = new javax.swing.JList();
-        btnDelete = new javax.swing.JButton();
+        pEditZone = new javax.swing.JPanel();
+        lblEditNumber = new javax.swing.JLabel();
+        btnUpdate = new javax.swing.JButton();
+        tfUpdateNumber = new javax.swing.JTextField();
+        btnRemove = new javax.swing.JButton();
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Add Zone"));
+        pAddZone.setBorder(javax.swing.BorderFactory.createTitledBorder("Add Zone"));
 
-        lblZoneNumber.setText("Zone number");
+        lblAddNumber.setText("Number");
 
         cmbZone.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        btnCreate.setText("Add");
-        btnCreate.addActionListener(new java.awt.event.ActionListener() {
+        btnAdd.setText("Add");
+        btnAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCreateActionPerformed(evt);
+                btnAddActionPerformed(evt);
             }
         });
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        javax.swing.GroupLayout pAddZoneLayout = new javax.swing.GroupLayout(pAddZone);
+        pAddZone.setLayout(pAddZoneLayout);
+        pAddZoneLayout.setHorizontalGroup(
+            pAddZoneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pAddZoneLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(lblZoneNumber)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(cmbZone, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnCreate)
+                .addComponent(lblAddNumber)
+                .addGap(18, 18, 18)
+                .addComponent(cmbZone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(92, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pAddZoneLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        pAddZoneLayout.setVerticalGroup(
+            pAddZoneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pAddZoneLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pAddZoneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblAddNumber)
+                    .addComponent(cmbZone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnAdd)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnCreate)
-                    .addComponent(lblZoneNumber)
-                    .addComponent(cmbZone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-        );
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Exisiting Zones"));
+        pExistingZone.setBorder(javax.swing.BorderFactory.createTitledBorder("Exisiting Zones"));
 
         lstZones.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
@@ -116,31 +130,70 @@ public class Zones extends MyInternalFrame {
         });
         jScrollPane2.setViewportView(lstZones);
 
-        btnDelete.setText("Remove");
-        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+        javax.swing.GroupLayout pExistingZoneLayout = new javax.swing.GroupLayout(pExistingZone);
+        pExistingZone.setLayout(pExistingZoneLayout);
+        pExistingZoneLayout.setHorizontalGroup(
+            pExistingZoneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pExistingZoneLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        pExistingZoneLayout.setVerticalGroup(
+            pExistingZoneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pExistingZoneLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2)
+                .addContainerGap())
+        );
+
+        pEditZone.setBorder(javax.swing.BorderFactory.createTitledBorder("Edit Zone"));
+
+        lblEditNumber.setText("Number");
+
+        btnUpdate.setText("Update");
+        btnUpdate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDeleteActionPerformed(evt);
+                btnUpdateActionPerformed(evt);
             }
         });
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        btnRemove.setText("Remove");
+        btnRemove.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoveActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout pEditZoneLayout = new javax.swing.GroupLayout(pEditZone);
+        pEditZone.setLayout(pEditZoneLayout);
+        pEditZoneLayout.setHorizontalGroup(
+            pEditZoneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pEditZoneLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
-                .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(pEditZoneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pEditZoneLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnRemove)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnUpdate))
+                    .addGroup(pEditZoneLayout.createSequentialGroup()
+                        .addComponent(lblEditNumber)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(tfUpdateNumber)))
                 .addContainerGap())
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        pEditZoneLayout.setVerticalGroup(
+            pEditZoneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pEditZoneLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnDelete)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(pEditZoneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblEditNumber)
+                    .addComponent(tfUpdateNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pEditZoneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnUpdate)
+                    .addComponent(btnRemove))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -148,28 +201,42 @@ public class Zones extends MyInternalFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(pExistingZone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(pEditZone, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(pAddZone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(pExistingZone, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(pAddZone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(pEditZone, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
-
+    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+        
+        int choice = JOptionPane.showInternalOptionDialog(this,
+                "Adding a zone may result consistency issues.\n"
+                + "Are yaur sure you want to proceed?",
+                "Bummer!", JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE, null, null, null);
+        if (choice == JOptionPane.NO_OPTION) {
+            return;
+        }
+        
         try {
 
             short zoneNumber = Short.parseShort(cmbZone.getSelectedItem().toString());
@@ -184,9 +251,9 @@ public class Zones extends MyInternalFrame {
         } catch (SQLException | NullPointerException ex) {
             Logger.getLogger(Zones.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_btnCreateActionPerformed
+    }//GEN-LAST:event_btnAddActionPerformed
 
-    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+    private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
 
         try {
 
@@ -206,20 +273,54 @@ public class Zones extends MyInternalFrame {
                         "Bummer!",
                         JOptionPane.ERROR_MESSAGE);
             }
+        }
+    }//GEN-LAST:event_btnRemoveActionPerformed
+
+    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
+
+        int choice = JOptionPane.showInternalOptionDialog(this,
+                "Updating a zone may result consistency issues.\n"
+                + "Are yaur sure you want to proceed?",
+                "Bummer!", JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE, null, null, null);
+        if (choice == JOptionPane.NO_OPTION) {
+            return;
+        }
+
+        try {
+
+            short newZoneNumber = Short.parseShort(tfUpdateNumber.getText());
+            short oldZoneNumber = Short.parseShort(lstZones.getSelectedValue().toString());
+
+            PreparedStatement st = con.prepareStatement(Queries.UPDATE_ZONE);
+            st.setShort(1, newZoneNumber);
+            st.setShort(2, oldZoneNumber);
+
+            st.executeUpdate();
+
+            fillZones();
+            fillCmbZone();
+
+        } catch (SQLException ex) {
             Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_btnDeleteActionPerformed
+
+    }//GEN-LAST:event_btnUpdateActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnCreate;
-    private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnAdd;
+    private javax.swing.JButton btnRemove;
+    private javax.swing.JButton btnUpdate;
     private javax.swing.JComboBox cmbZone;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JLabel lblZoneNumber;
+    private javax.swing.JLabel lblAddNumber;
+    private javax.swing.JLabel lblEditNumber;
     private javax.swing.JList lstZones;
+    private javax.swing.JPanel pAddZone;
+    private javax.swing.JPanel pEditZone;
+    private javax.swing.JPanel pExistingZone;
+    private javax.swing.JTextField tfUpdateNumber;
     // End of variables declaration//GEN-END:variables
 
     private void fillZones() {

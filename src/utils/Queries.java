@@ -113,13 +113,20 @@ public final class Queries {
     public static final String DELETE_ZONE = "DELETE FROM tblZone WHERE number = ?";
 
     /**
-     * @no: 8.2
+     * @no: 8.3
      * @purpose: returns the maximum zone number
      * @usage: Zones form
      */
     public static final String SELECT_UNUSED_ZONES = "SELECT DISTINCT number FROM "
             + "master..spt_values WHERE number BETWEEN 1 AND 9 and number not in "
             + "(SELECT * FROM tblZone)";
+    
+    /**
+     * @no: 8.4
+     * @purpose: updates zone's number
+     * @usage: Zones form
+     */
+    public static final String UPDATE_ZONE = "UPDATE tblZone SET number = ? WHERE number = ?";
 
     //--------------------------- LINE & COLOR ---------------------------------  
     /**
@@ -631,8 +638,16 @@ public final class Queries {
      * @purpose: inserts s site type
      * @usage: SiteTypes form
      */
-    public static final String INSERT_SYTE_TYPE = "INSERT INTO tblSiteType "
+    public static final String INSERT_SITE_TYPE = "INSERT INTO tblSiteType "
             + "VALUES (?)";
+    
+    /**
+     * @no: 66.5
+     * @purpose: updates s site type's name
+     * @usage: SiteTypes form
+     */
+    public static final String UPDATE_SITE_TYPE = "UPDATE tblSiteType "
+            + "SET siteType = ? WHERE siteType = ?";
 
     /**
      * @no: 67
