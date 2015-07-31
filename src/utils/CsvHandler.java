@@ -30,6 +30,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Vector;
+import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import org.apache.commons.lang.ArrayUtils;
@@ -49,6 +50,7 @@ public class CsvHandler {
     private static final String KEYS_REGEX = "\\$\\{keys\\}";
     private static final String VALUES_REGEX = "\\$\\{values\\}";
     private char seprator;
+    private final JComponent holder;
 
     /**
      * Public constructor to build CSVLoader object with Connection details. The
@@ -56,8 +58,8 @@ public class CsvHandler {
      *
      * @param connection
      */
-    public CsvHandler() {
-
+    public CsvHandler(JComponent holder) {
+        this.holder  = holder;
         //Set default separator
         this.seprator = ',';
     }
@@ -267,7 +269,7 @@ public class CsvHandler {
             Vector<Vector<Object>> insertdData = new Vector<>();
             Vector<Object> row;
             if (!isFirstRowCol) {
-                row = addRowToBatch(firstRow, ps, isAutoInc, withIdentityCol);
+                row = addRowToBatch(firstRow, ps, isAutoInc, withIdentityCol,cols.size());
                 if (row != null) {
                     insertdData.add(row);
                 }
@@ -309,7 +311,7 @@ public class CsvHandler {
 //                    }
 //                    ps.addBatch();
 //                }
-                row = addRowToBatch(nextLine, ps, isAutoInc, withIdentityCol);
+                row = addRowToBatch(nextLine, ps, isAutoInc, withIdentityCol,cols.size());
                 if (row != null) {
                     insertdData.add(row);
                 }
@@ -325,11 +327,15 @@ public class CsvHandler {
 //                    "INFORMATION MESSAGE",
 //                    JOptionPane.INFORMATION_MESSAGE);
 
-//            int ok = JOptionPane.showInternalConfirmDialog(null,
-//                    "Data has been imported successfully", "INFORMATION MESSAGE", JOptionPane.YES_NO_OPTION);
-
+            int ok = JOptionPane.showInternalConfirmDialog(holder,
+                    "Data has been imported successfully", "INFORMATION MESSAGE", JOptionPane.YES_NO_OPTION);
+            if (ok == 0) {
+                
+            }
             Vector<String> colNames = new Vector<>(cols);
-            
+            if (insertdData.elementAt(0).size()== 4) {
+                colNames.removeElementAt(0);
+            }
             //Collections.copy(colNames, cols);
             DefaultTableModel model = new DefaultTableModel(insertdData ,colNames);
             return model;
@@ -358,7 +364,7 @@ public class CsvHandler {
      * @return the java.lang.Object[]
      * @throws SQLException
      */
-    private Vector<Object> addRowToBatch(String[] nextLine, PreparedStatement ps, Boolean isAutoInc, boolean withKeyCol) throws SQLException {
+        private Vector<Object> addRowToBatch(String[] nextLine, PreparedStatement ps, Boolean isAutoInc, boolean withKeyCol,int count) throws SQLException {
         Date date = null;
         Integer number;
         Double d;
@@ -366,9 +372,24 @@ public class CsvHandler {
         if (null != nextLine) {
 
             //size of row to save
-            int size = (withKeyCol ? nextLine.length : nextLine.length - 1);
+            int size;
+            int typeIdx;
+            if (withKeyCol && !isAutoInc) {
+                size = count;
+                typeIdx = count-1;
+            }
+            else if(withKeyCol && isAutoInc){
+                size = count-1;
+                typeIdx = count-1;
+            }
+            else{
+                //with key without autoInc..
+                size = count -1;
+                typeIdx = count -2;
+            }
+            
             //index of siteType column according to inserted values from csv
-            int typeIdx = (withKeyCol ? nextLine.length - 1 : nextLine.length - 2);
+            
             row = new Vector<>(size);
 
             //if the site type is nut Museum dont add the row to table
@@ -376,13 +397,16 @@ public class CsvHandler {
                 return null;
             }
 
-            int index = 1;
+            //int index = 1;
             for (int i = 0; i < nextLine.length; i++) {
-                //if key col is auto increment skip key col from file
-                row.add(nextLine[i]);
                 
                 if (isAutoInc && withKeyCol && i == 0) {
-                    continue;
+                   row.add("Auto ID");
+                   continue;
+                }
+                else {
+                    //if key col is auto increment skip key col from file
+                    row.add(nextLine[i]);
                 }
 
                 //<editor-fold defaultstate="collapsed" desc="fix the invalid char that fuckedUp everything for two days">
@@ -396,16 +420,39 @@ public class CsvHandler {
                 date = ConvertUtil.convertToDate(nextLine[i]);
                 if (null != date) {
                     Timestamp time = new Timestamp(date.getTime());
-                    ps.setTimestamp(index++, time);
+                    if (withKeyCol) {
+                       ps.setTimestamp(i, time); 
+                    }
+                    else{
+                        ps.setTimestamp(i+1, time);
+                    }
+                    
                     //ps.setDate(index++, new java.sql.Date(date.getTime()));
                 } else if ((number = ConvertUtil.convertToInt(nextLine[i])) != null) {
-
-                    ps.setInt(index++, number);
+                    if (withKeyCol) {
+                       ps.setInt(i, number); 
+                    }
+                    else{
+                        ps.setInt(i+1, number);
+                    }
                 } else if ((d = ConvertUtil.convertToDouble(nextLine[i])) != null) {
 
-                    ps.setDouble(index++, d);
+                     if (withKeyCol) {
+                       ps.setDouble(i, d); 
+                    }
+                    else{
+                        ps.setDouble(i+1, d);
+                    }
+                     
                 } else {
-                    ps.setString(index++, nextLine[i]);
+                    if (withKeyCol) {
+                       ps.setString(i, nextLine[i]);
+                    }
+                    else{
+                        ps.setString(i+1, nextLine[i]);
+                    }
+                    
+                    
                 }
 
                 //row.add(nextLine[i]);

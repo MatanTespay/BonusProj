@@ -19,9 +19,10 @@ import utils.CsvHandler;
 public class ExportImportCsv extends MyInternalFrame {
 
     MainWindow mainWindow;
-    
+
     /**
      * Creates new form ExportImportCsv
+     *
      * @param title
      * @param type
      * @param main
@@ -103,16 +104,16 @@ public class ExportImportCsv extends MyInternalFrame {
     private void btnExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportActionPerformed
         // TODO add your handling code here:
 
-        File workingDirectory = new File(System.getProperty("user.home")+"/Desktop");
+        File workingDirectory = new File(System.getProperty("user.home") + "/Desktop");
         JFileChooser c = new JFileChooser(workingDirectory);
         // Demonstrate "Open" dialog:
         int rVal = c.showOpenDialog(ExportImportCsv.this);
-       
+
         if (rVal == JFileChooser.APPROVE_OPTION) {
 
             String fileName = c.getSelectedFile().getAbsolutePath();
 
-            CsvHandler csv = new CsvHandler();
+            CsvHandler csv = new CsvHandler(this);
 
             if (!fileName.endsWith(".csv".toLowerCase())) {
                 fileName += ".csv";
@@ -127,31 +128,35 @@ public class ExportImportCsv extends MyInternalFrame {
 
     private void btnImportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImportActionPerformed
         // TODO add your handling code here:
-        File workingDirectory = new File(System.getProperty("user.home")+"/Desktop");
+        File workingDirectory = new File(System.getProperty("user.home") + "/Desktop");
         JFileChooser c = new JFileChooser(workingDirectory);
         // Demonstrate "Open" dialog:
         int rVal = c.showOpenDialog(ExportImportCsv.this);
-        
+
         if (rVal == JFileChooser.APPROVE_OPTION) {
 
             try {
                 String fileName = c.getSelectedFile().getAbsolutePath();
 
-                CsvHandler csv = new CsvHandler();
+                CsvHandler csv = new CsvHandler(this);
 
                 if (!fileName.endsWith(".csv".toLowerCase())) {
-                    fileName += ".csv";
+                    JOptionPane.showMessageDialog(null,
+                            "Ca'mon!!! Give me a csv file not some other stuff",
+                            "INFORMATION Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
                 }
 
                 DefaultTableModel model = csv.loadCSV(fileName, "TempSite", false);
                 if (model != null && model.getRowCount() > 0) {
                    //open new window and show result
-                 
-                  this.setVisible(false);
-                 mainWindow.desktop.remove(this);
-                 QueryForm form = new QueryForm("Import result", title,model);
-                 mainWindow.createFrame(form);
-                 
+
+                    this.setVisible(false);
+                    mainWindow.desktop.remove(this);
+                    QueryForm form = new QueryForm("Import result", title, model);
+                    mainWindow.createFrame(form);
+
                 }
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(null,
