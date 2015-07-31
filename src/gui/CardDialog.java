@@ -127,7 +127,7 @@ public class CardDialog extends MyInternalFrame {
 //        if (this.purchaseDate != null && this.cardNumber > 0) {
         if (this.cardNumber > 0) {
             this.setVisible(false);
-            mainWindow.desktop.remove(this);
+            mainWindow.getDesktop().remove(this);
 
             Card c = new Card(title, getSelectedUserType(), this.cardNumber);
             mainWindow.createFrame(c);
@@ -138,7 +138,7 @@ public class CardDialog extends MyInternalFrame {
         // TODO add your handling code here:
 
         this.setVisible(false);
-        mainWindow.desktop.remove(this);
+        mainWindow.getDesktop().remove(this);
     }//GEN-LAST:event_btnCancelActionPerformed
 
     private void fillCmbCard() {

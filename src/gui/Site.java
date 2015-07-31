@@ -189,8 +189,8 @@ public class Site extends MyInternalFrame {
                 add(new InputValidator(tfDistToExit, utils.InputType.DOUBLE, null, null));
                 add(new InputValidator(tfDistToSite, utils.InputType.DOUBLE, null, null));
                 add(new InputValidator(tfID, utils.InputType.INT, null, null));
-                add(new InputValidator(tfName, utils.InputType.TEXT, null, null));
-                add(new InputValidator(taDescription, utils.InputType.TEXT, null, null));
+                add(new InputValidator(tfName, utils.InputType.TEXT15, null, null));
+                add(new InputValidator(taDescription, utils.InputType.TEXT15, null, null));
             }
         };
     }

@@ -72,7 +72,7 @@ public final class Queries {
      */
     public static final String DELETE_ACTIVITY = "DELETE FROM tblActivity WHERE "
             + "cardNumber = ? and cardPurchaseDate = ? and activityDate = ?";
-    
+
     /**
      * @no: 7.5
      * @purpose: deletes an activity given its PK
@@ -97,6 +97,29 @@ public final class Queries {
      * @usage: zone comboboxes in Station and Card forms
      */
     public static final String SELECT_ALL_ZONES = "SELECT * FROM tblZone";
+
+    /**
+     * @no: 8.1
+     * @purpose: inserts zone
+     * @usage: Zones form
+     */
+    public static final String INSERT_ZONE = "INSERT INTO tblZone VALUES (?)";
+
+    /**
+     * @no: 8.2
+     * @purpose: deletes zone
+     * @usage: Zones form
+     */
+    public static final String DELETE_ZONE = "DELETE FROM tblZone WHERE number = ?";
+
+    /**
+     * @no: 8.2
+     * @purpose: returns the maximum zone number
+     * @usage: Zones form
+     */
+    public static final String SELECT_UNUSED_ZONES = "SELECT DISTINCT number FROM "
+            + "master..spt_values WHERE number BETWEEN 1 AND 9 and number not in "
+            + "(SELECT * FROM tblZone)";
 
     //--------------------------- LINE & COLOR ---------------------------------  
     /**
@@ -199,7 +222,7 @@ public final class Queries {
      */
     public static final String DELETE_STATION = "DELETE FROM tblStation WHERE "
             + "ID = ?";
-    
+
     /**
      * @no: 21.5
      * @purpose: returns the zone number of a station given its PK
@@ -285,9 +308,9 @@ public final class Queries {
      */
     public static final String SELECT_PURCHASE_DATES_OF_CARD = "SELECT "
             + "C.purchaseDate FROM tblCard as C WHERE C.number = ?";
-    
+
     /**
-     * 
+     *
      */
     public static final String SELECT_CUSTOMER_CARD_NUMBERS = "SELECT number FROM tblCard c where c.owner = ?";
     /**
@@ -490,9 +513,9 @@ public final class Queries {
      * @usage: Site form
      */
     public static final String SELECT_ALL_SITES = "Select * From tblSite";
-    
+
     /**
-     * 
+     *
      */
     public static final String SELECT_ALL_SITES_BUT_ONE = "Select * From tblSite where id <> ?";
     /**
@@ -512,8 +535,7 @@ public final class Queries {
     public static final String SELECT_ONLY_STATION_WITH_LINES = "SELECT distinct "
             + "ID,name FROM tblStation s join tblStationInLine sil on s.ID = "
             + "sil.stationID";
-    
-    
+
     /**
      * @no: 55
      * @purpose: inserts site

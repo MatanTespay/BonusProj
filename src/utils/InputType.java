@@ -22,7 +22,9 @@ public enum  InputType {
     PASSWORD("Password"),
     ROLE("Role"),
     SHORT("Short"),
-    TEXT("Text"),
+    TEXT15("Text15"),
+    TEXT20("Text20"),
+    TEXT150("Text150"),
     YEAR_RANGE("INT_RANGE"),
     NAME("Name");
 

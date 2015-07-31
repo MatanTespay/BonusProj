@@ -33,12 +33,12 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 
     static String selectedUserType;
 
-    JMenu menu, submenu;
-    JMenuItem menuItem;
-    JDesktopPane desktop;
-    DesktopScrollPane pane;
-    Login login;
-    List params;
+    private JMenu menu, submenu;
+    private JMenuItem menuItem;
+    private JDesktopPane desktop;
+    private DesktopScrollPane pane;
+    private Login login;
+    private List params;
 
     /**
      * Creates new form MainWindow
@@ -59,7 +59,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         this.setLocationRelativeTo(null);
         desktop = new JDesktopPane();
         //desktop.add(panel);
-        pane = new DesktopScrollPane(desktop);
+        pane = new DesktopScrollPane(getDesktop());
 
         setContentPane(pane);
         desktop.setDragMode(JDesktopPane.OUTLINE_DRAG_MODE);
@@ -87,6 +87,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
             addMenuItem(aMenu, "Add User", KeyEvent.VK_U);
             addMenuItem(aMenu, "Add Role", KeyEvent.VK_U);
             addMenuItem(aMenu, "Add Card Length", KeyEvent.VK_B);
+            addMenuItem(aMenu, "Add Zone", KeyEvent.VK_B);
         }
         //</editor-fold>
 
@@ -112,6 +113,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         submenu = addMenuToMenuBar("Site", KeyEvent.VK_A);
         addMenuItem(submenu, "Add Site", KeyEvent.VK_B);
         addMenuItem(submenu, "Edit Site", KeyEvent.VK_A);
+        addMenuItem(submenu, "Add Site Type", KeyEvent.VK_A);
         aMenu.add(submenu);
         aMenu.addSeparator();
 
@@ -244,11 +246,11 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         //MyInternalFrame frame = new MyInternalFrame(title);
 
         frame.setVisible(true); //necessary as of 1.3
-        Dimension desktopSize = desktop.getSize();
+        Dimension desktopSize = getDesktop().getSize();
         Dimension jInternalFrameSize = frame.getSize();
         frame.setLocation((desktopSize.width - jInternalFrameSize.width) / 2, (desktopSize.height - jInternalFrameSize.height) / 2);
 
-        desktop.add(frame);
+        getDesktop().add(frame);
         try {
             frame.setSelected(true);
         } catch (java.beans.PropertyVetoException e) {
@@ -289,7 +291,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         //JOptionPane.showInternalConfirmDialog(null, e.getSource().getClass().toString());
         MyInternalFrame ifram = new MyInternalFrame();
 
-        params = new ArrayList<>();;
+        setParams(new ArrayList<>());;
 
         switch (e.getActionCommand()) {
 
@@ -339,8 +341,15 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
                 ifram = new Deposits(e.getActionCommand(), selectedUserType);
                 break;
             case "Export/Import CSV":
-                ifram = new ExportImportCsv(e.getActionCommand(), selectedUserType,this);
+                ifram = new ExportImportCsv(e.getActionCommand(), selectedUserType, this);
                 break;
+            case "Add Zone":
+                ifram = new Zones(e.getActionCommand(), selectedUserType);
+                break;
+            case "Add Site Type":
+                ifram = new SiteTypes(e.getActionCommand(), selectedUserType);
+                break;
+
             case "Remote Sites":
             case "Unused Paper Cards":
             case "Main Stations":
@@ -477,11 +486,10 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 //            return;
 //        }
 
-        login.getUserTxtName().setText("mtn");
-        login.getUsertxtPassword().setText("1234");
+        getLogin().getUsertxtPassword().setText("1234");
 
-        login.setVisible(true);
-        login.resetFocus(0);
+        getLogin().setVisible(true);
+        getLogin().resetFocus(0);
         this.setVisible(false);
 
     }//GEN-LAST:event_formWindowClosing
@@ -501,5 +509,47 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 
     public static String getSelectedUserType() {
         return selectedUserType;
+    }
+
+    /**
+     * @return the desktop
+     */
+    public JDesktopPane getDesktop() {
+        return desktop;
+    }
+
+    /**
+     * @param desktop the desktop to set
+     */
+    public void setDesktop(JDesktopPane desktop) {
+        this.desktop = desktop;
+    }
+
+    /**
+     * @return the pane
+     */
+    public DesktopScrollPane getPane() {
+        return pane;
+    }
+
+    /**
+     * @param pane the pane to set
+     */
+    public void setPane(DesktopScrollPane pane) {
+        this.pane = pane;
+    }
+
+    /**
+     * @return the login
+     */
+    public Login getLogin() {
+        return login;
+    }
+
+    /**
+     * @param login the login to set
+     */
+    public void setLogin(Login login) {
+        this.login = login;
     }
 }

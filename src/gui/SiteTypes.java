@@ -39,7 +39,7 @@ public class SiteTypes extends MyInternalFrame {
         fillTypes();
         super.validators = new ArrayList<InputValidator>() {
             {
-                add(new InputValidator(tfType, utils.InputType.TEXT, null, null));
+                add(new InputValidator(tfType, utils.InputType.TEXT15, null, null));
             }
         };
     }

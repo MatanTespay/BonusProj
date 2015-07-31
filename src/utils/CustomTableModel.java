@@ -64,7 +64,7 @@ public class CustomTableModel extends AbstractTableModel {
                 QueryCombobox model = (QueryCombobox) cmb.getModel();
                 Object key;
                 String value;
-                ComboItem item;             
+                ComboItem item;
                 try {
 
                     model.fill();
@@ -74,11 +74,12 @@ public class CustomTableModel extends AbstractTableModel {
                         item = new ComboItem(key, value);
                         model.removeElement(item);
                     }
-                    cmb.setSelectedIndex(0);
+                    if (cmb.getItemCount() > 0) {
+                        cmb.setSelectedIndex(0);
+                    }
                 } catch (SQLException ex) {
                     System.err.println("combobox model fill failed");
                 }
-                
 
             }
         });
