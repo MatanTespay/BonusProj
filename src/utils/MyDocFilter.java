@@ -50,7 +50,7 @@ public class MyDocFilter extends DocumentFilter {
         if (text.isEmpty()) {
             return true;
         }
-        Double d;
+
         try {
             switch (type) {
                 case BYTE:
@@ -76,7 +76,18 @@ public class MyDocFilter extends DocumentFilter {
                 case SHORT:
                     Short.parseShort(text);
                     break;
-                case TEXT:
+                case TEXT15:
+                    if (text.length() > 15) {
+                        return false;
+                    }
+                case TEXT20:
+                    if (text.length() > 20) {
+                        return false;
+                    }
+                case TEXT150:
+                    if (text.length() > 150) {
+                        return false;
+                    }
                     char[] chars = text.toCharArray();
                     for (char c : chars) {
                         if (!Character.isLetter(c) && c != ' ') {
@@ -97,7 +108,6 @@ public class MyDocFilter extends DocumentFilter {
                         return false;
                     }
                     break;
-
 
             }
             return true;

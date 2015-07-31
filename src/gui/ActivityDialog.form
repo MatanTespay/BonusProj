@@ -33,9 +33,9 @@
                       <Component id="cmbCard" min="-2" pref="168" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
-                      <Group type="103" groupAlignment="1" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="lblDate" min="-2" max="-2" attributes="0"/>
-                          <Component id="lblActivity" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblActivity" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
@@ -44,7 +44,7 @@
                       </Group>
                   </Group>
               </Group>
-              <EmptySpace pref="25" max="32767" attributes="0"/>
+              <EmptySpace pref="27" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -61,7 +61,7 @@
                   <Component id="lblDate" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="cmbPDate" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="30" max="32767" attributes="0"/>
+              <EmptySpace pref="34" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="cmbActDate" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="lblActivity" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -79,7 +79,7 @@
   <SubComponents>
     <Component class="javax.swing.JLabel" name="lblNumber">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Caed Number:"/>
+        <Property name="text" type="java.lang.String" value="Card Number:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="lblDate">

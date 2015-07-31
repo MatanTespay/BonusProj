@@ -168,7 +168,7 @@ public class Line extends MyInternalFrame {
 
             // set document filters
             PlainDocument nameDoc = (PlainDocument) tfName.getDocument();
-            nameDoc.setDocumentFilter(new utils.MyDocFilter(InputType.TEXT));
+            nameDoc.setDocumentFilter(new utils.MyDocFilter(InputType.TEXT15));
 
         } catch (SQLException ex) {
 
