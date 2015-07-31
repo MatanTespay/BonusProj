@@ -71,6 +71,18 @@ public class Queries {
     public static final String DELETE_ACTIVITY = "DELETE FROM tblActivity WHERE "
             + "cardNumber = ? and cardPurchaseDate = ? and activityDate = ?";
 
+    public static final String CHECK_PROGRAMS_FOR_CARD = "SELECT x.cardNumber, x.cardPurchaseDate,x.cardLength FROM \n" +
+            "(SELECT * FROM tblPaperCardAreas UNION SELECT * FROM tblOysterCardAreas) " +
+            "AS x INNER JOIN tblCardLengths AS LENG ON (x.cardLength=LENG.cardLength) " +
+            "WHERE cardNumber = ? AND cardPurchaseDate = ? AND zoneNumber = ? " +
+            "AND((LENG.cardLength = '1' AND DATEDIFF(day,x.cardPurchaseDate,GETDATE()) <= 1 ) " +
+            "OR(LENG.cardLength = '2' AND DATEDIFF(day,x.cardPurchaseDate,GETDATE()) <= 3 ) " +
+            "OR(LENG.cardLength = '3' AND DATEDIFF(day,x.cardPurchaseDate,GETDATE()) <= 7 ) " +
+            "OR(LENG.cardLength = '4' AND DATEDIFF(month,x.cardPurchaseDate,GETDATE()) <= 1 ) " +
+            "OR(LENG.cardLength = '5' AND DATEDIFF(month,x.cardPurchaseDate,GETDATE()) <= 3 ) " +
+            "OR(LENG.cardLength = '6' AND DATEDIFF(year,x.cardPurchaseDate,GETDATE()) <= 1 ))";
+
+    
     //------------------------------ ZONE --------------------------------------
     /**
      * @no: 8
@@ -176,6 +188,8 @@ public class Queries {
      */
     public final static String DELETE_STATION = "DELETE FROM tblStation WHERE ID = ?";
 
+    public static final String SELECT_ZONEID_BY_STATIONID = "SELECT zoneNumber FROM tblStation WHERE ID = ?";
+    
     //------------------------ STATION IN LINE ---------------------------------
     /**
      * @no: 22
@@ -696,21 +710,14 @@ public class Queries {
     public static final String INSERT_USER = "INSERT INTO tblUser VALUES (?,?,?)";
 
     //TODO: NOT IN USE
-    /**
-     * @no: 85
-     * @purpose:
-     * @usage: Users form
-     */
-    public static final String UPDATE_USER = "UPDATE tblUser SET RoleID = ? "
-            + "WHERE username = ? and password = ?";
-
-    /**
-     * @no: 86
-     * @purpose:
-     * @usage: Users form
-     */
+    public static final String UPDATE_USER = "UPDATE tblUser"
+                            + " SET username = ?"
+                            + " ,password = ?"
+                            + " ,RoleID = ? "
+                            + "WHERE username=? ";
+    
     public static final String DELETE_USER = "DELETE FROM tblUser WHERE "
-            + "username = ? and password = ?";
+            + "username = ? ";
 
     //---------------------------- OTHER QUERIES -------------------------------
     /**
