@@ -87,6 +87,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
             addMenuItem(aMenu, "Add User", KeyEvent.VK_U);
             addMenuItem(aMenu, "Add Role", KeyEvent.VK_U);
             addMenuItem(aMenu, "Add Card Length", KeyEvent.VK_B);
+            addMenuItem(aMenu, "Add Zone", KeyEvent.VK_B);
         }
         //</editor-fold>
 
@@ -112,6 +113,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         submenu = addMenuToMenuBar("Site", KeyEvent.VK_A);
         addMenuItem(submenu, "Add Site", KeyEvent.VK_B);
         addMenuItem(submenu, "Edit Site", KeyEvent.VK_A);
+        addMenuItem(submenu, "Add Site Type", KeyEvent.VK_A);
         aMenu.add(submenu);
         aMenu.addSeparator();
 
@@ -341,6 +343,13 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
             case "Export/Import CSV":
                 ifram = new ExportImportCsv(e.getActionCommand(), selectedUserType, this);
                 break;
+            case "Add Zone":
+                ifram = new Zones(e.getActionCommand(), selectedUserType);
+                break;
+            case "Add Site Type":
+                ifram = new SiteTypes(e.getActionCommand(), selectedUserType);
+                break;
+
             case "Remote Sites":
             case "Unused Paper Cards":
             case "Main Stations":
@@ -476,7 +485,6 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 //            MainClass.setIsIflySaved(true);
 //            return;
 //        }
-
 
         getLogin().getUsertxtPassword().setText("1234");
 

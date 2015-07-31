@@ -519,13 +519,13 @@ public class Station extends MyInternalFrame {
                     //change mode to edit after saving
                     setMode(EDIT_MODE);
                     setActiveness();
-                }else{
+                } else {
                     JOptionPane.showInternalMessageDialog(this,
-                    "There was an error retrieving the saved \"" + stationName + "\" id.",
-                    "Bummer!",
-                    JOptionPane.PLAIN_MESSAGE);
+                            "There was an error retrieving the saved \"" + stationName + "\" id.",
+                            "Bummer!",
+                            JOptionPane.PLAIN_MESSAGE);
                 }
-                
+
             } else {
                 //edit mode
                 updateStation = con.prepareStatement(Queries.UPDATE_STATION);
@@ -677,7 +677,9 @@ public class Station extends MyInternalFrame {
         setSelectedValue(cmbZone, String.valueOf(this.zoneNumber)); //WHAT FOR? <- ALL FOR LOVE!
         spnPlatforms.setValue(this.platformNum);
         chbKiosk.setSelected(this.isKiosk);
-        cmbLine.setSelectedIndex(0);
+        if (cmbLine.getItemCount() > 0) {
+            cmbLine.setSelectedIndex(0);
+        }
     }
 
     private void setActiveness() {
@@ -702,9 +704,9 @@ public class Station extends MyInternalFrame {
             return false;
         }
         if (platformNum == null || platformNum < utils.Constants.MIN_NUM_OF_PLATFORMS
-                                || platformNum > utils.Constants.MAX_NUM_OF_PLATFORMS || 
-                this.stationName == null || this.tfName.getText().equals("")) {
-        
+                || platformNum > utils.Constants.MAX_NUM_OF_PLATFORMS
+                || this.stationName == null || this.tfName.getText().equals("")) {
+
             btnSave.setToolTipText("The station must have a name");
             return false;
         }

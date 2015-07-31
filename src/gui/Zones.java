@@ -5,8 +5,6 @@
  */
 package gui;
 
-import init.ComboItem;
-import init.InputValidator;
 import static init.MainClass.con;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,7 +16,11 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import static utils.Constants.EDIT_MODE;
+import utils.Queries;
 
 /**
  *
@@ -37,11 +39,18 @@ public class Zones extends MyInternalFrame {
         setMode(EDIT_MODE);
         initComponents();
         fillZones();
-        super.validators = new ArrayList<InputValidator>() {
-            {
-                add(new InputValidator(spnZoneNumber, utils.InputType.INT, null, null));
+        fillCmbZone();
+
+        lstZones.addListSelectionListener(new ListSelectionListener() {
+
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                btnDelete.setEnabled((lstZones.getSelectedIndex() != -1));
             }
-        };
+        });
+        if (lstZones.getModel().getSize() > 0) {
+            lstZones.setSelectedIndex(0);
+        }
     }
 
     /**
@@ -53,37 +62,52 @@ public class Zones extends MyInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel1 = new javax.swing.JPanel();
         lblZoneNumber = new javax.swing.JLabel();
-        lblZones = new javax.swing.JLabel();
-        spnZoneNumber = new javax.swing.JSpinner();
+        cmbZone = new javax.swing.JComboBox();
         btnCreate = new javax.swing.JButton();
-        btnDelete = new javax.swing.JButton();
-        btnSubmit = new javax.swing.JButton();
-        btnCancel = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         lstZones = new javax.swing.JList();
+        btnDelete = new javax.swing.JButton();
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Add Zone"));
 
         lblZoneNumber.setText("Zone number");
 
-        lblZones.setText("Zones");
+        cmbZone.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        btnCreate.setText("Create");
+        btnCreate.setText("Add");
         btnCreate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCreateActionPerformed(evt);
             }
         });
 
-        btnDelete.setText("Delete");
-        btnDelete.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDeleteActionPerformed(evt);
-            }
-        });
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblZoneNumber)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(cmbZone, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnCreate)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnCreate)
+                    .addComponent(lblZoneNumber)
+                    .addComponent(cmbZone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+        );
 
-        btnSubmit.setText("Submit");
-
-        btnCancel.setText("Cancel");
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Exisiting Zones"));
 
         lstZones.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
@@ -92,6 +116,34 @@ public class Zones extends MyInternalFrame {
         });
         jScrollPane2.setViewportView(lstZones);
 
+        btnDelete.setText("Remove");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnDelete)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -99,117 +151,115 @@ public class Zones extends MyInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblZones)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(btnSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(layout.createSequentialGroup()
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(jScrollPane2)
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                    .addComponent(lblZoneNumber)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(spnZoneNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGap(18, 18, 18)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(btnCreate, javax.swing.GroupLayout.DEFAULT_SIZE, 79, Short.MAX_VALUE)
-                                .addComponent(btnDelete, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(spnZoneNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnCreate)
-                    .addComponent(lblZoneNumber))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
-                .addComponent(lblZones)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnDelete)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnCancel)
-                    .addComponent(btnSubmit))
-                .addGap(16, 16, 16))
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
-        PreparedStatement st;
-        int zoneNumber;
-        try {
-            zoneNumber = Integer.parseInt(spnZoneNumber.getModel().getValue().toString());
 
-            st = con.prepareStatement("INSERT INTO tblZone VALUES (?)");
-            st.setInt(1, zoneNumber);
+        try {
+
+            short zoneNumber = Short.parseShort(cmbZone.getSelectedItem().toString());
+
+            PreparedStatement st = con.prepareStatement(Queries.INSERT_ZONE);
+            st.setShort(1, zoneNumber);
             st.executeUpdate();
+
             fillZones();
+            fillCmbZone();
 
         } catch (SQLException | NullPointerException ex) {
-            //            Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Zones.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnCreateActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        PreparedStatement st;
-        ComboItem zoneItem;
-        int zoneNumber;
+
         try {
-            zoneItem = (ComboItem)(lstZones.getSelectedValue());
-            zoneNumber = Integer.parseInt(zoneItem.getKey().toString());
-            st = con.prepareStatement("DELETE FROM tblZone WHERE "
-                    + "number = ?");
-            st.setInt(1, zoneNumber);
+
+            short zoneNumber = Short.parseShort(lstZones.getSelectedValue().toString());
+            PreparedStatement st = con.prepareStatement(Queries.DELETE_ZONE);
+            st.setShort(1, zoneNumber);
             st.executeUpdate();
 
             fillZones();
+            fillCmbZone();
+
         } catch (SQLException ex) {
+            if (ex.getErrorCode() == 547) {
+                JOptionPane.showInternalMessageDialog(this,
+                        "The zone can not be deleted since "
+                        + "it is already in use",
+                        "Bummer!",
+                        JOptionPane.ERROR_MESSAGE);
+            }
             Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnDeleteActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnCreate;
     private javax.swing.JButton btnDelete;
-    private javax.swing.JButton btnSubmit;
+    private javax.swing.JComboBox cmbZone;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lblZoneNumber;
-    private javax.swing.JLabel lblZones;
     private javax.swing.JList lstZones;
-    private javax.swing.JSpinner spnZoneNumber;
     // End of variables declaration//GEN-END:variables
 
     private void fillZones() {
-        Statement s;
-        ResultSet rs;
-        try {
-            s = con.createStatement();
-            rs = s.executeQuery("Select * From tblZone");
 
-            Set<ComboItem> items = new TreeSet<>();
+        try {
+
+            Statement s = con.createStatement();
+            ResultSet rs = s.executeQuery(Queries.SELECT_ALL_ZONES);
+
+            Set<Short> items = new TreeSet<>();
             while (rs.next()) {
-                items.add(new ComboItem(rs.getString("number"), "Zone " + rs.getString("number")));
+                items.add(rs.getShort("number"));
             }
 
             DefaultListModel listModel = new DefaultListModel();
-            for (ComboItem ci : items) {
+            for (Short ci : items) {
                 listModel.addElement(ci);
             }
             lstZones.setModel(listModel);
 
         } catch (SQLException ex) {
-            Logger.getLogger(Zones.class
-                    .getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Zones.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void fillCmbZone() {
+        ResultSet rs;
+        try {
+            Statement st = con.createStatement();
+            rs = st.executeQuery(Queries.SELECT_UNUSED_ZONES);
+
+            ArrayList<Short> items = new ArrayList<>();
+            while (rs.next()) {
+                items.add(rs.getShort("number"));
+            }
+//            if (!items.isEmpty()) {
+            cmbZone.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
+//            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Zones.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }
