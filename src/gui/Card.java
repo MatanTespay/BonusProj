@@ -767,8 +767,10 @@ public class Card extends MyInternalFrame {
             length = program[4].toString().charAt(0);
 
             getZonesToAdd = (cardType == PAPER)
-                    ? con.prepareCall(Queries.PAPER_PROGRAM_ZONES_TO_ADD, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY)
-                    : con.prepareCall(Queries.OYSTER_PROGRAM_ZONES_TO_ADD, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+                    ? con.prepareCall(Queries.PAPER_PROGRAM_ZONES_TO_ADD,
+                            ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY)
+                    : con.prepareCall(Queries.OYSTER_PROGRAM_ZONES_TO_ADD,
+                            ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
             getZonesToAdd.setByte(1, maxZoneNumber);
             getZonesToAdd.setLong(2, cardNumber);
@@ -807,8 +809,7 @@ public class Card extends MyInternalFrame {
                 this.cardType = OYSTER;
 
                 Blob blob = rs.getBlob("picture");
-                if(blob != null)
-                {
+                if (blob != null) {
                     int blobLength = (int) blob.length();
                     byte[] blobAsBytes = blob.getBytes(1, blobLength);
                     this.oldPicture = this.picture = getScaledImage(blobAsBytes);
@@ -838,20 +839,26 @@ public class Card extends MyInternalFrame {
      */
     private void setActiveness() {
 
-        if (getMode() == ADD_MODE) {
-            cmbType.setEnabled(true);
+        if (getSelectedUserType().equals("Customer")) {
+            cmbType.setEnabled(getMode() == ADD_MODE);
             btnDelete.setVisible(false);
+            btnRemoveProgram.setVisible(false);
         } else {
-            // edit mode
-            cmbType.setEnabled(false);
-            btnDelete.setVisible(true);
-
+            // user is not customer
+            if (getMode() == ADD_MODE) {
+                cmbType.setEnabled(true);
+                btnDelete.setVisible(false);
+            } else {
+                // edit mode
+                cmbType.setEnabled(false);
+                btnDelete.setVisible(true);
+            }
+            btnDelete.setEnabled(isOkToDelete());
         }
 
         setProgramTableModel();
         tfCardNumber.setEnabled(false);
         btnSave.setEnabled(isOkToSave());
-        btnDelete.setEnabled(isOkToDelete());
         btnAddProgram.setEnabled(isOkToAddProgram());
         modifyFormToCardType();
     }
@@ -982,7 +989,6 @@ public class Card extends MyInternalFrame {
                 insertOysterCard.setLong(1, cNumber);
                 insertOysterCard.setTimestamp(2, getToday());
 
-                
                 if (picture != null) {
                     Image pic = picture.getImage();
                     BufferedImage bi = getBufferedImage(pic);
