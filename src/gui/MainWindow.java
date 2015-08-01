@@ -95,7 +95,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 
         aMenu = addMenuToMenuBar("management", KeyEvent.VK_O);
         submenu = addMenuToMenuBar("Activity", KeyEvent.VK_A);
-        addMenuItem(submenu, "Add Activity", KeyEvent.VK_B,null);
+        addMenuItem(submenu, "Add Activity", KeyEvent.VK_B,"Role.png");
         addMenuItem(submenu, "Edit Activity", KeyEvent.VK_A,null);
         aMenu.add(submenu);
         aMenu.addSeparator();
