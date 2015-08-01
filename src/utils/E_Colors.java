@@ -9,10 +9,12 @@ import java.awt.Color;
 
 public enum E_Colors {
 
-    Black(35, 31, 32),
+    Black(35, 31, 32), 
     Brown(176, 96, 15),
     Dark_blue(27, 63, 148),
     Dark_gray(76,87,95),
+    Dark_turquoise(0,164,167),
+    Deep_purple(113,86,165),
     Gray(149, 156, 161),
     Green(0, 132, 61),
     Light_blue(6, 157, 220),
@@ -21,6 +23,7 @@ public enum E_Colors {
     Pink(243, 134, 160),
     Purple(151, 1, 94),
     Red(238, 46, 34),
+    Redish(226,24,54),
     Turquoise(132, 205, 188),
     Yellow(254, 209, 5);
 

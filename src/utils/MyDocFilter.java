@@ -59,6 +59,7 @@ public class MyDocFilter extends DocumentFilter {
                 case CHAR1:
                     short sh = Short.parseShort(text);
                     if (sh < 0 || sh > 10) {
+                        Toolkit.getDefaultToolkit().beep();
                         return false;
                     }
                     break;
@@ -78,31 +79,41 @@ public class MyDocFilter extends DocumentFilter {
                     break;
                 case TEXT15:
                     if (text.length() > 15) {
+                        Toolkit.getDefaultToolkit().beep();
                         return false;
                     }
                 case TEXT20:
                     if (text.length() > 20) {
+                        Toolkit.getDefaultToolkit().beep();
+                        return false;
+                    }
+                case TEXT26:
+                    if (text.length() > 26) {
+                        Toolkit.getDefaultToolkit().beep();
                         return false;
                     }
                 case TEXT50:
                     if (text.length() > 50) {
+                        Toolkit.getDefaultToolkit().beep();
                         return false;
                     }
                 case TEXT150:
                     if (text.length() > 150) {
+                        Toolkit.getDefaultToolkit().beep();
                         return false;
                     }
-                    char[] chars = text.toCharArray();
-                    for (char c : chars) {
-                        if (!Character.isLetter(c) && c != ' ') {
-                            Toolkit.getDefaultToolkit().beep();
-                            return false;
-                        }
-                    }
+//                    char[] chars = text.toCharArray();
+//                    for (char c : chars) {
+//                        if (!Character.isLetter(c) && c != ' ') {
+//                            Toolkit.getDefaultToolkit().beep();
+//                            return false;
+//                        }
+//                    }
                     break;
                 case YEAR_RANGE:
                     int year = Integer.parseInt(text);
                     if (year < minYear || year > maxYear) {
+                        Toolkit.getDefaultToolkit().beep();
                         return false;
                     }
                     break;
@@ -118,6 +129,7 @@ public class MyDocFilter extends DocumentFilter {
                         return false;
                     }
                     if (text.length() > 15) {
+                        Toolkit.getDefaultToolkit().beep();
                         return false;
                     }
                     break;

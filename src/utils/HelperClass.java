@@ -860,19 +860,19 @@ public class HelperClass {
             case '1':
                 cal.add(Calendar.DATE, 1);
                 break;
-            case '2':
+            case '3':
                 cal.add(Calendar.DATE, 3);
                 break;
-            case '3':
+            case 'W':
                 cal.add(Calendar.WEEK_OF_YEAR, 1);
                 break;
-            case '4':
+            case 'M':
                 cal.add(Calendar.MONTH, 1);
                 break;
-            case '5':
+            case 'T':
                 cal.add(Calendar.MONTH, 3);
                 break;
-            case '6':
+            case 'Y':
                 cal.add(Calendar.YEAR, 1);
                 break;
         }
