@@ -412,11 +412,11 @@ public final class Queries {
      */
     public static final String SELECT_PAPER_PROGRAMS = "SELECT TOP 1 *, case "
             + "when PCA.cardLength='1' then DATEADD(dd,1,PCA.cardPurchaseDate) "
-            + "when PCA.cardLength='2' then DATEADD(dd,3,PCA.cardPurchaseDate) "
-            + "when PCA.cardLength='3' then DATEADD(dd,7,PCA.cardPurchaseDate) "
-            + "when PCA.cardLength='4' then DATEADD(mm,1,PCA.cardPurchaseDate) "
-            + "when PCA.cardLength='5' then DATEADD(mm,3,PCA.cardPurchaseDate) "
-            + "when PCA.cardLength='6' then DATEADD(yyyy,1,PCA.cardPurchaseDate) "
+            + "when PCA.cardLength='3' then DATEADD(dd,3,PCA.cardPurchaseDate) "
+            + "when PCA.cardLength='W' then DATEADD(dd,7,PCA.cardPurchaseDate) "
+            + "when PCA.cardLength='M' then DATEADD(mm,1,PCA.cardPurchaseDate) "
+            + "when PCA.cardLength='T' then DATEADD(mm,3,PCA.cardPurchaseDate) "
+            + "when PCA.cardLength='Y' then DATEADD(yyyy,1,PCA.cardPurchaseDate) "
             + "end as 'expirationDate' FROM tblPaperCardAreas PCA WHERE "
             + "cardNumber = ? ORDER BY zoneNumber DESC";
 
@@ -463,11 +463,11 @@ public final class Queries {
      */
     public static final String SELECT_OYSTER_PROGRAMS = "SELECT TOP 1 *, case "
             + "when OCA.cardLength='1' then DATEADD(dd,1,OCA.cardPurchaseDate) "
-            + "when OCA.cardLength='2' then DATEADD(dd,3,OCA.cardPurchaseDate) "
-            + "when OCA.cardLength='3' then DATEADD(dd,7,OCA.cardPurchaseDate) "
-            + "when OCA.cardLength='4' then DATEADD(mm,1,OCA.cardPurchaseDate) "
-            + "when OCA.cardLength='5' then DATEADD(mm,3,OCA.cardPurchaseDate) "
-            + "when OCA.cardLength='6' then DATEADD(yyyy,1,OCA.cardPurchaseDate) "
+            + "when OCA.cardLength='3' then DATEADD(dd,3,OCA.cardPurchaseDate) "
+            + "when OCA.cardLength='W' then DATEADD(dd,7,OCA.cardPurchaseDate) "
+            + "when OCA.cardLength='M' then DATEADD(mm,1,OCA.cardPurchaseDate) "
+            + "when OCA.cardLength='T' then DATEADD(mm,3,OCA.cardPurchaseDate) "
+            + "when OCA.cardLength='Y' then DATEADD(yyyy,1,OCA.cardPurchaseDate) "
             + "end as 'expirationDate' FROM tblOysterCardAreas OCA WHERE "
             + "cardNumber = ? ORDER BY zoneNumber DESC";
 
