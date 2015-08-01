@@ -7,8 +7,10 @@ package gui;
 
 import com.microsoft.sqlserver.jdbc.SQLServerException;
 import init.ComboItem;
+import init.MainClass;
 import static init.MainClass.con;
 import init.MyTableModel;
+import java.awt.Dimension;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,14 +18,19 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.text.PlainDocument;
 import static utils.Constants.EDIT_MODE;
 import utils.HelperClass;
@@ -40,6 +47,7 @@ public class User extends MyInternalFrame {
         "UserName",
         "Password",
         "RoleName"};
+    Vector<String> colNames;
 
     /**
      * Creates new form SiteType
@@ -51,8 +59,50 @@ public class User extends MyInternalFrame {
         super(title, type);
         setMode(EDIT_MODE);
         initComponents();
+        colNames = new Vector<>(3);
+        colNames.add("UserName");
+        colNames.add("Password");
+        colNames.add("RoleName");
         FillUsersTable();
         fillCbUserType();
+        int rows = tblUsers.getRowCount();
+        Dimension d = tblUsers.getPreferredSize();
+        jScrollPane1.setPreferredSize(
+                new Dimension(d.width, tblUsers.getRowHeight() * rows + 1));
+
+        tfAddName.getDocument().addDocumentListener(new DocumentListener() {
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                setName(tfAddName);
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                setName(tfAddName);
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+            }
+        });
+
+        tfAddPass.getDocument().addDocumentListener(new DocumentListener() {
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                setName(tfAddPass);
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                setName(tfAddPass);
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+            }
+        });
 
         PlainDocument addNameDoc = (PlainDocument) tfAddName.getDocument();
         addNameDoc.setDocumentFilter(new utils.MyDocFilter(InputType.TEXT15));
@@ -67,33 +117,61 @@ public class User extends MyInternalFrame {
         updatePassDoc.setDocumentFilter(new utils.MyDocFilter(InputType.PASSWORD));
 
         tblUsers.setRowSelectionAllowed(true);
-        
+
         ListSelectionModel rowSelectionModel = tblUsers.getSelectionModel();
         rowSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         rowSelectionModel.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) {
+                    tableSelection();
+                }
+            }
+
+            private void tableSelection() {
                 String name = null;
                 String pass = null;
                 String role = null;
-                int[] selectedRow = tblUsers.getSelectedRows();
-                int[] selectedColumns = tblUsers.getSelectedColumns();
+                int selectedRow = tblUsers.getSelectedRow();
 
-                for (int i = 0; i < selectedRow.length; i++) {
-                    name = (String) tblUsers.getValueAt(selectedRow[i], 0);
-                    pass = (String) tblUsers.getValueAt(selectedRow[i], 1);
-                    role = (String) tblUsers.getValueAt(selectedRow[i], 2);
-                }
-                
+                btnUpdate.setEnabled(true);
+                btnRemove.setEnabled(true);
+
+                name = (String) tblUsers.getValueAt(selectedRow, 0);
+                pass = (String) tblUsers.getValueAt(selectedRow, 1);
+                role = (String) tblUsers.getValueAt(selectedRow, 2);
+
                 if (name != null && pass != null && role != null) {
+                    //Show(name+ "\n"+pass+ "\n"+role+ " ");
                     tfUpdateName.setText(name);
                     tfUpdatePass.setText(pass);
-                    HelperClass.setSelectedValue(cbRoleTypeUpdate,role);
+                    HelperClass.setSelectedValue(cbRoleTypeUpdate, role);
+                } else {
+                    //Show("????\n"+ name+ "\n"+pass+ "\n"+role+ " ");
                 }
-               
             }
 
         });
+        btnUpdate.setEnabled(false);
+        btnRemove.setEnabled(false);
+        btnAdd.setEnabled(false);
 
+    }
+
+    private void setName(JTextField field) {
+        if (field.getText() != null && !field.getText().equals("")
+                && field.getText().length() <= 15) {
+            btnAdd.setEnabled(true);
+
+        } else {
+            btnAdd.setEnabled(false);
+        }
+    }
+
+    private void Show(String test) {
+        JOptionPane.showInternalMessageDialog(this,
+                test,
+                "Error",
+                JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void FillUsersTable() {
@@ -104,12 +182,27 @@ public class User extends MyInternalFrame {
 
             stmt = con.prepareStatement(Queries.SELECT_ALL_USERS_ANDTHEIR_ROLES);
             rs = stmt.executeQuery();
+
             ArrayList<Object[]> rows = new ArrayList();
+
             while (rs.next()) {
                 Object[] row = {rs.getString("UserName"), rs.getString("Password"), rs.getString("RoleName")};
                 rows.add(row);
             }
             MyTableModel tableModel = new MyTableModel(this.UserColumns, rows, null);
+
+//            Vector<Vector<Object>> insertdData = new Vector<Vector<Object>>();
+//            
+//            Vector<Object> vrow = new Vector<>(3);;
+//            while (rs.next()) {
+//                vrow.add(rs.getString("UserName"));
+//                vrow.add(rs.getString("Password"));
+//                vrow.add(rs.getString("RoleName"));
+//                
+//                //Object[] row = {rs.getString("UserName"), rs.getString("Password"), rs.getString("RoleName")};
+//                insertdData.add(vrow);
+//            }
+//          DefaultTableModel tableModel = new DefaultTableModel(insertdData,colNames);
             tblUsers.setModel(tableModel);
         } catch (SQLException ex) {
             Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
@@ -250,8 +343,6 @@ public class User extends MyInternalFrame {
 
             }
         ));
-        tblUsers.setMaximumSize(new java.awt.Dimension(0, 50000));
-        tblUsers.setPreferredSize(new java.awt.Dimension(32767, 70767));
         jScrollPane1.setViewportView(tblUsers);
 
         javax.swing.GroupLayout pExistingTypesLayout = new javax.swing.GroupLayout(pExistingTypes);
@@ -374,47 +465,156 @@ public class User extends MyInternalFrame {
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         PreparedStatement stmt;
-        try{
-                 int RoleID = Integer.parseInt((String) ((ComboItem) cbRoleType.getSelectedItem()).getKey());
-                    stmt = con.prepareStatement(Queries.INSERT_USER);
-                    stmt.setString(1, tfAddName.getText());
-                    stmt.setString(2, tfAddPass.getText());
-                    stmt.setInt(3, RoleID);
-                    // execute insert SQL stetement                
-                    stmt.executeUpdate();
-                    tfAddName.setText("");
-                    tfAddPass.setText("");
+        try {
+            int RoleID = Integer.parseInt((String) ((ComboItem) cbRoleType.getSelectedItem()).getKey());
+            stmt = con.prepareStatement(Queries.INSERT_USER);
+            stmt.setString(1, tfAddName.getText());
+            stmt.setString(2, tfAddPass.getText());
+            stmt.setInt(3, RoleID);
+            // execute insert SQL stetement                
+            stmt.executeUpdate();
+            tfAddName.setText("");
+            tfAddPass.setText("");
 
-                    JOptionPane.showMessageDialog(this,
-                            "User was added successfully",
-                            "INFORMATION MESSAGE",
-                            JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                    "User was added successfully",
+                    "INFORMATION MESSAGE",
+                    JOptionPane.INFORMATION_MESSAGE);
 
-                    FillUsersTable();
-        
+            FillUsersTable();
+
         } catch (SQLServerException ex) {
-                String msg = "There was an error in the action";
-                if (ex.getErrorCode() == 2627) { // 2627 is unique constraint (includes primary key), 2601 is unique index
-                    msg = "This User Name alredy exit!";
-                }
-                JOptionPane.showInternalConfirmDialog(this, msg,
-                        "Error", JOptionPane.PLAIN_MESSAGE,
-                        JOptionPane.ERROR_MESSAGE);
-
-                Logger.getLogger(Users.class.getName()).log(Level.SEVERE, null, ex);
-
-            } catch (SQLException ex) {
-                Logger.getLogger(Users.class.getName()).log(Level.SEVERE, null, ex);
+            String msg = "There was an error in the action";
+            if (ex.getErrorCode() == 2627) { // 2627 is unique constraint (includes primary key), 2601 is unique index
+                msg = "This User Name alredy exit!";
             }
+            JOptionPane.showInternalConfirmDialog(this, msg,
+                    "Error", JOptionPane.PLAIN_MESSAGE,
+                    JOptionPane.ERROR_MESSAGE);
+
+            Logger.getLogger(Role.class.getName()).log(Level.SEVERE, null, ex);
+
+        } catch (SQLException ex) {
+            Logger.getLogger(Role.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
+        PreparedStatement stmt;
+        try {
+            stmt = MainClass.con.prepareStatement(Queries.DELETE_USER);
+            int selectedRow = tblUsers.getSelectedRow();
+            if (selectedRow >= 0) {
+                String oldName = (String) tblUsers.getModel().getValueAt(selectedRow, 0);
 
+                stmt.setString(1, oldName);
+
+                FillUsersTable();
+
+                int result = stmt.executeUpdate();
+                if (result == 1) {
+                    JOptionPane.showMessageDialog(this,
+                            "User was deleted successfully",
+                            "INFORMATION MESSAGE",
+                            JOptionPane.INFORMATION_MESSAGE);
+                    //refresh table data
+                    FillUsersTable();
+                    tfUpdateName.setText("");
+                    tfUpdatePass.setText("");
+                    btnUpdate.setEnabled(false);
+                    btnRemove.setEnabled(false);
+                    tblUsers.clearSelection();
+
+                } else {
+                    JOptionPane.showInternalMessageDialog(this,
+                            "Error, could not delete user.",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+
+                }
+
+            } else {
+                JOptionPane.showInternalMessageDialog(this,
+                        "Please select a row",
+                        "INFORMATION MESSAGE",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+
+        } catch (SQLException e) {
+            String msg = "There was an error in the action";
+
+            JOptionPane.showInternalMessageDialog(this,
+                    msg,
+                    "Error",
+                    JOptionPane.PLAIN_MESSAGE);
+
+            Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, e);
+        }
 
     }//GEN-LAST:event_btnRemoveActionPerformed
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
 
+        try {
+            if (tfUpdateName.getText().trim().length() != 0
+                    && tfUpdatePass.getText().trim().length() != 0
+                    && cbRoleTypeUpdate.getSelectedItem() != null) {
+
+                PreparedStatement stmt;
+                stmt = con.prepareStatement(utils.Queries.UPDATE_USER,
+                        ResultSet.TYPE_SCROLL_SENSITIVE,
+                        ResultSet.CONCUR_UPDATABLE);
+
+                //set params
+                int RoleID = Integer.parseInt((String) ((ComboItem) cbRoleTypeUpdate.getSelectedItem()).getKey());
+                int selectedRow = tblUsers.getSelectedRow();
+                if (selectedRow >= 0) {
+                    String oldName = (String) tblUsers.getModel().getValueAt(0, 0);
+
+                    stmt.setString(1, tfUpdateName.getText());
+                    stmt.setString(2, tfUpdatePass.getText());
+                    stmt.setInt(3, RoleID);
+                    stmt.setString(4, oldName);
+
+                    int result = stmt.executeUpdate();
+                    if (result == 1) {
+                        JOptionPane.showInternalMessageDialog(this,
+                                "Chnanges saved successfully",
+                                "INFORMATION MESSAGE",
+                                JOptionPane.INFORMATION_MESSAGE);
+                        //refresh table data
+                        FillUsersTable();
+                        tfUpdateName.setText("");
+                        tfUpdatePass.setText("");
+                        btnUpdate.setEnabled(false);
+                        btnRemove.setEnabled(false);
+                        tblUsers.clearSelection();
+
+                    } else {
+                        JOptionPane.showInternalMessageDialog(this,
+                                "Error, could not update user.",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+
+                    }
+                } else {
+                    JOptionPane.showInternalMessageDialog(this,
+                            "Please select a row",
+                            "INFORMATION MESSAGE",
+                            JOptionPane.INFORMATION_MESSAGE);
+                }
+
+            }
+        } catch (SQLException e) {
+            String msg = "There was an error in the action";
+
+            JOptionPane.showInternalMessageDialog(this,
+                    msg,
+                    "Error",
+                    JOptionPane.PLAIN_MESSAGE);
+
+            Logger.getLogger(Activity.class.getName()).log(Level.SEVERE, null, e);
+        }
 
     }//GEN-LAST:event_btnUpdateActionPerformed
 
@@ -442,5 +642,4 @@ public class User extends MyInternalFrame {
     private javax.swing.JTextField tfUpdatePass;
     // End of variables declaration//GEN-END:variables
 
-   
 }

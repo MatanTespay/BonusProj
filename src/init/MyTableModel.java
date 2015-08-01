@@ -82,7 +82,7 @@ public class MyTableModel extends DefaultTableModel {
     @Override
     public Object getValueAt(int row, int col) {
         //return data[row][col];
-        if (data != null && data.get(row) != null) {
+        if (data != null &&  row != -1 && col != -1 && data.get(row) != null) {
             Object[] rowData = data.get(row);
             Object v = rowData[col];
             return v;

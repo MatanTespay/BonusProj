@@ -736,8 +736,7 @@ public final class Queries {
      * @purpose: return the role ID of a role by its name
      * @usage: Roles form
      */
-    public static final String SELECT_ROLE_ID_OF_ROLE_BY_NAME = "SELECT * FROM "
-            + "tblRole WHERE RoleName = ?";
+    public static final String SELECT_ROLE_ID_OF_ROLE_BY_NAME = "SELECT LOWER(RoleName) FROM tblRole WHERE RoleName = ?";
 
     /**
      * @no: 78

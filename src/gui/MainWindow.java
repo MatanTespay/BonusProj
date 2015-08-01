@@ -86,10 +86,10 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 
         //<editor-fold defaultstate="collapsed" desc="Only Admin">
         if (!selectedUserType.equals("Manager")) {
-            addMenuItem(aMenu, "Add User", KeyEvent.VK_U,"addUser.png");
-            addMenuItem(aMenu, "Add Role", KeyEvent.VK_U,"");
-            addMenuItem(aMenu, "Add Card Length", KeyEvent.VK_B,null);
-            addMenuItem(aMenu, "Add Zone", KeyEvent.VK_B,null);
+            addMenuItem(aMenu, "Users", KeyEvent.VK_U,"addUser.png");
+            addMenuItem(aMenu, "Roles", KeyEvent.VK_U,"");
+            addMenuItem(aMenu, "Card Length", KeyEvent.VK_B,null);
+            addMenuItem(aMenu, "Zone", KeyEvent.VK_B,null);
         }
         //</editor-fold>
 
@@ -136,7 +136,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         aMenu.add(submenu);
         aMenu.addSeparator();
 
-        addMenuItem(aMenu, "Export/Import CSV", KeyEvent.VK_B,null);
+        addMenuItem(aMenu, "Export/Import CSV", KeyEvent.VK_B,"folder.png");
 
     }
 
@@ -317,8 +317,8 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
             case "Edit Card":
                 ifram = new CardDialog(e.getActionCommand(), selectedUserType, this);
                 break;
-            case "Add Role":
-                ifram = new AddRole(e.getActionCommand(), selectedUserType);
+            case "Roles":
+                ifram = new Role(e.getActionCommand(), selectedUserType);
                 break;
             case "Add Station":
                 ifram = new Station(e.getActionCommand(), selectedUserType);
@@ -326,10 +326,10 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
             case "Edit Station":
                 ifram = new StationDialog(e.getActionCommand(), selectedUserType, this);
                 break;
-            case "Add Card Length":
+            case "Card Length":
                 ifram = new CardLengths(e.getActionCommand(), selectedUserType);
                 break;
-            case "Add User":
+            case "Users":
                 ifram = new User(e.getActionCommand(), selectedUserType);
                 break;
             case "Add Line":
@@ -350,7 +350,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
             case "Export/Import CSV":
                 ifram = new ExportImportCsv(e.getActionCommand(), selectedUserType, this);
                 break;
-            case "Add Zone":
+            case "Zone":
                 ifram = new Zones(e.getActionCommand(), selectedUserType);
                 break;
             case "Add Site Type":
