@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.util.GregorianCalendar;
 import java.util.Random;
 import java.util.Set;
 import java.util.TreeSet;
@@ -345,13 +346,5 @@ public class SiteTypes extends MyInternalFrame {
             Logger.getLogger(SiteTypes.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    private String randomString(int len) {
-        StringBuilder sb = new StringBuilder(len);
-        for (int i = 0; i < len; i++) {
-            sb.append(AB.charAt(rnd.nextInt(AB.length())));
-        }
-        return sb.toString();
     }
 }
