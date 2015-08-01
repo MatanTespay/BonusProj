@@ -79,6 +79,15 @@ public class Site extends MyInternalFrame {
         setVariables();
         buildForm();
         setDefaults();
+        if (!(cmbLine.getItemCount() > 0 && cmbStation.getItemCount() > 0)) {
+            btnAddExit.setEnabled(false);
+            btnRemoveExit.setEnabled(false);
+        }
+        
+        if (!(cmbNearSite.getItemCount() > 0)) {
+            btnRemoveSite.setEnabled(false);
+            btnAddNearSite.setEnabled(false);
+        }
     }
 
     public Site(String title, String type) {
@@ -90,7 +99,11 @@ public class Site extends MyInternalFrame {
         exitDistance = -1;
         nearSiteDistance = -1;
         buildForm();
-        cmbType.setSelectedIndex(0);
+        if (cmbType.getModel().getSize() > 0) {
+            cmbType.setSelectedIndex(0);
+
+        }
+
     }
 
     private void buildForm() {
@@ -699,8 +712,7 @@ public class Site extends MyInternalFrame {
         TableModel model;
 
         try {
-           
-        
+
             model = tblNearbyExits.getModel();
             selectedRow = tblNearbyExits.getSelectedRow();
 
@@ -713,7 +725,7 @@ public class Site extends MyInternalFrame {
             st.setInt(2, stationNumber);
             st.setString(3, lineName);
             int result = st.executeUpdate();
-            
+
             if (result == 1) {
                 JOptionPane.showInternalMessageDialog(this,
                         "Exit " + stationName + " - " + lineName + " was removed successfully.",
@@ -725,13 +737,13 @@ public class Site extends MyInternalFrame {
             } else {
                 JOptionPane.showInternalMessageDialog(this,
                         "There was some errors removing the exit\n"
-                        + "Between " +  stationName + " and " + lineName
+                        + "Between " + stationName + " and " + lineName
                         + "Please Dont try later.",
                         "Bummer!",
                         JOptionPane.ERROR_MESSAGE);
             }
         } catch (SQLException | NullPointerException ex) {
-                     Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnRemoveExitActionPerformed
 
@@ -904,19 +916,19 @@ public class Site extends MyInternalFrame {
 
             if (result == 1) {
                 JOptionPane.showInternalMessageDialog(this,
-                    "Conection " + siteName + " - " + model.getValueAt(selectedRow, 1) + " was removed successfully.",
-                    "Hooray!",
-                    JOptionPane.PLAIN_MESSAGE);
+                        "Conection " + siteName + " - " + model.getValueAt(selectedRow, 1) + " was removed successfully.",
+                        "Hooray!",
+                        JOptionPane.PLAIN_MESSAGE);
 
                 fillNearBySites();
 
             } else {
                 JOptionPane.showInternalMessageDialog(this,
-                    "There was some errors adding the connection\n"
-                    + "Between " +  siteName + " and " + model.getValueAt(selectedRow, 1)
-                    + "Please Dont try later.",
-                    "Bummer!",
-                    JOptionPane.ERROR_MESSAGE);
+                        "There was some errors adding the connection\n"
+                        + "Between " + siteName + " and " + model.getValueAt(selectedRow, 1)
+                        + "Please Dont try later.",
+                        "Bummer!",
+                        JOptionPane.ERROR_MESSAGE);
             }
 
         } catch (SQLException | NullPointerException ex) {
@@ -926,7 +938,7 @@ public class Site extends MyInternalFrame {
 
     private void btnAddNearSiteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddNearSiteActionPerformed
         PreparedStatement st;
-        Connection con ;
+        Connection con;
         ComboItem siteItem;
         short otherSiteNumber;
         double distance;
@@ -935,7 +947,7 @@ public class Site extends MyInternalFrame {
             con = MainClass.con;
             con.setAutoCommit(false);
             st = con.prepareStatement(utils.Queries.INSERT_SFS);
-            
+
             siteItem = (ComboItem) cmbNearSite.getSelectedItem();
             otherSiteNumber = Short.valueOf(siteItem.getKey().toString());
             distance = Double.parseDouble(tfDistToSite.getText());
@@ -943,33 +955,32 @@ public class Site extends MyInternalFrame {
             st.setShort(1, siteID);
             st.setShort(2, otherSiteNumber);
             st.setDouble(3, distance);
-            
+
             st.addBatch();
-            
+
             st.setShort(1, otherSiteNumber);
-            st.setShort(2, siteID);            
+            st.setShort(2, siteID);
             st.setDouble(3, distance);
             st.addBatch();
-            
+
             int[] result = st.executeBatch();
             con.commit();
-            
 
             if (result.length == 2) {
                 JOptionPane.showInternalMessageDialog(this,
-                    "Near site : "  + siteItem.getLabel() + " was saved successfully.",
-                    "Hooray!",
-                    JOptionPane.PLAIN_MESSAGE);
+                        "Near site : " + siteItem.getLabel() + " was saved successfully.",
+                        "Hooray!",
+                        JOptionPane.PLAIN_MESSAGE);
 
                 fillNearBySites();
 
             } else {
                 JOptionPane.showInternalMessageDialog(this,
-                    "There was some errors adding the site\n"
-                    + "Between " +  siteName + " and " + siteItem.getLabel()
-                    + "\nPlease Dont try later.",
-                    "Bummer!",
-                    JOptionPane.ERROR_MESSAGE);
+                        "There was some errors adding the site\n"
+                        + "Between " + siteName + " and " + siteItem.getLabel()
+                        + "\nPlease Dont try later.",
+                        "Bummer!",
+                        JOptionPane.ERROR_MESSAGE);
             }
 
         } catch (SQLException ex) {
@@ -1069,10 +1080,9 @@ public class Site extends MyInternalFrame {
 
             s = con.prepareCall("Select * From tblSiteType");
             cmbType.setModel(new QueryCombobox(cmbType, String.class, s));
-            
+
 //            ComboItem typeItem = (ComboItem) cmbType.getSelectedItem();
 //            this.type = (String) typeItem.getKey();
-            
 //            rs = s.executeQuery();
 //            ArrayList<ComboItem> items = new ArrayList<>();
 //            while (rs.next()) {
@@ -1104,7 +1114,7 @@ public class Site extends MyInternalFrame {
             HashSet<JButton> tableButtons = new HashSet<>();
             tableButtons.add(this.btnRemoveExit);
             //nearByExitsModel.bindComboBox(cmbStation, 0, 1);
-            
+
             nearByExitsModel.bindButtons(tableButtons);
             this.tblNearbyExits.setModel(nearByExitsModel);
             nearByExitsModel.fillTable();
@@ -1177,7 +1187,10 @@ public class Site extends MyInternalFrame {
             QueryCombobox cqb = new QueryCombobox(cmbStation, Short.class, getAllStations);
             // set models to comboboxes   
             cmbStation.setModel(cqb);
-            cmbStation.setSelectedIndex(0);
+            if (cmbStation.getModel().getSize() > 0) {
+                cmbStation.setSelectedIndex(0);
+
+            }
 
         } catch (SQLException ex) {
             Logger.getLogger(Site.class.getName()).log(Level.SEVERE, null, ex);
@@ -1193,7 +1206,11 @@ public class Site extends MyInternalFrame {
             HashSet<JButton> tableButtons = new HashSet<>();
             qCb.bindButtons(tableButtons);
             cmbLine.setModel(qCb);
-            cmbLine.setSelectedIndex(0);
+            if (cmbLine.getModel().getSize() > 0) {
+                cmbLine.setSelectedIndex(0);
+
+            }
+
         } catch (SQLException ex) {
             Logger.getLogger(Site.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1205,10 +1222,13 @@ public class Site extends MyInternalFrame {
         try {
             PreparedStatement getAllSites = con.prepareStatement(utils.Queries.SELECT_ALL_SITES_BUT_ONE);
             getAllSites.setInt(1, this.siteID);
-            
+
             // set models to comboboxes   
             cmbNearSite.setModel(new QueryCombobox(cmbNearSite, Short.class, getAllSites));
-            cmbNearSite.setSelectedIndex(0);
+            if (cmbNearSite.getModel().getSize() > 0) {
+                cmbNearSite.setSelectedIndex(0);
+            }
+            
 //            s = con.createStatement();
 //            rs = s.executeQuery("SELECT ID, siteName FROM tblSite");
 //            ArrayList<ComboItem> items = new ArrayList<>();
@@ -1228,7 +1248,7 @@ public class Site extends MyInternalFrame {
         tfName.setText(this.siteName);
         ychFoundation.setYear(this.foundedYear);
         setSelectedValue(cmbType, this.type);
-        
+
         taDescription.setText(this.description);
     }
 

@@ -42,6 +42,11 @@ public class ActivityDialog extends MyInternalFrame {
         this.mainWindow = parent;
         cmbPDate.setEnabled(false);
         fillCmbCard();
+        
+        if (!(cmbCard.getItemCount() >0)) {
+         btnOK.setEnabled(false);         
+            
+        }
     }
 
     private void fillCmbCard() {
@@ -58,10 +63,12 @@ public class ActivityDialog extends MyInternalFrame {
                 Collections.sort(items);
 
                 cmbCard.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
-                cmbCard.setSelectedIndex(0);
+                if (cmbCard.getModel().getSize() > 0) {
+                    cmbCard.setSelectedIndex(0);
+                    ComboItem numberItem = (ComboItem) cmbCard.getSelectedItem();
+                    this.cardNumber = Integer.parseInt(numberItem.getKey().toString());
+                }
 
-                ComboItem numberItem = (ComboItem) cmbCard.getSelectedItem();
-                this.cardNumber = Integer.parseInt(numberItem.getKey().toString());
             }
         } catch (SQLException ex) {
             Logger.getLogger(ActivityDialog.class.getName()).log(Level.SEVERE, null, ex);
@@ -87,7 +94,10 @@ public class ActivityDialog extends MyInternalFrame {
 
                 ComboItem purchaseDateItem = (ComboItem) cmbPDate.getSelectedItem();
                 this.purchaseDate = (Timestamp) purchaseDateItem.getKey();
-                cmbPDate.setSelectedIndex(0);
+                if (cmbPDate.getModel().getSize() > 0) {
+                    cmbPDate.setSelectedIndex(0);
+                }
+
             }
         } catch (SQLException ex) {
             Logger.getLogger(ActivityDialog.class.getName()).log(Level.SEVERE, null, ex);
@@ -112,10 +122,13 @@ public class ActivityDialog extends MyInternalFrame {
                 Collections.sort(items);
 
                 cmbActDate.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
-                cmbActDate.setSelectedIndex(0);
+                if (cmbActDate.getModel().getSize() > 0) {
+                    cmbActDate.setSelectedIndex(0);
 
-                ComboItem act = (ComboItem) cmbActDate.getSelectedItem();
-                this.activityDate = (Timestamp)act.getKey();
+                    ComboItem act = (ComboItem) cmbActDate.getSelectedItem();
+                    this.activityDate = (Timestamp) act.getKey();
+                }
+
             }
         } catch (SQLException ex) {
             Logger.getLogger(ActivityDialog.class.getName()).log(Level.SEVERE, null, ex);
@@ -135,7 +148,7 @@ public class ActivityDialog extends MyInternalFrame {
         lblDate = new javax.swing.JLabel();
         cmbCard = new javax.swing.JComboBox();
         cmbPDate = new javax.swing.JComboBox();
-        bntOK = new javax.swing.JButton();
+        btnOK = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
         cmbActDate = new javax.swing.JComboBox();
         lblActivity = new javax.swing.JLabel();
@@ -156,10 +169,10 @@ public class ActivityDialog extends MyInternalFrame {
             }
         });
 
-        bntOK.setText("OK");
-        bntOK.addActionListener(new java.awt.event.ActionListener() {
+        btnOK.setText("OK");
+        btnOK.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bntOKActionPerformed(evt);
+                btnOKActionPerformed(evt);
             }
         });
 
@@ -186,7 +199,7 @@ public class ActivityDialog extends MyInternalFrame {
                 .addGap(30, 30, 30)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(bntOK, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnOK, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
@@ -220,7 +233,7 @@ public class ActivityDialog extends MyInternalFrame {
                     .addComponent(lblActivity))
                 .addGap(26, 26, 26)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(bntOK)
+                    .addComponent(btnOK)
                     .addComponent(btnCancel))
                 .addGap(40, 40, 40))
         );
@@ -241,7 +254,7 @@ public class ActivityDialog extends MyInternalFrame {
         }
     }//GEN-LAST:event_cmbCardActionPerformed
 
-    private void bntOKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bntOKActionPerformed
+    private void btnOKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOKActionPerformed
         // TODO add your handling code here:
         if (this.purchaseDate != null && this.activityDate != null && this.cardNumber > 0) {
 
@@ -250,7 +263,7 @@ public class ActivityDialog extends MyInternalFrame {
             Activity act = new Activity(title, getSelectedUserType(), this.cardNumber, this.purchaseDate, this.activityDate);
             mainWindow.createFrame(act);
         }
-    }//GEN-LAST:event_bntOKActionPerformed
+    }//GEN-LAST:event_btnOKActionPerformed
 
     private void cmbPDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbPDateActionPerformed
         // TODO add your handling code here:
@@ -271,13 +284,13 @@ public class ActivityDialog extends MyInternalFrame {
     private void cmbActDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbActDateActionPerformed
         // TODO add your handling code here:
         ComboItem cardItem = (ComboItem) cmbActDate.getSelectedItem();
-        this.activityDate = (Timestamp)cardItem.getKey();
-        
+        this.activityDate = (Timestamp) cardItem.getKey();
+
     }//GEN-LAST:event_cmbActDateActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton bntOK;
     private javax.swing.JButton btnCancel;
+    private javax.swing.JButton btnOK;
     private javax.swing.JComboBox cmbActDate;
     private javax.swing.JComboBox cmbCard;
     private javax.swing.JComboBox cmbPDate;

@@ -21,9 +21,14 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.text.PlainDocument;
+import utils.InputType;
 import utils.Queries;
 
 /**
@@ -50,6 +55,7 @@ public class Users extends MyInternalFrame {
         super(title, type);
         setMode(utils.Constants.EDIT_MODE);
         initComponents();
+        buildForm();
         fillCbUserType();
         FillUsersTable();
         super.validators = new ArrayList<InputValidator>() {
@@ -66,12 +72,63 @@ public class Users extends MyInternalFrame {
         btnEdit.setEnabled(false);
 
     }
+    private void buildForm(){
+        
+        txtUserName.getDocument().addDocumentListener(new DocumentListener() {
 
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                setName(txtUserName);
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                setName(txtUserName);
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+            }
+        });
+        txtPass.getDocument().addDocumentListener(new DocumentListener() {
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                setName(txtPass);
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                setName(txtPass);
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+            }
+        });
+        
+        PlainDocument passDoc = (PlainDocument) txtPass.getDocument();
+        passDoc.setDocumentFilter(new utils.MyDocFilter(InputType.NAME));
+        
+        PlainDocument nameDoc = (PlainDocument) txtUserName.getDocument();
+        nameDoc.setDocumentFilter(new utils.MyDocFilter(InputType.NAME));
+    }
+    private void setName(JTextField field) {
+       if (field.getText() != null && !field.getText().equals("")
+               && field.getText().length() <= 15) {
+           btnAddUser.setEnabled(true);
+         
+        } else {
+           btnAddUser.setEnabled(false);
+        }
+    }
+    
     private void setLables() {
         lblerrPass.setLabelFor(txtPass);
         lblerrUserName.setLabelFor(txtUserName);
     }
 
+    
     private void setTableSelection() {
         ListSelectionModel selectionModel = tblUsers.getSelectionModel();
         selectionModel.addListSelectionListener(new ListSelectionListener() {
@@ -315,6 +372,7 @@ public class Users extends MyInternalFrame {
 
     private void FillUsersTable() {
 
+       
         ResultSet rs;
         try {
             PreparedStatement stmt;

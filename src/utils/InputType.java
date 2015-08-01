@@ -24,6 +24,7 @@ public enum  InputType {
     SHORT("Short"),
     TEXT15("Text15"),
     TEXT20("Text20"),
+    TEXT50("Text50"),
     TEXT150("Text150"),
     YEAR_RANGE("INT_RANGE"),
     NAME("Name");

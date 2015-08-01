@@ -84,6 +84,10 @@ public class MyDocFilter extends DocumentFilter {
                     if (text.length() > 20) {
                         return false;
                     }
+                case TEXT50:
+                    if (text.length() > 50) {
+                        return false;
+                    }
                 case TEXT150:
                     if (text.length() > 150) {
                         return false;
@@ -108,7 +112,15 @@ public class MyDocFilter extends DocumentFilter {
                         return false;
                     }
                     break;
-
+                case PASSWORD:
+                    if (!HelperClass.isPasswordOk(text.trim())) {
+                        Toolkit.getDefaultToolkit().beep();
+                        return false;
+                    }
+                    if (text.length() > 15) {
+                        return false;
+                    }
+                    break;
             }
             return true;
         } catch (NumberFormatException e) {

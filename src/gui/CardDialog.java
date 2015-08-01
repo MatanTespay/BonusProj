@@ -39,7 +39,9 @@ public class CardDialog extends MyInternalFrame {
         initComponents();
         this.mainWindow = parent;
         fillCmbCard();
-
+        if (!(cmbCard.getItemCount() > 0)) {
+            btnOK.setEnabled(false);
+        }
     }
 
     /**
@@ -53,7 +55,7 @@ public class CardDialog extends MyInternalFrame {
 
         lblNumber = new javax.swing.JLabel();
         cmbCard = new javax.swing.JComboBox();
-        bntOK = new javax.swing.JButton();
+        btnOK = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
 
         lblNumber.setText("Card Number:");
@@ -64,10 +66,10 @@ public class CardDialog extends MyInternalFrame {
             }
         });
 
-        bntOK.setText("OK");
-        bntOK.addActionListener(new java.awt.event.ActionListener() {
+        btnOK.setText("OK");
+        btnOK.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bntOKActionPerformed(evt);
+                btnOKActionPerformed(evt);
             }
         });
 
@@ -86,7 +88,7 @@ public class CardDialog extends MyInternalFrame {
                 .addGap(22, 22, 22)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(bntOK)
+                        .addComponent(btnOK)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
@@ -105,7 +107,7 @@ public class CardDialog extends MyInternalFrame {
                 .addGap(26, 26, 26)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCancel)
-                    .addComponent(bntOK))
+                    .addComponent(btnOK))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -122,7 +124,7 @@ public class CardDialog extends MyInternalFrame {
         }
     }//GEN-LAST:event_cmbCardActionPerformed
 
-    private void bntOKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bntOKActionPerformed
+    private void btnOKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOKActionPerformed
         // TODO add your handling code here:
 //        if (this.purchaseDate != null && this.cardNumber > 0) {
         if (this.cardNumber > 0) {
@@ -132,7 +134,7 @@ public class CardDialog extends MyInternalFrame {
             Card c = new Card(title, getSelectedUserType(), this.cardNumber);
             mainWindow.createFrame(c);
         }
-    }//GEN-LAST:event_bntOKActionPerformed
+    }//GEN-LAST:event_btnOKActionPerformed
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
         // TODO add your handling code here:
@@ -155,18 +157,21 @@ public class CardDialog extends MyInternalFrame {
                 Collections.sort(items);
 
                 cmbCard.setModel(new javax.swing.DefaultComboBoxModel(items.toArray()));
-                cmbCard.setSelectedIndex(0);
+                if (cmbCard.getModel().getSize() > 0) {
+                    cmbCard.setSelectedIndex(0);
 
-                ComboItem numberItem = (ComboItem) cmbCard.getSelectedItem();
-                this.cardNumber = Integer.parseInt(numberItem.getKey().toString());
+                    ComboItem numberItem = (ComboItem) cmbCard.getSelectedItem();
+                    this.cardNumber = Integer.parseInt(numberItem.getKey().toString());
+                }
+
             }
         } catch (SQLException ex) {
             Logger.getLogger(CardDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton bntOK;
     private javax.swing.JButton btnCancel;
+    private javax.swing.JButton btnOK;
     private javax.swing.JComboBox cmbCard;
     private javax.swing.JLabel lblNumber;
     // End of variables declaration//GEN-END:variables
