@@ -57,8 +57,7 @@ public class MyDocFilter extends DocumentFilter {
                     Byte.parseByte(text);
                     break;
                 case CHAR1:
-                    short sh = Short.parseShort(text);
-                    if (sh < 0 || sh > 10) {
+                    if (text.length()>1) {
                         Toolkit.getDefaultToolkit().beep();
                         return false;
                     }
