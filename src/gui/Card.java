@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Blob;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -454,8 +455,8 @@ public class Card extends MyInternalFrame {
                 insertNewCard();
             }
 
-        } catch (SQLException ex) {
-
+        } catch (SQLException e) {
+            System.err.println("Error code: " + e.getErrorCode() + "\nError Message: " + e.getMessage());
         }
     }//GEN-LAST:event_btnAddProgramActionPerformed
 
@@ -767,14 +768,14 @@ public class Card extends MyInternalFrame {
             length = program[4].toString().charAt(0);
 
             getZonesToAdd = (cardType == PAPER)
-                    ? con.prepareCall(Queries.PAPER_PROGRAM_ZONES_TO_ADD,
-                            ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY)
-                    : con.prepareCall(Queries.OYSTER_PROGRAM_ZONES_TO_ADD,
-                            ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+                    ? con.prepareStatement(Queries.PAPER_PROGRAM_ZONES_TO_ADD)
+                    : con.prepareStatement(Queries.OYSTER_PROGRAM_ZONES_TO_ADD);
 
             getZonesToAdd.setByte(1, maxZoneNumber);
             getZonesToAdd.setLong(2, cardNumber);
-            getZonesToAdd.setTimestamp(3, purchase);
+            getZonesToAdd.setInt(3, purchase.getYear()+1900);
+            getZonesToAdd.setInt(4, purchase.getMonth()+1);
+            getZonesToAdd.setInt(5, purchase.getDate());
 
             //set of zones (minZone,maxZone] to add
             zonesToAdd = getZonesToAdd.executeQuery();
