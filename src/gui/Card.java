@@ -132,6 +132,7 @@ public class Card extends MyInternalFrame {
         btnRemoveProgram = new javax.swing.JButton();
         btnAddProgram = new javax.swing.JButton();
 
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
             }
@@ -305,7 +306,7 @@ public class Card extends MyInternalFrame {
                 .addGroup(pProgramsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(pProgramsLayout.createSequentialGroup()
                         .addComponent(btnRemoveProgram)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
                         .addComponent(btnAddProgram))
                     .addGroup(pProgramsLayout.createSequentialGroup()
                         .addGroup(pProgramsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -611,6 +612,7 @@ public class Card extends MyInternalFrame {
                     JOptionPane.WARNING_MESSAGE, null, null, null);
             if (choice == JOptionPane.OK_OPTION) {
                 deleteCard();
+                dispose();
             }
         }
     }//GEN-LAST:event_formInternalFrameClosing

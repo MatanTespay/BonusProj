@@ -78,29 +78,30 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
                 }
             };
         }
-        //Image img = ((ImageIcon)getIconName("Bg_Logo_blue.jpg")).getImage();
-        //ImageIcon icon = new ImageIcon("/Img/Bg_Logo.png");
-
-//        setLayout(new BorderLayout());
-//        JLabel background = new JLabel(getIconName("Bg_Logo.png"));
-//        add(background);
-//        background.setLayout(new FlowLayout());
-        //int inset = 100;
-        //Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        
         setBounds(0, 0, 900, 750);
 
         this.setLocationRelativeTo(null);
 
         //desktop = new JDesktopPane();
-        //desktop.add(panel);
-        pane = new DesktopScrollPane(getDesktop());
-
-        setContentPane(pane);
-
+       // desktop.add(panel);
+        //pane = new DesktopScrollPane(getDesktop());
+        
+        //setContentPane(pane);
+        
         desktop.setDragMode(JDesktopPane.OUTLINE_DRAG_MODE);
-
+              javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(desktop, javax.swing.GroupLayout.DEFAULT_SIZE, 900, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(desktop, javax.swing.GroupLayout.DEFAULT_SIZE, 533, Short.MAX_VALUE)
+        );
         fillMenuBar();
-
+        pack();
     }
 
     /**
@@ -114,7 +115,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 
     private void AdminORManagerMenu(JMenu aMenu) {
         //Manager to
-        aMenu = addMenuToMenuBar("System", KeyEvent.VK_O, null);
+        aMenu = addMenuToMenuBar("System", KeyEvent.VK_O,"System.png");
         addMenuItem(aMenu, "Add Deposit", KeyEvent.VK_D, "dollar183.png");
 
         //<editor-fold defaultstate="collapsed" desc="Only Admin">
@@ -126,46 +127,46 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         }
         //</editor-fold>
 
-        aMenu = addMenuToMenuBar("management", KeyEvent.VK_O, null);
+        aMenu = addMenuToMenuBar("management", KeyEvent.VK_O, "management.png");
         submenu = addMenuToMenuBar("Activity", KeyEvent.VK_A, "travel18.png");
-        addMenuItem(submenu, "Add Activity", KeyEvent.VK_B, "");
-        addMenuItem(submenu, "Edit Activity", KeyEvent.VK_A, null);
+        addMenuItem(submenu, "Add Activity", KeyEvent.VK_B, "add.png");
+        addMenuItem(submenu, "Edit Activity", KeyEvent.VK_A, "edit.png");
         aMenu.add(submenu);
         aMenu.addSeparator();
 
         submenu = addMenuToMenuBar("Card", KeyEvent.VK_A, "card_with_pic.png");
-        addMenuItem(submenu, "Add Card", KeyEvent.VK_B, null);
-        addMenuItem(submenu, "Edit Card", KeyEvent.VK_A, null);
+        addMenuItem(submenu, "Add Card", KeyEvent.VK_B, "add.png");
+        addMenuItem(submenu, "Edit Card", KeyEvent.VK_A, "edit.png");
         aMenu.add(submenu);
         aMenu.addSeparator();
 
         submenu = addMenuToMenuBar("Line", KeyEvent.VK_A, "metro_lines.png");
-        addMenuItem(submenu, "Add Line", KeyEvent.VK_B, null);
-        addMenuItem(submenu, "Edit Line", KeyEvent.VK_A, null);
+        addMenuItem(submenu, "Add Line", KeyEvent.VK_B, "add.png");
+        addMenuItem(submenu, "Edit Line", KeyEvent.VK_A, "edit.png");
         aMenu.add(submenu);
         aMenu.addSeparator();
 
         submenu = addMenuToMenuBar("Site", KeyEvent.VK_A, "map_zone.png");
-        addMenuItem(submenu, "Add Site", KeyEvent.VK_B, null);
-        addMenuItem(submenu, "Edit Site", KeyEvent.VK_A, null);
-        addMenuItem(submenu, "Add Site Type", KeyEvent.VK_A, null);
+        addMenuItem(submenu, "Add Site", KeyEvent.VK_B, "add.png");
+        addMenuItem(submenu, "Edit Site", KeyEvent.VK_A, "edit.png");
+        addMenuItem(submenu, "Add Site Type", KeyEvent.VK_A, "sitetype.png");
         aMenu.add(submenu);
         aMenu.addSeparator();
 
         submenu = addMenuToMenuBar("Queries", KeyEvent.VK_A, "question_mark.png");
-        addMenuItem(submenu, "Remote Sites", KeyEvent.VK_B, null);
-        addMenuItem(submenu, "Unused Paper Cards", KeyEvent.VK_A, null);
-        addMenuItem(submenu, "Main Stations", KeyEvent.VK_A, null);
-        addMenuItem(submenu, "Most Active Stations", KeyEvent.VK_A, null);
-        addMenuItem(submenu, "Cards That Have Activity Issues", KeyEvent.VK_A, null);
-        addMenuItem(submenu, "Very Active Oyster Cards", KeyEvent.VK_A, null);
-        addMenuItem(submenu, "Profitable Deposit Years", KeyEvent.VK_A, null);
+        addMenuItem(submenu, "Remote Sites", KeyEvent.VK_B, "icon_for_the_aplication.png");
+        addMenuItem(submenu, "Unused Paper Cards", KeyEvent.VK_A, "paper.png");
+        addMenuItem(submenu, "Main Stations", KeyEvent.VK_A, "subway6.png");
+        addMenuItem(submenu, "Most Active Stations", KeyEvent.VK_A, "train36.png");
+        addMenuItem(submenu, "Cards That Have Activity Issues", KeyEvent.VK_A, "badCard.png");
+        addMenuItem(submenu, "Very Active Oyster Cards", KeyEvent.VK_A, "oyster.png");
+        addMenuItem(submenu, "Profitable Deposit Years", KeyEvent.VK_A, "chart.png");
         aMenu.add(submenu);
         aMenu.addSeparator();
 
         submenu = addMenuToMenuBar("Station", KeyEvent.VK_A, "bus46.png");
-        addMenuItem(submenu, "Add Station", KeyEvent.VK_B, null);
-        addMenuItem(submenu, "Edit Station", KeyEvent.VK_A, null);
+        addMenuItem(submenu, "Add Station", KeyEvent.VK_B, "add.png");
+        addMenuItem(submenu, "Edit Station", KeyEvent.VK_A, "edit.png");
         aMenu.add(submenu);
         aMenu.addSeparator();
 
@@ -174,12 +175,12 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     }
 
     private void MunicipalityMenu(JMenu aMenu) {
-        aMenu = addMenuToMenuBar("management", KeyEvent.VK_O, null);
+        aMenu = addMenuToMenuBar("management", KeyEvent.VK_O, "management.png");
         addMenuItem(aMenu, "Export/Import CSV", KeyEvent.VK_B, "folder.png");
     }
 
     private void UserMenu(JMenu aMenu) {
-        aMenu = addMenuToMenuBar("management", KeyEvent.VK_O, null);
+        aMenu = addMenuToMenuBar("management", KeyEvent.VK_O, "management.png");
 
         addMenuItem(aMenu, "Add Card", KeyEvent.VK_B, "card_with_pic.png");
         aMenu.addSeparator();
@@ -197,9 +198,10 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
      */
     private void fillMenuBar() {
 
-        JMenu aMenu = addMenuToMenuBar("File", 'F', null);
+        JMenu aMenu = addMenuToMenuBar("File", 'F',"home.png");
 
-        CloseAction closeAction = new CloseAction("Exit", null, "Close The Application", new Integer(KeyEvent.VK_X), this);
+        ImageIcon i = (ImageIcon)getIconName("exit.png");
+        CloseAction closeAction = new CloseAction("Exit", i, "Close The Application", new Integer(KeyEvent.VK_X), this);
         menuItem = new JMenuItem(closeAction);
 
         menu.add(menuItem);
@@ -539,8 +541,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 //            MainClass.setIsIflySaved(true);
 //            return;
 //        }
-
-        getLogin().getUsertxtPassword().setText("1234");
+     
 
         getLogin().setVisible(true);
         getLogin().resetFocus(0);
