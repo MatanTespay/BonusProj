@@ -672,8 +672,8 @@ public class Card extends MyInternalFrame {
             programTblModel.fillTable();
 
             btnDelete.setEnabled(isOkToDelete());
-        } catch (SQLException ex) {
-
+        } catch (SQLException e) {
+            System.err.println("Error code: " + e.getErrorCode() + "\nError Message: " + e.getMessage());
         }
     }
 
@@ -773,9 +773,8 @@ public class Card extends MyInternalFrame {
 
             getZonesToAdd.setByte(1, maxZoneNumber);
             getZonesToAdd.setLong(2, cardNumber);
-            getZonesToAdd.setInt(3, purchase.getYear()+1900);
-            getZonesToAdd.setInt(4, purchase.getMonth()+1);
-            getZonesToAdd.setInt(5, purchase.getDate());
+            getZonesToAdd.setTimestamp(3, purchase);
+            getZonesToAdd.setString(4, String.valueOf(length));
 
             //set of zones (minZone,maxZone] to add
             zonesToAdd = getZonesToAdd.executeQuery();

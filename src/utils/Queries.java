@@ -410,15 +410,16 @@ public final class Queries {
      * card number
      * @usage: Card form
      */
-    public static final String SELECT_PAPER_PROGRAMS = "SELECT TOP 1 *, case "
-            + "when PCA.cardLength='1' then DATEADD(dd,1,PCA.cardPurchaseDate) "
-            + "when PCA.cardLength='3' then DATEADD(dd,3,PCA.cardPurchaseDate) "
-            + "when PCA.cardLength='W' then DATEADD(dd,7,PCA.cardPurchaseDate) "
-            + "when PCA.cardLength='M' then DATEADD(mm,1,PCA.cardPurchaseDate) "
-            + "when PCA.cardLength='T' then DATEADD(mm,3,PCA.cardPurchaseDate) "
-            + "when PCA.cardLength='Y' then DATEADD(yyyy,1,PCA.cardPurchaseDate) "
-            + "end as 'expirationDate' FROM tblPaperCardAreas PCA WHERE "
-            + "cardNumber = ? ORDER BY zoneNumber DESC";
+    public static final String SELECT_PAPER_PROGRAMS = "SELECT cardNumber,cardPurchaseDate,\n"
+            + "case when PCA.cardLength='1' then DATEADD(dd,1,PCA.cardPurchaseDate) \n"
+            + "when PCA.cardLength='3' then DATEADD(dd,3,PCA.cardPurchaseDate) \n"
+            + "when PCA.cardLength='W' then DATEADD(dd,7,PCA.cardPurchaseDate) \n"
+            + "when PCA.cardLength='M' then DATEADD(mm,1,PCA.cardPurchaseDate) \n"
+            + "when PCA.cardLength='T' then DATEADD(mm,3,PCA.cardPurchaseDate) \n"
+            + "when PCA.cardLength='Y' then DATEADD(yyyy,1,PCA.cardPurchaseDate) \n"
+            + "end as 'expirationDate', cardLength, MAX(zoneNumber) as 'zoneNumber'\n"
+            + "FROM tblPaperCardAreas PCA WHERE cardNumber = ?\n"
+            + "GROUP BY cardNumber,cardPurchaseDate,cardLength ORDER BY cardPurchaseDate";
 
     /**
      * @no: 42
@@ -444,7 +445,8 @@ public final class Queries {
      */
     public static final String PAPER_PROGRAM_ZONES_TO_ADD = "SELECT * FROM "
             + "tblZone WHERE number <= ? and number not in (SELECT zoneNumber FROM "
-            + "tblPaperCardAreas WHERE cardNumber = ? and cardPurchaseDate = ?)";
+            + "tblPaperCardAreas WHERE cardNumber = ? and cardPurchaseDate = ? "
+            + "and cardLength = ?)";
 
     /**
      * @no: 45
@@ -461,15 +463,16 @@ public final class Queries {
      * given their card number
      * @usage: Card form
      */
-    public static final String SELECT_OYSTER_PROGRAMS = "SELECT TOP 1 *, case "
-            + "when OCA.cardLength='1' then DATEADD(dd,1,OCA.cardPurchaseDate) "
-            + "when OCA.cardLength='3' then DATEADD(dd,3,OCA.cardPurchaseDate) "
-            + "when OCA.cardLength='W' then DATEADD(dd,7,OCA.cardPurchaseDate) "
-            + "when OCA.cardLength='M' then DATEADD(mm,1,OCA.cardPurchaseDate) "
-            + "when OCA.cardLength='T' then DATEADD(mm,3,OCA.cardPurchaseDate) "
-            + "when OCA.cardLength='Y' then DATEADD(yyyy,1,OCA.cardPurchaseDate) "
-            + "end as 'expirationDate' FROM tblOysterCardAreas OCA WHERE "
-            + "cardNumber = ? ORDER BY zoneNumber DESC";
+    public static final String SELECT_OYSTER_PROGRAMS = "SELECT cardNumber,cardPurchaseDate,\n"
+            + "case when OCA.cardLength='1' then DATEADD(dd,1,OCA.cardPurchaseDate) \n"
+            + "when OCA.cardLength='3' then DATEADD(dd,3,OCA.cardPurchaseDate) \n"
+            + "when OCA.cardLength='W' then DATEADD(dd,7,OCA.cardPurchaseDate) \n"
+            + "when OCA.cardLength='M' then DATEADD(mm,1,OCA.cardPurchaseDate) \n"
+            + "when OCA.cardLength='T' then DATEADD(mm,3,OCA.cardPurchaseDate) \n"
+            + "when OCA.cardLength='Y' then DATEADD(yyyy,1,OCA.cardPurchaseDate) \n"
+            + "end as 'expirationDate', cardLength, MAX(zoneNumber) as 'zoneNumber'\n"
+            + "FROM tblOysterCardAreas OCA WHERE cardNumber = ?\n"
+            + "GROUP BY cardNumber,cardPurchaseDate,cardLength ORDER BY cardPurchaseDate";
 
     /**
      * @no: 47
@@ -495,7 +498,8 @@ public final class Queries {
      */
     public static final String OYSTER_PROGRAM_ZONES_TO_ADD = "SELECT * FROM "
             + "tblZone WHERE number <= ? and number not in (SELECT zoneNumber FROM "
-            + "tblOysterCardAreas WHERE cardNumber = ? and cardPurchaseDate = ?)";
+            + "tblOysterCardAreas WHERE cardNumber = ? and cardPurchaseDate = ? "
+            + "and cardLength = ?)";
 
     /**
      * @no: 50
