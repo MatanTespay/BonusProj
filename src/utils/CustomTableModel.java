@@ -11,10 +11,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import javafx.scene.control.ComboBox;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.TableModelEvent;
@@ -99,7 +97,7 @@ public class CustomTableModel extends AbstractTableModel {
 
         for (int col = 0; col < getColumnCount(); col++) {
             colSqlName = columns.get(col).getSqlColumnName();
-            fieldToAdd = (colSqlName.equals("#")) ? rs.getRow() + 1
+            fieldToAdd = (colSqlName.equals("#")) ? rs.getRow() 
                     : utils.HelperClass.getObjectFromResultSet(rs, getColumnClass(col).getSimpleName(), colSqlName);
             rowToAdd[col] = fieldToAdd;
         }

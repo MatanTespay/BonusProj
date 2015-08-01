@@ -233,9 +233,11 @@ public class Deposits extends MyInternalFrame {
                     int selectedRow = tblDeposits.getSelectedRow();
                     Short selectedFrom = Short.parseShort(tblDeposits.getValueAt(selectedRow, 0).toString());
                     Short selectedTo = Short.parseShort(tblDeposits.getValueAt(selectedRow, 1).toString());
+                    Short selectedPrice = Short.parseShort(tblDeposits.getValueAt(selectedRow, 2).toString());
 
                     ychUpdateFrom.setYear(selectedFrom);
                     ychUpdateTo.setYear(selectedTo);
+                    spnUpdatePrice.setValue(selectedPrice);
                 }
             }
         });
@@ -473,7 +475,7 @@ public class Deposits extends MyInternalFrame {
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
 
         int currentYear = new java.util.Date().getYear() + 1900;
-        if (updateToYear < currentYear) {
+        if (updateToYear <= currentYear) {
             int choice = JOptionPane.showInternalOptionDialog(this,
                     "Removing a deposit from the past may result consistency issues.\n"
                     + "Are yaur sure you want to proceed?",
