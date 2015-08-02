@@ -127,7 +127,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         }
         //</editor-fold>
 
-        aMenu = addMenuToMenuBar("management", KeyEvent.VK_O, "management.png");
+        aMenu = addMenuToMenuBar("Management", KeyEvent.VK_O, "management.png");
         submenu = addMenuToMenuBar("Activity", KeyEvent.VK_A, "travel18.png");
         addMenuItem(submenu, "Add Activity", KeyEvent.VK_B, "add.png");
         addMenuItem(submenu, "Edit Activity", KeyEvent.VK_A, "edit.png");
@@ -175,12 +175,12 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     }
 
     private void MunicipalityMenu(JMenu aMenu) {
-        aMenu = addMenuToMenuBar("management", KeyEvent.VK_O, "management.png");
+        aMenu = addMenuToMenuBar("Management", KeyEvent.VK_O, "management.png");
         addMenuItem(aMenu, "Export/Import CSV", KeyEvent.VK_B, "folder.png");
     }
 
     private void UserMenu(JMenu aMenu) {
-        aMenu = addMenuToMenuBar("management", KeyEvent.VK_O, "management.png");
+        aMenu = addMenuToMenuBar("Management", KeyEvent.VK_O, "management.png");
 
         addMenuItem(aMenu, "Add Card", KeyEvent.VK_B, "card_with_pic.png");
         aMenu.addSeparator();
