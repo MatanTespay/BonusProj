@@ -18,6 +18,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -66,7 +67,8 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         this.login = log;
         selectedUserType = userType;
         initComponents();
-        Icon i = getIconName("Bg_Logo_blue.jpg");
+        desktop = new javax.swing.JDesktopPane();
+        Icon i = getIconName("Bg_Logo_Blue.jpg");
         if (i != null) {
             Image img = ((ImageIcon) i).getImage();
 
@@ -78,28 +80,27 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
                 }
             };
         }
-        
+
         setBounds(0, 0, 900, 750);
 
         this.setLocationRelativeTo(null);
-        ImageIcon mainIcon = (ImageIcon)getIconName("london1.png");
+        ImageIcon mainIcon = (ImageIcon) getIconName("london1.png");
         this.setIconImage(mainIcon.getImage());
         //desktop = new JDesktopPane();
-       // desktop.add(panel);
+        // desktop.add(panel);
         //pane = new DesktopScrollPane(getDesktop());
-        
+
         //setContentPane(pane);
-        
         desktop.setDragMode(JDesktopPane.OUTLINE_DRAG_MODE);
-              javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(desktop, javax.swing.GroupLayout.DEFAULT_SIZE, 900, Short.MAX_VALUE)
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(desktop, javax.swing.GroupLayout.DEFAULT_SIZE, 1000, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(desktop, javax.swing.GroupLayout.DEFAULT_SIZE, 533, Short.MAX_VALUE)
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(desktop, javax.swing.GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE)
         );
         fillMenuBar();
         pack();
@@ -116,7 +117,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 
     private void AdminORManagerMenu(JMenu aMenu) {
         //Manager to
-        aMenu = addMenuToMenuBar("System", KeyEvent.VK_O,"System.png");
+        aMenu = addMenuToMenuBar("System", KeyEvent.VK_O, "System.png");
         addMenuItem(aMenu, "Add Deposit", KeyEvent.VK_D, "dollar183.png");
 
         //<editor-fold defaultstate="collapsed" desc="Only Admin">
@@ -190,8 +191,13 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     }
 
     private Icon getIconName(String name) {
-        Icon i = new javax.swing.ImageIcon(getClass().getResource("/Img/" + name + ""));
-        return i;
+        URL u = getClass().getResource("/Img/" + name + "");
+        if (u != null) {
+            //System.out.println(u.getFile());
+            Icon i = new javax.swing.ImageIcon(u);
+            return i;
+        }
+        return null;
     }
 
     /**
@@ -199,9 +205,9 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
      */
     private void fillMenuBar() {
 
-        JMenu aMenu = addMenuToMenuBar("File", 'F',"home.png");
+        JMenu aMenu = addMenuToMenuBar("File", 'F', "home.png");
 
-        ImageIcon i = (ImageIcon)getIconName("exit.png");
+        ImageIcon i = (ImageIcon) getIconName("exit.png");
         CloseAction closeAction = new CloseAction("Exit", i, "Close The Application", new Integer(KeyEvent.VK_X), this);
         menuItem = new JMenuItem(closeAction);
 
@@ -291,7 +297,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         frame.setVisible(true); //necessary as of 1.3
         Dimension desktopSize = getDesktop().getSize();
         Dimension jInternalFrameSize = frame.getSize();
-        frame.setLocation((desktopSize.width - jInternalFrameSize.width) / 2, ((desktopSize.height+50) - jInternalFrameSize.height) / 2);
+        frame.setLocation((desktopSize.width - jInternalFrameSize.width) / 2, ((desktopSize.height + 5) - jInternalFrameSize.height) / 2);
 
         getDesktop().add(frame);
         try {
@@ -542,7 +548,6 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 //            MainClass.setIsIflySaved(true);
 //            return;
 //        }
-     
 
         getLogin().setVisible(true);
         getLogin().resetFocus(0);

@@ -22,23 +22,9 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="sfePanel" max="32767" attributes="0"/>
-                  <Group type="102" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="103" alignment="0" groupAlignment="0" attributes="0">
-                              <Group type="102" attributes="0">
-                                  <Component id="lblDescription" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace min="-2" pref="626" max="-2" attributes="0"/>
-                              </Group>
-                              <Group type="102" alignment="1" attributes="0">
-                                  <Component id="jScrollPane1" min="-2" pref="400" max="-2" attributes="0"/>
-                                  <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
-                                  <Component id="btnSave" min="-2" pref="90" max="-2" attributes="0"/>
-                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                  <Component id="btnDelete" min="-2" pref="100" max="-2" attributes="0"/>
-                              </Group>
-                          </Group>
                           <Group type="102" alignment="0" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="lblID" min="-2" max="-2" attributes="0"/>
@@ -60,8 +46,18 @@
                                   <Component id="ychFoundation" max="32767" attributes="0"/>
                               </Group>
                           </Group>
+                          <Component id="lblDescription" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+                              <Component id="jScrollPane1" min="-2" pref="412" max="-2" attributes="0"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Component id="btnSave" min="-2" pref="90" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="btnDelete" min="-2" pref="100" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
                   </Group>
+                  <Component id="sfePanel" alignment="0" max="32767" attributes="0"/>
                   <Component id="sfsPanel" alignment="0" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="32767" attributes="0"/>
@@ -104,17 +100,15 @@
                       <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace max="32767" attributes="0"/>
-              <Group type="103" groupAlignment="1" max="-2" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="lblDescription" min="-2" max="-2" attributes="0"/>
+              <EmptySpace pref="7" max="32767" attributes="0"/>
+              <Group type="103" groupAlignment="1" attributes="0">
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="btnSave" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="btnDelete" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Group type="102" attributes="0">
-                      <Component id="lblDescription" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
-                      <Component id="jScrollPane1" min="-2" pref="74" max="-2" attributes="0"/>
-                  </Group>
+                  <Component id="jScrollPane1" min="-2" pref="74" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="sfePanel" min="-2" max="-2" attributes="0"/>
@@ -236,7 +230,7 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace min="-2" pref="59" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
                   <Component id="jScrollPane3" min="-2" pref="414" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
@@ -245,22 +239,20 @@
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="btnRemoveSite" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
+                      <Group type="103" alignment="0" groupAlignment="0" max="-2" attributes="0">
+                          <Group type="102" attributes="0">
                               <Component id="lblDistToSite" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
                               <Component id="tfDistToSite" max="32767" attributes="0"/>
                           </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+                          <Group type="102" attributes="0">
                               <Component id="lblSite" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="51" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="61" max="-2" attributes="0"/>
                               <Component id="cmbNearSite" min="-2" pref="112" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
-                  <EmptySpace pref="15" max="32767" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -372,9 +364,9 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
-                  <EmptySpace min="-2" pref="56" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
                   <Component id="jScrollPane2" min="-2" pref="416" max="-2" attributes="0"/>
-                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
@@ -383,11 +375,11 @@
                           </Group>
                           <EmptySpace min="-2" pref="41" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="cmbLine" pref="114" max="32767" attributes="0"/>
-                              <Component id="cmbStation" max="32767" attributes="0"/>
+                              <Component id="cmbLine" max="32767" attributes="0"/>
+                              <Component id="cmbStation" min="-2" pref="114" max="-2" attributes="0"/>
                           </Group>
                       </Group>
-                      <Group type="102" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
                           <Component id="lblDistToExit" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Component id="tfDistToExit" min="-2" pref="106" max="-2" attributes="0"/>
@@ -398,7 +390,6 @@
                           <Component id="btnRemoveExit" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
-                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>

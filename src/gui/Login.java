@@ -266,8 +266,8 @@ public class Login extends javax.swing.JFrame {
                 //MainClass.getCurrentUser().put((String) userTypeComboBox.getSelectedItem(), input.toString());
 
                 setVisible(false);
-                userTxtName.setText(null);
-                usertxtPassword.setText(null);
+                userTxtName.setText("");
+                usertxtPassword.setText("");
                 new MainWindow(sb.toString(), this.selectedUserType, this).setVisible(true);
                 //dispose();
                 //MainClass.SerializeIfly();
