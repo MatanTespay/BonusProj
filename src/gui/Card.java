@@ -616,6 +616,9 @@ public class Card extends MyInternalFrame {
                 dispose();
             }
         }
+        else{
+            dispose();
+        }
     }//GEN-LAST:event_formInternalFrameClosing
 
 
