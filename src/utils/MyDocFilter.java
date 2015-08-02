@@ -57,7 +57,7 @@ public class MyDocFilter extends DocumentFilter {
                     Byte.parseByte(text);
                     break;
                 case CHAR1:
-                    if (text.length()>1) {
+                    if (text.length() > 1) {
                         Toolkit.getDefaultToolkit().beep();
                         return false;
                     }
@@ -65,6 +65,16 @@ public class MyDocFilter extends DocumentFilter {
                 case DOUBLE:
                     Double.parseDouble(text);
                     break;
+                case DIGIT:
+                    if (text.length() > 1) {
+                        Toolkit.getDefaultToolkit().beep();
+                        return false;
+                    }
+                    char ch = text.charAt(0);
+                    if (ch < '1' || ch > '9'){
+                        Toolkit.getDefaultToolkit().beep();
+                        return false;
+                    }
                 case FLOAT:
                     Float.parseFloat(text);
                 case INT:

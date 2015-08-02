@@ -19,7 +19,9 @@ import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.text.PlainDocument;
 import static utils.Constants.EDIT_MODE;
+import utils.InputType;
 import utils.Queries;
 
 /**
@@ -57,6 +59,10 @@ public class Zones extends MyInternalFrame {
         if (lstZones.getModel().getSize() > 0) {
             lstZones.setSelectedIndex(0);
         }
+
+        // set document filters to text fields
+        PlainDocument updateNumberDoc = (PlainDocument) tfUpdateNumber.getDocument();
+        updateNumberDoc.setDocumentFilter(new utils.MyDocFilter(InputType.DIGIT));
     }
 
     /**
@@ -174,13 +180,13 @@ public class Zones extends MyInternalFrame {
                 .addGroup(pEditZoneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pEditZoneLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnRemove)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnUpdate))
+                        .addComponent(btnRemove))
                     .addGroup(pEditZoneLayout.createSequentialGroup()
                         .addComponent(lblEditNumber)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(tfUpdateNumber)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnUpdate)
                 .addContainerGap())
         );
         pEditZoneLayout.setVerticalGroup(
@@ -227,7 +233,7 @@ public class Zones extends MyInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        
+
         int choice = JOptionPane.showInternalOptionDialog(this,
                 "Adding a zone may result consistency issues.\n"
                 + "Are yaur sure you want to proceed?",
@@ -236,7 +242,7 @@ public class Zones extends MyInternalFrame {
         if (choice == JOptionPane.NO_OPTION) {
             return;
         }
-        
+
         try {
 
             short zoneNumber = Short.parseShort(cmbZone.getSelectedItem().toString());
