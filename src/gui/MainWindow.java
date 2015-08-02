@@ -82,7 +82,8 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         setBounds(0, 0, 900, 750);
 
         this.setLocationRelativeTo(null);
-
+        ImageIcon mainIcon = (ImageIcon)getIconName("london1.png");
+        this.setIconImage(mainIcon.getImage());
         //desktop = new JDesktopPane();
        // desktop.add(panel);
         //pane = new DesktopScrollPane(getDesktop());
