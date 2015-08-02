@@ -853,15 +853,24 @@ public final class Queries {
      * @purpose:returns most active stations
      * @usage: QueryForm form
      */
-    public static final String QUERY4 = "SELECT S.ID, S.name, MIN(SFE.distance)"
-            + "as 'minDistance' FROM tblStation as S inner join tblSiteFromExit "
-            + "SFE on S.ID = SFE.stationID join tblSite as SI1 on SI1.ID = "
-            + "SFE.siteID WHERE S.platformNum > 4 and S.ID in (SELECT "
-            + "SIL1.stationID FROM tblStationInLine as SIL1 WHERE S.ID = "
-            + "SIL1.stationID GROUP BY SIL1.stationID HAVING COUNT (SIL1.lineName)"
-            + " > 2 intersect (SELECT SFX.stationID FROM tblSiteFromExit as "
-            + "SFX WHERE S.ID = SFX.stationID and SFX.distance <= 1.5 GROUP BY "
-            + "SFX.stationID HAVING COUNT (SFX.siteID) >= 5) GROUP BY S.ID, S.name";
+    public static final String QUERY4 = "select S.ID, S.name, MIN(SFE.distance)as 'minDistance'\n"
+            + "from dbo.tblStation as S inner join dbo.tblSiteFromExit SFE on S.ID =\n"
+            + "SFE.stationID join dbo.tblSite as SI1 on SI1.ID=SFE.siteID\n"
+            + "where S.platformNum > 4 and S.ID in\n"
+            + "(select SIL1.stationID\n"
+            + " from dbo.tblStationInLine as SIL1\n"
+            + " where S.ID = SIL1.stationID\n"
+            + " group by SIL1.stationID\n"
+            + "having COUNT (SIL1.lineName) > 2\n"
+            + "\n"
+            + " intersect\n"
+            + "\n"
+            + " select SFX.stationID\n"
+            + " from dbo.tblSiteFromExit as SFX\n"
+            + " where S.ID = SFX.stationID and SFX.distance <= 1.5\n"
+            + " group by SFX.stationID\n"
+            + " having COUNT (SFX.siteID) >= 5)\n"
+            + "group by S.ID, S.name";
     /**
      * @no: 91
      * @purpose: executes "USE LONDON U2" (the db name)

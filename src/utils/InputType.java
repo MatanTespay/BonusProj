@@ -14,6 +14,7 @@ public enum  InputType {
     BYTE("Byte"),
     CHAR1("Char1"),
     DATE("Date"),
+    DIGIT("Digit"),
     DOUBLE("Double"),
     EMAIL("Email"),
     FLOAT("Float"),
