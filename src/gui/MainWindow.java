@@ -290,7 +290,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         frame.setVisible(true); //necessary as of 1.3
         Dimension desktopSize = getDesktop().getSize();
         Dimension jInternalFrameSize = frame.getSize();
-        frame.setLocation((desktopSize.width - jInternalFrameSize.width) / 2, (desktopSize.height - jInternalFrameSize.height) / 2);
+        frame.setLocation((desktopSize.width - jInternalFrameSize.width) / 2, ((desktopSize.height+50) - jInternalFrameSize.height) / 2);
 
         getDesktop().add(frame);
         try {

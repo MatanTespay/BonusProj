@@ -14,11 +14,12 @@ import java.text.ParseException;
 import java.util.AbstractMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import com.alee.laf.WebLookAndFeel; 
+import com.alee.laf.WebLookAndFeel;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-
+import de.javasoft.plaf.synthetica.SyntheticaLookAndFeel;
+import de.javasoft.plaf.synthetica.SyntheticaAluOxideLookAndFeel;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -34,13 +35,12 @@ public class MainClass {
     private static ObjectOutputStream outputStream;
     private static ObjectInputStream inputStream;
     public Login log;
-    
+
     // DB fields
     public static Connection con = null;
     private static final String DB_DRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
     private static final String DB_CONNECTION = "jdbc:sqlserver://localhost:1433;databaseName=LondonU2;user=tom;password=1234;";
 
-    
     /**
      * The main object for the program
      */
@@ -87,15 +87,20 @@ public class MainClass {
 //        } catch (IllegalAccessException e) {
 //            // handle exception
 //        }
+        try {
+            UIManager.setLookAndFeel(new SyntheticaAluOxideLookAndFeel());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        WebLookAndFeel.install(true); 
-        WebLookAndFeel.setDecorateAllWindows(true);
+        //WebLookAndFeel.install(true); 
+        //WebLookAndFeel.setDecorateAllWindows(true);
         //</editor-fold>
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
-			public void run() {
-        
+            public void run() {
+
 //                IFly = init.IFly.getInstance();                    //SerializeIfly();
 //                deserializeIfly();
                 con = getDBConnection();
@@ -115,7 +120,6 @@ public class MainClass {
 //    public static void setIsIflySaved(boolean  state) {
 //        isSaved = state;
 //    }
-
     public static void setUserData(String type, String name, char[] pass) {
         user = new AbstractMap.SimpleEntry<>(name, pass);
     }
@@ -149,7 +153,6 @@ public class MainClass {
 //            }
 //        }
 //    }
-
     /**
      * deserialize data
      */
@@ -190,29 +193,27 @@ public class MainClass {
 //            }
 //        }
 //    }
-    
     public static Connection getDBConnection() {
- 
-		Connection dbConnection = null;
- 
-		try {
-			Class.forName(DB_DRIVER);
-		} catch (ClassNotFoundException e) {
-			System.out.println(e.getMessage());
-		}
- 
-		try {
-			dbConnection = DriverManager.getConnection(
-                             DB_CONNECTION);
-			return dbConnection;
-		} catch (SQLException e) {
-			JOptionPane.showMessageDialog(null,
-                        "Can't connect to DB.",
-                        "ERROR MESSAGE",
-                        JOptionPane.ERROR_MESSAGE);
-		}
-		return dbConnection;
-	}
-    
+
+        Connection dbConnection = null;
+
+        try {
+            Class.forName(DB_DRIVER);
+        } catch (ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+
+        try {
+            dbConnection = DriverManager.getConnection(
+                    DB_CONNECTION);
+            return dbConnection;
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null,
+                    "Can't connect to DB.",
+                    "ERROR MESSAGE",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+        return dbConnection;
+    }
 
 }// ~ END OF Class MainClass
