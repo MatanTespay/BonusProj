@@ -147,7 +147,7 @@ public class ExportImportCsv extends MyInternalFrame {
                     return;
                 }
 
-                DefaultTableModel model = csv.loadCSV(fileName, "TempSite", false);
+                DefaultTableModel model = csv.loadCSV(fileName, "tblSite", false);
                 if (model != null && model.getRowCount() > 0) {
                    //open new window and show result
 

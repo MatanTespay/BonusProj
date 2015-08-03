@@ -39,7 +39,7 @@ public class MainClass {
     // DB fields
     public static Connection con = null;
     private static final String DB_DRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-    private static final String DB_CONNECTION = "jdbc:sqlserver://localhost:1433;databaseName=LondonU2;user=tom;password=1234;";
+    private static final String DB_CONNECTION = "jdbc:sqlserver://localhost:1433;databaseName=LondonU2;user=mtn;password=1234;";
 
     /**
      * The main object for the program

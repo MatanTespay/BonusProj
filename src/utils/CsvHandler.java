@@ -277,40 +277,6 @@ public class CsvHandler {
 
             while ((nextLine = csvReader.readNext()) != null) {
 
-//                if (null != nextLine) {
-//                    int index = 1;
-//                    for (int i = 0; i < nextLine.length; i++) {
-//                        //if key col is auto increment skip key col from file
-//                        if (isAutoInc && i == 0) {
-//                            continue;
-//                        }
-//
-//                        //<editor-fold defaultstate="collapsed" desc="fix the invalid char that fuckedUp everything for two days">
-//                        nextLine[i] = nextLine[i].trim();
-//                        if (nextLine[i].startsWith("﻿")) {
-//                            nextLine[i] = nextLine[i].substring(1);
-//                        }
-//                        //</editor-fold>
-//
-//                        //<editor-fold defaultstate="collapsed" desc="Convert the string from file to correct type and add to statement">
-//                        date = ConvertUtil.convertToDate(nextLine[i]);
-//                        if (null != date) {
-//                            Timestamp time = new Timestamp(date.getTime());
-//                            ps.setTimestamp(index++, time);
-//                            //ps.setDate(index++, new java.sql.Date(date.getTime()));
-//                        } else if ((number = ConvertUtil.convertToInt(nextLine[i])) != null) {
-//
-//                            ps.setInt(index++, number);
-//                        } else if ((d = ConvertUtil.convertToDouble(nextLine[i])) != null) {
-//
-//                            ps.setDouble(index++, d);
-//                        } else {
-//                            ps.setString(index++, nextLine[i]);
-//                        }
-//                        //</editor-fold>
-//                    }
-//                    ps.addBatch();
-//                }
                 row = addRowToBatch(nextLine, ps, isAutoInc, withIdentityCol,cols.size());
                 if (row != null) {
                     insertdData.add(row);
@@ -322,13 +288,9 @@ public class CsvHandler {
             }
             ps.executeBatch(); // insert remaining records
             con.commit();
-//            JOptionPane.showMessageDialog(null,
-//                    "data has been imported successfully",
-//                    "INFORMATION MESSAGE",
-//                    JOptionPane.INFORMATION_MESSAGE);
 
             int ok = JOptionPane.showInternalConfirmDialog(holder,
-                    "Data has been imported successfully", "INFORMATION MESSAGE", JOptionPane.YES_NO_OPTION);
+                    "Data has been imported successfully\nWanna See?", "INFORMATION MESSAGE", JOptionPane.YES_NO_OPTION);
             if (ok == 0) {
                 
             }
@@ -336,7 +298,7 @@ public class CsvHandler {
             if (insertdData.elementAt(0).size()== 4) {
                 colNames.removeElementAt(0);
             }
-            //Collections.copy(colNames, cols);
+            
             DefaultTableModel model = new DefaultTableModel(insertdData ,colNames);
             return model;
 
